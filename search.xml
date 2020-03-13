@@ -1,3 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
+  <entry>
+    <title>SpringMVC中的集合参数绑定</title>
+    <url>/2019/06/09/SpringMVC%E4%B8%AD%E7%9A%84%E9%9B%86%E5%90%88%E5%8F%82%E6%95%B0%E7%BB%91%E5%AE%9A/</url>
+    <content><![CDATA[<h2 id="1-绑定数组参数"><a href="#1-绑定数组参数" class="headerlink" title="1. 绑定数组参数"></a>1. 绑定数组参数</h2><p><u>语言匮乏，组织不好语言。。。直接上例子。。</u></p>
+<p>例子：页面中多个checkbox<strong>组件</strong>的<strong>name</strong>都是ids。</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&lt;form action=<span class="string">"$&#123;pageContext.request.contextPath &#125;/queryItem.action"</span> method=<span class="string">"post"</span>&gt;</span><br><span class="line">查询条件：</span><br><span class="line">&lt;table width=<span class="string">"100%"</span> border=<span class="number">1</span>&gt;</span><br><span class="line">&lt;tr&gt;</span><br><span class="line">&lt;td&gt;商品id&lt;input type="text" name="item.id" /&gt;&lt;/td&gt;</span><br><span class="line">&lt;td&gt;商品名称&lt;input type="text" name="item.name" /&gt;&lt;/td&gt;</span><br><span class="line">&lt;td&gt;&lt;input type="submit" value="查询"/&gt;&lt;/td&gt;</span><br><span class="line">&lt;/tr&gt;</span><br><span class="line">&lt;/table&gt;</span><br><span class="line">商品列表：</span><br><span class="line">&lt;table width=<span class="string">"100%"</span> border=<span class="number">1</span>&gt;</span><br><span class="line">&lt;tr&gt;</span><br><span class="line">	&lt;td&gt;选择&lt;/td&gt;</span><br><span class="line">	&lt;td&gt;商品名称&lt;/td&gt;</span><br><span class="line">	&lt;td&gt;商品价格&lt;/td&gt;</span><br><span class="line">	&lt;td&gt;生产日期&lt;/td&gt;</span><br><span class="line">	&lt;td&gt;商品描述&lt;/td&gt;</span><br><span class="line">	&lt;td&gt;操作&lt;/td&gt;</span><br><span class="line">&lt;/tr&gt;</span><br><span class="line">&lt;c:forEach items=<span class="string">"$&#123;itemList &#125;"</span> <span class="keyword">var</span>=<span class="string">"item"</span>&gt;</span><br><span class="line">&lt;tr&gt;</span><br><span class="line">	&lt;td&gt;&lt;input type="checkbox" name="ids" value="$&#123;item.id&#125;"/&gt;&lt;/td&gt;</span><br><span class="line">	&lt;td&gt;$&#123;item.name &#125;&lt;/td&gt;</span><br><span class="line">	&lt;td&gt;$&#123;item.price &#125;&lt;/td&gt;</span><br><span class="line">	&lt;td&gt;&lt;fmt:formatDate value="$&#123;item.createtime&#125;" pattern="yyyy-MM-dd HH:mm:ss"/&gt;&lt;/td&gt;</span><br><span class="line">	&lt;td&gt;$&#123;item.detail &#125;&lt;/td&gt;</span><br><span class="line">	</span><br><span class="line">	&lt;td&gt;&lt;a href="$&#123;pageContext.request.contextPath &#125;/itemEdit.action?id=$&#123;item.id&#125;"&gt;修改&lt;/a&gt;&lt;/td&gt;</span><br><span class="line"></span><br><span class="line">&lt;/tr&gt;</span><br><span class="line">&lt;/c:forEach&gt;</span><br><span class="line"></span><br><span class="line">&lt;/table&gt;</span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure>
+
+<p>controller方法可以用一个数组做形参，MVC的处理器适配器就会自动绑定参数。</p>
+<p>对应以上的例子，controller方法的形参可以是<strong>Integer[ ]</strong> 类型，表单提交后被选中的checkbox的<strong>value</strong>就会被自动绑定到方法的形参中去。</p>
+<h2 id="2-绑定集合参数"><a href="#2-绑定集合参数" class="headerlink" title="2.  绑定集合参数"></a>2.  绑定集合参数</h2><p>依然是上面的jsp文件，controller方法的形参直接改为<strong>List&lt;Integer&gt;</strong>,表单提交后会报错！</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">报错信息：Failed to instantiate [java.util.List]: Specified class is an interface</span><br></pre></td></tr></table></figure>
+
+<p>此时需要一个pojo对象：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ItemVo</span> </span>&#123;</span><br><span class="line">	。</span><br><span class="line">    。</span><br><span class="line">    。</span><br><span class="line">	<span class="keyword">private</span> List&lt;Integer&gt; ids;</span><br><span class="line">	</span><br><span class="line">	getter/setter。。。</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>将controller方法的形参改为ItemVo类型，会自动将表单提交来的参数，按参数名绑定到pojo类的集合属性中。</p>
+]]></content>
+      <categories>
+        <category>SSM</category>
+      </categories>
+      <tags>
+        <tag>SSM</tag>
+        <tag>SpringMVC</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Controller方法的返回值</title>
+    <url>/2019/06/09/Controller%E6%96%B9%E6%B3%95%E7%9A%84%E8%BF%94%E5%9B%9E%E5%80%BC/</url>
+    <content><![CDATA[<h3 id="1-返回ModelAndView"><a href="#1-返回ModelAndView" class="headerlink" title="1. 返回ModelAndView"></a>1. 返回ModelAndView</h3><p>最开始学习的时候就是返回这个类，可以给这个类添加model数据和指定view。</p>
+<h3 id="2-返回void"><a href="#2-返回void" class="headerlink" title="2. 返回void"></a>2. 返回void</h3><p>返回值为空，那么model数据和view怎么办呢？</p>
+<p>可以在形参中使用request和response，完成域对象存取数据、重定向、转发。。。（这里就有点像最初的servlet了）</p>
+<h3 id="3-返回字符串"><a href="#3-返回字符串" class="headerlink" title="3. 返回字符串"></a>3. 返回字符串</h3><p>controller方法返回字符串可以指定<strong>逻辑视图名</strong>，通过<strong>视图解析器</strong>解析为<strong>物理视图地址</strong>。（类似于指定view）</p>
+<p>可以在字符串前加<strong>Redirect</strong>或者<strong>forward</strong>完成<strong>重定向</strong>或<strong>转发</strong>。</p>
+]]></content>
+      <categories>
+        <category>SSM</category>
+      </categories>
+      <tags>
+        <tag>SSM</tag>
+        <tag>SpringMVC</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>\@RequestMapping注解的作用</title>
+    <url>/2019/06/09/@RequestMapping%E6%B3%A8%E8%A7%A3%E7%9A%84%E4%BD%9C%E7%94%A8/</url>
+    <content><![CDATA[<h3 id="1-URL路径映射"><a href="#1-URL路径映射" class="headerlink" title="1. URL路径映射"></a>1. URL路径映射</h3><p>最常用，用的最多的属性value</p>
+<p>@RequestMapping(value=”item”)或@RequestMapping(“/item”）</p>
+<p>value的值是数组，可以将多个url映射到同一个方法</p>
+<h3 id="2-添加在类上面"><a href="#2-添加在类上面" class="headerlink" title="2. 添加在类上面"></a>2. 添加在类上面</h3><p>在<strong>class</strong>上添加<strong>@RequestMapping(url)</strong>指定<strong>通用请求前缀</strong>， <u>限制此类下的所有方法请求url必须以请求前缀开头</u>。</p>
+<p><font color="red"><strong>可以使用此方法对url进行分类管理。</strong></font></p>
+<h3 id="3-请求方法限定"><a href="#3-请求方法限定" class="headerlink" title="3. 请求方法限定"></a>3. 请求方法限定</h3><p>method属性，可以限制请求的方法GET、POST。。。</p>
+<p>并且该方法也是一个数组，可以指定多个请求的方法。</p>
+]]></content>
+      <categories>
+        <category>SSM</category>
+      </categories>
+      <tags>
+        <tag>SSM</tag>
+        <tag>SpringMVC</tag>
+      </tags>
+  </entry>
 </search>
