@@ -27,24 +27,24 @@
     var CONFIG = {"hostname":"jerrymouse1998.github.io","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="NO.26 删除排序数组中的重复项 简单">
+  <meta name="description" content="NO.60 第K个排列 中等">
 <meta property="og:type" content="article">
-<meta property="og:title" content="LeetCode——删除排序数组中的重复项">
-<meta property="og:url" content="https://jerrymouse1998.github.io/2020/03/14/[LeetCode]%E2%80%94%E2%80%94%20%E5%88%A0%E9%99%A4%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E9%A1%B9/index.html">
+<meta property="og:title" content="LeetCode——第K个排列">
+<meta property="og:url" content="https://jerrymouse1998.github.io/2020/03/14/[LeetCode]%E2%80%94%E2%80%94%20%E7%AC%ACK%E4%B8%AA%E6%8E%92%E5%88%97/index.html">
 <meta property="og:site_name" content="M1ng&amp;Q1ng">
-<meta property="og:description" content="NO.26 删除排序数组中的重复项 简单">
+<meta property="og:description" content="NO.60 第K个排列 中等">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://s2.ax1x.com/2019/12/27/lZCsTU.png">
-<meta property="og:image" content="https://s2.ax1x.com/2019/12/27/lZCrwT.png">
+<meta property="og:image" content="https://s2.ax1x.com/2020/03/08/3x0skq.png">
+<meta property="og:image" content="https://s2.ax1x.com/2020/03/08/3x5LgH.png">
 <meta property="article:published_time" content="2020-03-14T09:11:26.000Z">
-<meta property="article:modified_time" content="2020-03-16T04:23:02.624Z">
+<meta property="article:modified_time" content="2020-03-16T04:22:54.697Z">
 <meta property="article:author" content="M1ng">
 <meta property="article:tag" content="leetcode">
-<meta property="article:tag" content="双指针">
+<meta property="article:tag" content="康托展开式">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://s2.ax1x.com/2019/12/27/lZCsTU.png">
+<meta name="twitter:image" content="https://s2.ax1x.com/2020/03/08/3x0skq.png">
 
-<link rel="canonical" href="https://jerrymouse1998.github.io/2020/03/14/[LeetCode]%E2%80%94%E2%80%94%20%E5%88%A0%E9%99%A4%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E9%A1%B9/">
+<link rel="canonical" href="https://jerrymouse1998.github.io/2020/03/14/[LeetCode]%E2%80%94%E2%80%94%20%E7%AC%ACK%E4%B8%AA%E6%8E%92%E5%88%97/">
 
 
 <script id="page-configurations">
@@ -56,7 +56,7 @@
   };
 </script>
 
-  <title>LeetCode——删除排序数组中的重复项 | M1ng&Q1ng</title>
+  <title>LeetCode——第K个排列 | M1ng&Q1ng</title>
   
 
 
@@ -205,7 +205,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://jerrymouse1998.github.io/2020/03/14/[LeetCode]%E2%80%94%E2%80%94%20%E5%88%A0%E9%99%A4%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E9%A1%B9/">
+    <link itemprop="mainEntityOfPage" href="https://jerrymouse1998.github.io/2020/03/14/[LeetCode]%E2%80%94%E2%80%94%20%E7%AC%ACK%E4%B8%AA%E6%8E%92%E5%88%97/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
@@ -218,7 +218,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          LeetCode——删除排序数组中的重复项
+          LeetCode——第K个排列
         </h1>
 
         <div class="post-meta">
@@ -235,7 +235,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-16 12:23:02" itemprop="dateModified" datetime="2020-03-16T12:23:02+08:00">2020-03-16</time>
+                <time title="修改时间：2020-03-16 12:22:54" itemprop="dateModified" datetime="2020-03-16T12:22:54+08:00">2020-03-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -263,8 +263,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20%E5%88%A0%E9%99%A4%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E9%A1%B9/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20%E5%88%A0%E9%99%A4%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E9%A1%B9/" itemprop="commentCount"></span>
+    <a title="valine" href="/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20%E7%AC%ACK%E4%B8%AA%E6%8E%92%E5%88%97/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20%E7%AC%ACK%E4%B8%AA%E6%8E%92%E5%88%97/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -274,7 +274,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>376</span>
+              <span>775</span>
             </span>
 
         </div>
@@ -286,11 +286,27 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="NO-26-删除排序数组中的重复项-简单"><a href="#NO-26-删除排序数组中的重复项-简单" class="headerlink" title="NO.26 删除排序数组中的重复项 简单 "></a>NO.26 删除排序数组中的重复项 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2019/12/27/lZCsTU.png" alt="lZCsTU.png"></p>
-<p><img src="https://s2.ax1x.com/2019/12/27/lZCrwT.png" alt="lZCrwT.png"></p>
-<p><font color=red><strong>思路一：双指针法</strong></font> 题目中给了两个关键点需要特别思考”原地”和”不需要考虑数组中超出新长度后面的元素”，所谓的”原地”就是不需要创建新的数组将不重复的元素复制过去，只需要在原数组中进行”覆盖”即可；所谓”不需要考虑数组中超出新长度后面的元素”就是只需要将不重复元素都”紧凑到原数组的前面”，如：[1,1,1,2,3,3,4,6]遵循上述两个点进行”覆盖”和”紧凑”的结果[1,2,3,4,6,3,4,6]，算法的返回值为新长度5。</p>
-<p>可以用两个指针i和j分别指向0号和1号元素，如果j指向的元素和i指向的元素相等就移动j指针，如果不相等则先移动i指针再让j指向的元素覆盖此时i指向的元素最后移动j指针，直至j指针遍历完所有元素。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">removeDuplicates</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> len=nums.length;</span><br><span class="line">        <span class="keyword">if</span> (nums==<span class="keyword">null</span>||len==<span class="number">0</span>)<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> i=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;len;j++)&#123;</span><br><span class="line"><span class="comment">//            如果不相等,则先移动i指针再让j指向的元素覆盖此时i指向的元素</span></span><br><span class="line">            <span class="keyword">if</span> (nums[i]!=nums[j])&#123;</span><br><span class="line">                i++;</span><br><span class="line">                nums[i]=nums[j];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> i+<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+        <h2 id="NO-60-第K个排列-中等"><a href="#NO-60-第K个排列-中等" class="headerlink" title="NO.60 第K个排列 中等 "></a>NO.60 第K个排列 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2020/03/08/3x0skq.png" alt="3x0skq.png"></p>
+<p><strong><font color=red>思路一：逆用康托展开</font></strong> 什么是康托展开式可以先从百度了解。本文直接从示例着手。</p>
+<p>利用康托展开求排列是第几个，例如”213”是n=3的全排列中的第几个？<img src="https://s2.ax1x.com/2020/03/08/3x5LgH.png" alt="3x5LgH.png"></p>
+<p>其实就是找出比”213”小的排列有几个，然后+1。</p>
+<p>先比较首位，比2小的只有1，1开头的排列有1*2!个。</p>
+<p>第二位比1小的不存在所以有0*1!排列。</p>
+<p>第三位比3小的有1和2但是前面已经用过所以有0*0!个。</p>
+<p>综上所述，有2个比”213”小的排列，所以”213”排在第3位。</p>
+<p><strong>本题是逆用，知道n和第k个，求排列本身。</strong></p>
+<p>例如：要找n=5，k=35的排列。共有5!=120个排列，从小到大要找第35个排列。</p>
+<p>从首位开始找，首位分别是1、2、3、4、5的排列分成五组，每组各有(5-1)!=24个，由于k=35，所以要找的排列在第二组中，就是首位是2开头的24个排列中，即目标排列首位是”2”。</p>
+<p>再看第二位，第二位可能是1、3、4、5分成四组，每组分别有(5-2)!=6个，由于k-24=11，所以要找的排列在第二组中，即目标排列的前两位是”23”。</p>
+<p>同理，第三位可能是1、4、5分成三组，每组分别有(5-3)!=2个，因为k-6=5，所以要找的排列在第三组的两个排列中，即目标排列的前三位是”235”。</p>
+<p>再然后第四位可能是1、4，分两组各有(5-4)!=1个，因为k-4=1，所以在第一组，即目标排列的前四位是”2351”。</p>
+<p>最后第五位只剩下4，所以目标排列是”23514”。</p>
+<p>找到第35个排列。</p>
+<p><strong>其实这个方法就是分组，上例中找第一位时候将有序全排列按照首位数字分为5组，看看我们要找的那个排列在第几组中从而确定了首位数字。</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getPermutation</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    StringBuilder ans=<span class="keyword">new</span> StringBuilder();</span><br><span class="line">    <span class="comment">//所有可用数字</span></span><br><span class="line">    StringBuilder map=<span class="keyword">new</span> StringBuilder();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n ; i++)map.append(i);</span><br><span class="line">    <span class="keyword">int</span> groupId,index=n;</span><br><span class="line">    <span class="comment">//逐位确定</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        index--;</span><br><span class="line">        <span class="comment">//确定在当前分组的第几组</span></span><br><span class="line">        groupId=(k-<span class="number">1</span>)/foc(index);</span><br><span class="line">        <span class="comment">//得到分组的数字，移除使用过的数字</span></span><br><span class="line">        ans.append(map.charAt(groupId));</span><br><span class="line">        map.deleteCharAt(groupId);</span><br><span class="line">        <span class="comment">//更新k</span></span><br><span class="line">        k-=groupId*foc(index);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans.toString();</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 求 i!</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">foc</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> x=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (i&gt;=<span class="number">1</span>)&#123;</span><br><span class="line">        x*=i--;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n^2)    题目说n的范围[1,9]，可以直接将1~9的阶乘预先保存在一个数组中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getPermutation</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    StringBuilder ans=<span class="keyword">new</span> StringBuilder();</span><br><span class="line">    <span class="comment">//0~9的阶乘,直接使用</span></span><br><span class="line">    <span class="keyword">int</span> factor[] = &#123;<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">6</span>,<span class="number">24</span>,<span class="number">120</span>,<span class="number">720</span>,<span class="number">5040</span>,<span class="number">40320</span>,<span class="number">362880</span>&#125;;</span><br><span class="line">    <span class="comment">//所有可用数字</span></span><br><span class="line">    StringBuilder map=<span class="keyword">new</span> StringBuilder();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n ; i++)map.append(i);</span><br><span class="line">    <span class="keyword">int</span> groupId,index=n;</span><br><span class="line">    <span class="comment">//逐位确定</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        index--;</span><br><span class="line">        <span class="comment">//确定在当前分组的第几组</span></span><br><span class="line">        groupId=(k-<span class="number">1</span>)/factor[index];</span><br><span class="line">        <span class="comment">//得到分组的数字，移除使用过的数字</span></span><br><span class="line">        ans.append(map.charAt(groupId));</span><br><span class="line">        map.deleteCharAt(groupId);</span><br><span class="line">        <span class="comment">//更新k</span></span><br><span class="line">        k-=groupId*factor[index];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>时间复杂度：O(n)</p>
 <hr>
@@ -307,7 +323,7 @@
           
           <div class="post-tags">
               <a href="/tags/leetcode/" rel="tag"><i class="fa fa-tag"></i> leetcode</a>
-              <a href="/tags/%E5%8F%8C%E6%8C%87%E9%92%88/" rel="tag"><i class="fa fa-tag"></i> 双指针</a>
+              <a href="/tags/%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80%E5%BC%8F/" rel="tag"><i class="fa fa-tag"></i> 康托展开式</a>
           </div>
 
         
@@ -316,12 +332,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20%E7%AC%ACK%E4%B8%AA%E6%8E%92%E5%88%97%20/" rel="prev" title="LeetCode——第K个排列">
-      <i class="fa fa-chevron-left"></i> LeetCode——第K个排列
+    <a href="/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%E8%A7%A3%E6%95%B0%E7%8B%AC/" rel="prev" title="LeetCode——解数独">
+      <i class="fa fa-chevron-left"></i> LeetCode——解数独
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20%E5%88%A0%E9%99%A4%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E9%A1%B9%20/" rel="next" title="LeetCode——删除排序数组中的重复项">
-      LeetCode——删除排序数组中的重复项 <i class="fa fa-chevron-right"></i>
+    <a href="/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20Pow(x,n)/" rel="next" title="LeetCode——Pow(x,n)">
+      LeetCode——Pow(x,n) <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -383,7 +399,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NO-26-删除排序数组中的重复项-简单"><span class="nav-number">1.</span> <span class="nav-text">NO.26 删除排序数组中的重复项 简单 </span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NO-60-第K个排列-中等"><span class="nav-number">1.</span> <span class="nav-text">NO.60 第K个排列 中等 </span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -399,7 +415,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -412,7 +428,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -449,7 +465,7 @@
             <!--<div>标签云</div>-->
             <div id="myCanvasContainer" class="widget tagcloud">
               <canvas width="250" height="250" id="resCanvas" style="width=100%">
-              <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TreeSet/" rel="tag">TreeSet</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E5%88%86%E6%B3%95/" rel="tag">二分法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%9D%E7%AD%89%E6%95%B0%E5%AD%A6/" rel="tag">初等数学</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag">动态规划</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8E%84%E6%8B%89%E5%A4%9A%E5%A1%9E%E7%AD%9B/" rel="tag">厄拉多塞筛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8C%E6%8C%87%E9%92%88/" rel="tag">双指针</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E6%BA%AF/" rel="tag">回溯</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="tag">字符串</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80%E5%BC%8F/" rel="tag">康托展开式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A0%88/" rel="tag">栈</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A1%AE%E5%AE%9A%E6%9C%89%E9%99%90%E8%87%AA%E5%8A%A8%E6%9C%BA/" rel="tag">确定有限自动机</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F/" rel="tag">责任链模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a><span class="tag-list-count">1</span></li></ul>
+              <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TreeSet/" rel="tag">TreeSet</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E5%88%86%E6%B3%95/" rel="tag">二分法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%9D%E7%AD%89%E6%95%B0%E5%AD%A6/" rel="tag">初等数学</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag">动态规划</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8E%84%E6%8B%89%E5%A4%9A%E5%A1%9E%E7%AD%9B/" rel="tag">厄拉多塞筛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E6%BA%AF/" rel="tag">回溯</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="tag">字符串</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80%E5%BC%8F/" rel="tag">康托展开式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A0%88/" rel="tag">栈</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A1%AE%E5%AE%9A%E6%9C%89%E9%99%90%E8%87%AA%E5%8A%A8%E6%9C%BA/" rel="tag">确定有限自动机</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F/" rel="tag">责任链模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a><span class="tag-list-count">1</span></li></ul>
               </canvas>
             </div>
          </div>
@@ -480,7 +496,7 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">8k</span>
+    <span title="站点总字数">7k</span>
 </div>
 
         

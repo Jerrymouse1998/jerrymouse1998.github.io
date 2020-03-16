@@ -118,33 +118,6 @@
       </tags>
   </entry>
   <entry>
-    <title>LeetCode——Pow(x,n)</title>
-    <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20Pow(x,n)%20/</url>
-    <content><![CDATA[<h2 id="NO-50-Pow-x-n-中等"><a href="#NO-50-Pow-x-n-中等" class="headerlink" title="NO.50 Pow(x,n) 中等 "></a>NO.50 Pow(x,n) <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2020/02/07/1gKljg.png" alt="1gKljg.png"></p>
-<p><strong><font color=red>思路一：暴力法</font></strong> 这道题暴力法是不能通过leetcode判题机，会得到一个t。但是方法本身是可以得到正确答案的，所以我们需要对他进行优化。暴力法的想法很简单的：2^3=2*2*2。</p>
-<p>如果n为负，则n=-n同时x=1/x，例如2^(-3)=1/2*1/2*1/2。但是这里要注意n的取值范围，主要是 正整数和负整数的不同范围限制 。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">myPow</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (x==<span class="number">0</span>)<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (n==<span class="number">0</span>)<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">double</span> ans=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">long</span> N=n;</span><br><span class="line">    <span class="keyword">if</span> (N&lt;<span class="number">0</span>)&#123;</span><br><span class="line">        N=-N;</span><br><span class="line">        x=<span class="number">1</span>/x;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;N;i++)&#123;</span><br><span class="line">        ans*=x;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>时间复杂度：O(n)</p>
-<p><strong><font color=red>思路二：二分法</font></strong> 当我们得到x^(n/2)的时候，我们不需要再去乘上n/2个x了，而是x^(n/2)*x^(n/2)=x^n。</p>
-<p>这个想法用递归很容易实现，但是需要注意的是n的奇偶性，如果n为奇数则需要再乘上一个x。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">myPow</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (n)&#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>:<span class="keyword">return</span> x;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">0</span>:<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">case</span> -<span class="number">1</span>:<span class="keyword">return</span> <span class="number">1</span>/x;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">double</span> half=myPow(x,n/<span class="number">2</span>);</span><br><span class="line">    <span class="comment">//奇偶性处理</span></span><br><span class="line">    <span class="keyword">double</span> rest=myPow(x,n%<span class="number">2</span>);</span><br><span class="line">    <span class="keyword">return</span> half*half*rest;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>时间复杂度：O(logn)</p>
-<hr>
-<p>本人菜鸟，有错误请告知，感激不尽！</p>
-<p>更多题解和学习记录博客:<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">博客</a>、<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
-]]></content>
-      <categories>
-        <category>题解笔记</category>
-      </categories>
-      <tags>
-        <tag>leetcode</tag>
-        <tag>二分法</tag>
-        <tag>递归</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>LeetCode——Z字形变换</title>
     <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20Z%E5%AD%97%E5%BD%A2%E5%8F%98%E6%8D%A2/</url>
     <content><![CDATA[<h2 id="NO-6-Z字形变换-中等"><a href="#NO-6-Z字形变换-中等" class="headerlink" title="NO.6 Z字形变换 中等 "></a>NO.6 Z字形变换 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2019/12/10/QDB5TA.png" alt="QDB5TA.png"></p>
@@ -200,15 +173,19 @@
       </tags>
   </entry>
   <entry>
-    <title>LeetCode——删除排序数组中的重复项</title>
-    <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20%E5%88%A0%E9%99%A4%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E9%A1%B9%20/</url>
-    <content><![CDATA[<h2 id="NO-26-删除排序数组中的重复项-简单"><a href="#NO-26-删除排序数组中的重复项-简单" class="headerlink" title="NO.26 删除排序数组中的重复项 简单 "></a>NO.26 删除排序数组中的重复项 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2019/12/27/lZCsTU.png" alt="lZCsTU.png"></p>
-<p><img src="https://s2.ax1x.com/2019/12/27/lZCrwT.png" alt="lZCrwT.png"></p>
-<p><font color=red><strong>思路一：双指针法</strong></font> 题目中给了两个关键点需要特别思考”原地”和”不需要考虑数组中超出新长度后面的元素”，所谓的”原地”就是不需要创建新的数组将不重复的元素复制过去，只需要在原数组中进行”覆盖”即可；所谓”不需要考虑数组中超出新长度后面的元素”就是只需要将不重复元素都”紧凑到原数组的前面”，如：[1,1,1,2,3,3,4,6]遵循上述两个点进行”覆盖”和”紧凑”的结果[1,2,3,4,6,3,4,6]，算法的返回值为新长度5。</p>
-<p>可以用两个指针i和j分别指向0号和1号元素，如果j指向的元素和i指向的元素相等就移动j指针，如果不相等则先移动i指针再让j指向的元素覆盖此时i指向的元素最后移动j指针，直至j指针遍历完所有元素。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">removeDuplicates</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> len=nums.length;</span><br><span class="line">        <span class="keyword">if</span> (nums==<span class="keyword">null</span>||len==<span class="number">0</span>)<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> i=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;len;j++)&#123;</span><br><span class="line"><span class="comment">//            如果不相等,则先移动i指针再让j指向的元素覆盖此时i指向的元素</span></span><br><span class="line">            <span class="keyword">if</span> (nums[i]!=nums[j])&#123;</span><br><span class="line">                i++;</span><br><span class="line">                nums[i]=nums[j];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> i+<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+    <title>LeetCode——Pow(x,n)</title>
+    <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20Pow(x,n)/</url>
+    <content><![CDATA[<h2 id="NO-50-Pow-x-n-中等"><a href="#NO-50-Pow-x-n-中等" class="headerlink" title="NO.50 Pow(x,n) 中等 "></a>NO.50 Pow(x,n) <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2020/02/07/1gKljg.png" alt="1gKljg.png"></p>
+<p><strong><font color=red>思路一：暴力法</font></strong> 这道题暴力法是不能通过leetcode判题机，会得到一个t。但是方法本身是可以得到正确答案的，所以我们需要对他进行优化。暴力法的想法很简单的：2^3=2*2*2。</p>
+<p>如果n为负，则n=-n同时x=1/x，例如2^(-3)=1/2*1/2*1/2。但是这里要注意n的取值范围，主要是 正整数和负整数的不同范围限制 。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">myPow</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (x==<span class="number">0</span>)<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (n==<span class="number">0</span>)<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">double</span> ans=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">long</span> N=n;</span><br><span class="line">    <span class="keyword">if</span> (N&lt;<span class="number">0</span>)&#123;</span><br><span class="line">        N=-N;</span><br><span class="line">        x=<span class="number">1</span>/x;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;N;i++)&#123;</span><br><span class="line">        ans*=x;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>时间复杂度：O(n)</p>
+<p><strong><font color=red>思路二：二分法</font></strong> 当我们得到x^(n/2)的时候，我们不需要再去乘上n/2个x了，而是x^(n/2)*x^(n/2)=x^n。</p>
+<p>这个想法用递归很容易实现，但是需要注意的是n的奇偶性，如果n为奇数则需要再乘上一个x。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">myPow</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (n)&#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>:<span class="keyword">return</span> x;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">0</span>:<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">case</span> -<span class="number">1</span>:<span class="keyword">return</span> <span class="number">1</span>/x;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">double</span> half=myPow(x,n/<span class="number">2</span>);</span><br><span class="line">    <span class="comment">//奇偶性处理</span></span><br><span class="line">    <span class="keyword">double</span> rest=myPow(x,n%<span class="number">2</span>);</span><br><span class="line">    <span class="keyword">return</span> half*half*rest;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(logn)</p>
 <hr>
 <p>本人菜鸟，有错误请告知，感激不尽！</p>
 <p>更多题解和学习记录博客:<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">博客</a>、<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
@@ -218,34 +195,13 @@
       </categories>
       <tags>
         <tag>leetcode</tag>
-        <tag>双指针</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LeetCode——删除排序数组中的重复项</title>
-    <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20%E5%88%A0%E9%99%A4%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E9%A1%B9/</url>
-    <content><![CDATA[<h2 id="NO-26-删除排序数组中的重复项-简单"><a href="#NO-26-删除排序数组中的重复项-简单" class="headerlink" title="NO.26 删除排序数组中的重复项 简单 "></a>NO.26 删除排序数组中的重复项 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2019/12/27/lZCsTU.png" alt="lZCsTU.png"></p>
-<p><img src="https://s2.ax1x.com/2019/12/27/lZCrwT.png" alt="lZCrwT.png"></p>
-<p><font color=red><strong>思路一：双指针法</strong></font> 题目中给了两个关键点需要特别思考”原地”和”不需要考虑数组中超出新长度后面的元素”，所谓的”原地”就是不需要创建新的数组将不重复的元素复制过去，只需要在原数组中进行”覆盖”即可；所谓”不需要考虑数组中超出新长度后面的元素”就是只需要将不重复元素都”紧凑到原数组的前面”，如：[1,1,1,2,3,3,4,6]遵循上述两个点进行”覆盖”和”紧凑”的结果[1,2,3,4,6,3,4,6]，算法的返回值为新长度5。</p>
-<p>可以用两个指针i和j分别指向0号和1号元素，如果j指向的元素和i指向的元素相等就移动j指针，如果不相等则先移动i指针再让j指向的元素覆盖此时i指向的元素最后移动j指针，直至j指针遍历完所有元素。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">removeDuplicates</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> len=nums.length;</span><br><span class="line">        <span class="keyword">if</span> (nums==<span class="keyword">null</span>||len==<span class="number">0</span>)<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> i=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;len;j++)&#123;</span><br><span class="line"><span class="comment">//            如果不相等,则先移动i指针再让j指向的元素覆盖此时i指向的元素</span></span><br><span class="line">            <span class="keyword">if</span> (nums[i]!=nums[j])&#123;</span><br><span class="line">                i++;</span><br><span class="line">                nums[i]=nums[j];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> i+<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p>时间复杂度：O(n)</p>
-<hr>
-<p>本人菜鸟，有错误请告知，感激不尽！</p>
-<p>更多题解和学习记录博客:<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">博客</a>、<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
-]]></content>
-      <categories>
-        <category>题解笔记</category>
-      </categories>
-      <tags>
-        <tag>leetcode</tag>
-        <tag>双指针</tag>
+        <tag>二分法</tag>
+        <tag>递归</tag>
       </tags>
   </entry>
   <entry>
     <title>LeetCode——第K个排列</title>
-    <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20%E7%AC%ACK%E4%B8%AA%E6%8E%92%E5%88%97%20/</url>
+    <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20%E7%AC%ACK%E4%B8%AA%E6%8E%92%E5%88%97/</url>
     <content><![CDATA[<h2 id="NO-60-第K个排列-中等"><a href="#NO-60-第K个排列-中等" class="headerlink" title="NO.60 第K个排列 中等 "></a>NO.60 第K个排列 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2020/03/08/3x0skq.png" alt="3x0skq.png"></p>
 <p><strong><font color=red>思路一：逆用康托展开</font></strong> 什么是康托展开式可以先从百度了解。本文直接从示例着手。</p>
 <p>利用康托展开求排列是第几个，例如”213”是n=3的全排列中的第几个？<img src="https://s2.ax1x.com/2020/03/08/3x5LgH.png" alt="3x5LgH.png"></p>
@@ -283,7 +239,7 @@
   </entry>
   <entry>
     <title>LeetCode——解数独</title>
-    <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%E8%A7%A3%E6%95%B0%E7%8B%AC%20/</url>
+    <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%E8%A7%A3%E6%95%B0%E7%8B%AC/</url>
     <content><![CDATA[<h2 id="NO-37-解数独-困难"><a href="#NO-37-解数独-困难" class="headerlink" title="NO.37 解数独 困难 "></a>NO.37 解数独 <font color=#ff0099>困难</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2020/02/23/310IhV.png" alt="310IhV.png"></p>
 <p><img src="https://s2.ax1x.com/2020/02/23/3105t0.png" alt="3105t0.png"></p>
 <p><strong><font color=red>思路一：回溯法</font></strong> 就是模拟人解数独时的简单想法：</p>
