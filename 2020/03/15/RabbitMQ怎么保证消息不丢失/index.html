@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<script type="text/javascript" src="//libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="mask-icon" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/blue/pace-theme-minimal.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrymouse1998.github.io","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="RabbitMQ的一大特色就是其自身保证消息的可靠性，那么RabbitMQ是如何保证消息的可靠性呢？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RabbitMQ怎样保证消息不丢失？">
+<meta property="og:url" content="https://jerrymouse1998.github.io/2020/03/15/RabbitMQ%E6%80%8E%E4%B9%88%E4%BF%9D%E8%AF%81%E6%B6%88%E6%81%AF%E4%B8%8D%E4%B8%A2%E5%A4%B1/index.html">
+<meta property="og:site_name" content="M1ng&amp;Q1ng">
+<meta property="og:description" content="RabbitMQ的一大特色就是其自身保证消息的可靠性，那么RabbitMQ是如何保证消息的可靠性呢？">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/26/KBUI4H.md.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/26/KBU5Ue.md.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/24/KUJvEq.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/24/KUYbi6.png">
+<meta property="article:published_time" content="2020-03-15T09:11:26.000Z">
+<meta property="article:modified_time" content="2020-03-16T08:31:47.364Z">
+<meta property="article:author" content="M1ng">
+<meta property="article:tag" content="RabbitMQ">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/10/26/KBUI4H.md.png">
+
+<link rel="canonical" href="https://jerrymouse1998.github.io/2020/03/15/RabbitMQ%E6%80%8E%E4%B9%88%E4%BF%9D%E8%AF%81%E6%B6%88%E6%81%AF%E4%B8%8D%E4%B8%A2%E5%A4%B1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>RabbitMQ怎样保证消息不丢失？ | M1ng&Q1ng</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	<a href="https://github.com/Jerrymouse1998" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">M1ng&Q1ng</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">回忆有时是一种消极逃避的表现。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jerrymouse1998.github.io/2020/03/15/RabbitMQ%E6%80%8E%E4%B9%88%E4%BF%9D%E8%AF%81%E6%B6%88%E6%81%AF%E4%B8%8D%E4%B8%A2%E5%A4%B1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
+      <meta itemprop="name" content="M1ng">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M1ng&Q1ng">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          RabbitMQ怎样保证消息不丢失？
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-15 17:11:26" itemprop="dateCreated datePublished" datetime="2020-03-15T17:11:26+08:00">2020-03-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-16 16:31:47" itemprop="dateModified" datetime="2020-03-16T16:31:47+08:00">2020-03-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">消息队列</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/03/15/RabbitMQ%E6%80%8E%E4%B9%88%E4%BF%9D%E8%AF%81%E6%B6%88%E6%81%AF%E4%B8%8D%E4%B8%A2%E5%A4%B1/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/15/RabbitMQ%E6%80%8E%E4%B9%88%E4%BF%9D%E8%AF%81%E6%B6%88%E6%81%AF%E4%B8%8D%E4%B8%A2%E5%A4%B1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.5k</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>RabbitMQ的一大特色就是其自身保证消息的可靠性，那么RabbitMQ是如何保证消息的可靠性呢？<a id="more"></a></p>
+<h2 id="消息持久化"><a href="#消息持久化" class="headerlink" title="消息持久化"></a>消息持久化</h2><p>RabbitMQ的消息默认存放在内存上面，如果不特别声明设置，消息不会持久化保存到硬盘上面的，如果节点重启或者意外crash掉，消息就会丢失。</p>
+<p>所以就要对消息进行持久化处理，持久化的条件（缺一不可）：</p>
+<ol>
+<li>Exchange设置持久化：autoDelete属性表示当所有绑定队列都不在使用时，是否自动删除交换器，true删除，false不删除；durable属性（关键）表示当服务重启时交换器能否存活，true能，false不能。</li>
+<li>Queue设置持久化：和Exchange设置持久化一样。</li>
+<li>消息持久化发送：发送消息设置发送模式deliveryMode=2，代表消息持久化。</li>
+</ol>
+<hr>
+<h2 id="ACK确认机制（重点）"><a href="#ACK确认机制（重点）" class="headerlink" title="ACK确认机制（重点）"></a>ACK确认机制（重点）</h2><p><font color=red>完成了上述操作，当服务重启时可以保证交换器、队列、队列中的消息被还原至重启之前的状态。但是这样并不能保障服务运行时消息不丢失，<strong>例如：autoAck=true消费者接受消息之后还没正确完成处理就抛出异常或者消费者的服务器者直接crash了，这样也算数据丢失；即使正确消息已经被正确处理，但是后序代码抛出异常，使用Spring进行管理的话消费端业务逻辑会进行回滚，这也造成了实际意义上的消息丢失</strong>。为了确保这种情况下的数据不丢失，RabbitMQ支持消息确认——ACK。</font></p>
+<p><font color=###00CC00><strong>什么是ACK消息确认机制？</strong></font></p>
+<p>ACK确认机制就是消费者收到消息并处理完成后要通知服务端，服务端才把消息从队列中删除：</p>
+<ol>
+<li>如果一个消费者在处理消息时出现了网络不稳定、服务器异常等情况，那么就不会有ACK反馈，RabbitMQ会认为这个消息没有正常消费，会将消息重新放入队列中。</li>
+<li>如果在集群情况下，RabbitMQ会立刻将这个消息推送给在线的其他消费者。这种机制保证了在消费者服务端故障的时候，不丢失任何消息和任务。</li>
+<li>只有当消费者正确发送ACK反馈，RabbitMQ确认收到后，消息才会从RabbitMQ服务器的数据中删除，否则消息永远不会从RabbitMQ中删除。</li>
+<li>消息的ACK确认机制默认是打开的。</li>
+</ol>
+<p><font color=###00CC00><strong>消费者如何通知RabbitMQ消息成功消费？</strong></font></p>
+<ol>
+<li>消息确认模式有：<ul>
+<li>AcknowledgeMode.NONE：自动确认（<strong>默认</strong>）</li>
+<li>AcknowledgeMode.AUTO：根据情况确</li>
+<li>AcknowledgeMode.MANUAL：手动确认</li>
+</ul>
+</li>
+<li>消息<strong>通过ACK确认是否被正确接收</strong>，每个Message都要被确认（acknowledged），可以手动去ACK或自动ACK。</li>
+<li>自动确认会在消息发送给消费者之后立刻确认，如果手动确认则当消费者调用ack，nack（否认/拒绝消息，消息重新放回队列），reject（否认/拒绝消息，消息不放回队列）几种方法进行确认，手动确认可以在业务失败后进行一些操作，如果消息未被ACK则会发送到下一个消费者。</li>
+<li><strong>如果某个服务忘记ACK了，则RabbitMQ不会再发送数据给它，因为RabbitMQ认为该服务的处理能力有限。</strong></li>
+<li>ACK机制还可以起到限流作用，比如在接收到某条消息时休眠几秒钟。</li>
+</ol>
+<p><font color=###00CC00><strong>如何进行手动消息确认？</strong></font></p>
+<ol>
+<li><p>在全局配置文件中设置：</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">spring.rabbitmq.listener.simple.acknowledge-mode</span>=<span class="string">manual</span></span><br></pre></td></tr></table></figure>
+
+<p>或者在配置类中设置：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="keyword">public</span> RabbitListenerContainerFactory&lt;?&gt; rabbitListenerContainerFactory(ConnectionFactory connectionFactory)&#123;</span><br><span class="line">    SimpleRabbitListenerContainerFactory factory =<span class="keyword">new</span> SimpleRabbitListenerContainerFactory();</span><br><span class="line">    factory.setConnectionFactory(connectionFactory);</span><br><span class="line">    factory.setMessageConverter(<span class="keyword">new</span> Jackson2JsonMessageConverter());</span><br><span class="line">    factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);             <span class="comment">//开启手动 ack</span></span><br><span class="line">    <span class="keyword">return</span> factory;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>然后运行一个Springboot应用，service方法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RabbitListener</span>(queues = <span class="string">"nynu.news"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">msgAndHeader</span><span class="params">(Message msg)</span></span>&#123;</span><br><span class="line">    System.out.println(msg.getBody());</span><br><span class="line">    System.out.println(msg.getMessageProperties());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行一个测试方法，发送一条消息到nynu.news队列中去：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="comment">//    点对点单播测试</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">directDemo</span><span class="params">()</span></span>&#123;</span><br><span class="line">        rabbitTemplate.convertAndSend(<span class="string">"exchange.direct"</span>,<span class="string">"nynu.news"</span>,<span class="keyword">new</span> Shoes(<span class="number">2</span>,<span class="string">"李宁"</span>,<span class="string">"全城7"</span>));</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行测试方法之后，service方法接收到消息并在控制台打印出来，但是由于没有手动确认方法：</p>
+<p><a href="https://imgchr.com/i/KBUI4H" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/10/26/KBUI4H.md.png" alt="KBUI4H.md.png"></a></p>
+<p>可以看到，队列中没有准备好的可以被接收的消息，但是有一个未确认的消息。这时候停止应用来模拟抛出异常或者消费者服务器crash：</p>
+<p><a href="https://imgchr.com/i/KBU5Ue" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/10/26/KBU5Ue.md.png" alt="KBU5Ue.md.png"></a></p>
+<p>没有被确认的消息重新放回了消息队列中。</p>
+</li>
+<li><p>在service方法中添加确认消息语句：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RabbitListener</span>(queues = <span class="string">"nynu.news"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">msgAndHeader</span><span class="params">(Message msg, Shoes shoes, @Header(AmqpHeaders.DELIVERY_TAG)</span> <span class="keyword">long</span> tag, Channel channel)</span>&#123;</span><br><span class="line">        System.out.println(shoes);</span><br><span class="line">        System.out.println(msg.getBody());</span><br><span class="line">        System.out.println(msg.getMessageProperties());</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            channel.basicAck(tag,<span class="keyword">false</span>); <span class="comment">//确认消息</span></span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (TimeoutException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的 <strong>basicAck</strong> 方法需要传递两个参数：</p>
+<ul>
+<li><strong>deliveryTag（唯一标识 ID）</strong>：当一个消费者向 RabbitMQ 注册后，会建立起一个 Channel ，RabbitMQ 会用 basic.deliver 方法向消费者推送消息，这个方法携带了一个 delivery tag， <strong>它代表了 RabbitMQ 向该 Channel 投递的这条消息的唯一标识 ID</strong>，是一个单调递增的正整数，delivery tag 的范围仅限于 Channel</li>
+<li><strong>multiple</strong>：为了减少网络流量，手动确认可以被批处理，<strong>当该参数为 true 时，则可以一次性确认 delivery_tag 小于等于传入值的所有消息</strong></li>
+</ul>
+<p>Channel类会提供了很多方法：</p>
+<ol>
+<li>将上述方法中确认消息换为<strong>channel.basicNack(tag,false,true);</strong>语句，运行程序消息不断地重复接受。因为Nack拒绝消息之后，消息又回到了消息队列重新被方法接受。。。第三个参数false拒绝后消息不放回消息队列，true消息放回消息队列。</li>
+<li>同样的还有<strong>channel.basicReject(tag,false);</strong>语句来拒绝消息，第二个参数false拒绝后消息不放回消息队列，true消息放回消息队列。</li>
+<li><strong>basicRecover(boolean requeue);</strong>方法：重新投递并没有所谓的像basicReject中的deliveryTag参数，所以重新投递好像是将消费者还没有处理的所有的消息都重新放入到队列中，而不是将某一条消息放入到队列中，与basicReject不同的是，重新投递可以指定投递的消息是否允许当前消费者消费，false：表示重新递送的消息还会被当前消费者消费，true则不会。</li>
+</ol>
+</li>
+</ol>
+<p><font color=red><strong>注意：如果忘记了ACK，那么后果很严重。当Consumer退出时，Message会一直重新分发。然后RabbitMQ会占用越来越多的内存，由于RabbitMQ会长时间运行，因此这个“内存泄漏“是致命的。</strong></font></p>
+<p><font color=red><strong>解决方法:</strong></font></p>
+<ol>
+<li><p>使用try-catch块捕获消费者中的异常。</p>
+</li>
+<li><p>设置重试次数（在全局配置文件添加如下配置）：</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#开启重试</span></span><br><span class="line"><span class="meta">spring.rabbitmq.listener.simple.retry.enabled</span>=<span class="string">true </span></span><br><span class="line"><span class="comment">#最大重试次数</span></span><br><span class="line"><span class="meta">spring.rabbitmq.listener.simple.retry.</span> <span class="string">max-attempts=5</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="生产者确认"><a href="#生产者确认" class="headerlink" title="生产者确认"></a>生产者确认</h2><p>上述的应答方式主要都是消费者告诉消息队列已获取到消息并处理完毕。其实当生产者发布消息到RabbitMQ中，生产者需要知道是否真的已经发送到RabbitMQ中，需要RabbitMQ告诉生产者消息队列已收到消息：</p>
+<ul>
+<li><p><font color=red><strong>Confirm机制</strong>：</font>生产者将信道设置为confirm模式，所有在该信道上面发布的消息都会被指派一个唯一的ID（从1开始），一旦消息被投递到所匹配的队列之后，RabbitMQ就会发送一个确认给生产者（包含消息的唯一ID），这就使得生产者知道消息已经正确到达目的队列了，如果消息和队列是可持久化的，那么确认消息会在将消息写入磁盘之后发出，RabbitMQr回传给生产者的确认消息中deliver-tag域包含了确认消息的序列号，此外RabbitMQ也可以设置basic.ack的multiple域，表示到这个序列号之前的所有消息都已经得到了处理。</p>
+<p><font color=red>Confirm模式最大的好处就在于它是异步的，一旦发布一条消息，生产者应用程序就可以在等信道返回确认的同时继续发送下一条消息，当消息最终得到确认之后，生产者应用便可以通过回调方法来处理该确认消息，如果RabbitMQ因为自身内部错误导致消息丢失，就会发送一条basic.nack来代替basic.ack的消息，在这个情形下，basic.nack中各域值的含义与basic.ack中相应各域含义是相同的，同时requeue域的值应该被忽略。通过nack一条或多条消息， Broker表明自身无法对相应消息完成处理，并拒绝为这些消息的处理负责。在这种情况下，client可以选择将消息re-publish。</font></p>
+<p><strong>channel.confirmSelect()</strong>：将当前Channel设置为Confirm模式。</p>
+<p><strong>channel.waitForConfirms()</strong>：发一个或一批消息，等待确认返回一个boolean值（true发送成功，false发送失败），如果出错了会返回本次发送的所有消息。</p>
+<p>客户端实现生产者confirm有三种编程方式：</p>
+<ol>
+<li><p>普通Confirm模式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">  channel.confirmSelect();</span><br><span class="line">String message = <span class="string">"Hello RabbitMQ:"</span>;</span><br><span class="line">  channel.basicPublish(EXCHANGE_NAME, ROUTING_KEY, <span class="keyword">null</span>, (message + i).getBytes(<span class="string">"UTF-8"</span>));</span><br><span class="line">  <span class="keyword">boolean</span> isPublished = channel.waitForConfirms();</span><br></pre></td></tr></table></figure>
+
+<p>每发送一条消息后，调用waitForConfirms()方法，等待服务器端Confirm。实际上是一种串行Confirm了，每publish一条消息之后就等待服务端Confirm，如果服务端返回false或者超时时间内未返回，客户端进行消息重传。</p>
+</li>
+<li><p>批量Confirm模式，：</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">channel.confirmSelect();</span><br><span class="line">String message = <span class="string">"Hello RabbitMQ:"</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">channel.basicPublish(EXCHANGE_NAME, ROUTING_KEY, <span class="keyword">null</span>, (message + i).getBytes(<span class="string">"UTF-8"</span>));</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">boolean</span> isAllPublished = channel.waitForConfirms();</span><br></pre></td></tr></table></figure>
+
+<p>发送一批消息之后，调用waitForConfirms()方法，等待服务端Confirm，<font color=red>但是服务器并不是对每一条消息都进行ack，而是批量处理，如果使用wireshark等软件抓包之后可以发现在某些basic.ack数据报文中multiple的值为true，这与前面我们讲解的一致，为true时将确定所有比指定的delivery-tag参数都小的消息都得到了确认。</font>这种批量确认的模式极大的提高了Confirm效率，但是如果一旦出现Confirm返回false或者超时的情况，客户端需要将这一批次的消息全部重发，这会带来明显的重复消息，如果这种情况频繁发生的话，效率也会不升反降。</p>
+</li>
+<li><p>异步Confirm模式：提供一个回调方法，服务端Confirm了一条或者多条消息后Client端会回调这个方法。</p>
+<p>先看一下waitForConfirms方法的源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">waitForConfirms</span><span class="params">(<span class="keyword">long</span> timeout)</span> <span class="keyword">throws</span> InterruptedException, TimeoutException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.nextPublishSeqNo == <span class="number">0L</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Confirms not selected"</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">long</span> startTime = System.currentTimeMillis();</span><br><span class="line">        <span class="keyword">synchronized</span>(<span class="keyword">this</span>.unconfirmedSet) &#123;</span><br><span class="line">            <span class="keyword">while</span>(<span class="keyword">this</span>.getCloseReason() == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (<span class="keyword">this</span>.unconfirmedSet.isEmpty()) &#123;</span><br><span class="line">                    <span class="keyword">boolean</span> aux = <span class="keyword">this</span>.onlyAcksReceived;</span><br><span class="line">                    <span class="keyword">this</span>.onlyAcksReceived = <span class="keyword">true</span>;</span><br><span class="line">                    <span class="keyword">return</span> aux;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (timeout == <span class="number">0L</span>) &#123;</span><br><span class="line">                    <span class="keyword">this</span>.unconfirmedSet.wait();</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">long</span> elapsed = System.currentTimeMillis() - startTime;</span><br><span class="line">                    <span class="keyword">if</span> (timeout &lt;= elapsed) &#123;</span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> TimeoutException();</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">this</span>.unconfirmedSet.wait(timeout - elapsed);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">throw</span> (ShutdownSignalException)Utility.fixStackTrace(<span class="keyword">this</span>.getCloseReason());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在waitForConfirms()方法内部维护了一个同步块代码，而unconfirmedSet就是存储delivery-tag标识的。该方法为每一个Channel维护一个unconfirmedSet的消息序号集合，每publish一条数据，集合中元素加1，每回调一次ack方法，unconfirmedSet就删掉相应的一条（multiple=false）或多条（multiple=true）记录。从程序运行效率上看，这个unconfirmedSet集合最好采用有序集合SortedSet存储结构。而且waitForConfirmsOrDie()方法内部其实就是调用了waitForConfirms()方法。</p>
+</li>
+</ol>
+</li>
+<li><p><font color=red><strong>事务机制：</strong></font>通过AMQP事务机制实现，这也是AMQP协议层面提供的解决方案。<br><strong>channel.txSelect()</strong>：用于将当前Channel设置为Transaction模式。</p>
+<p><strong>channel.txCommit()</strong>：用于提交事务。</p>
+<p><strong>channel.txRollback()</strong>：用于回滚事务。</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">String message = <span class="string">"Hello RabbitMQ:"</span>;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    channel.txSelect();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">        channel.basicPublish(EXCHANGE_NAME, ROUTING_KEY, <span class="keyword">null</span>, (message + i).getBytes(<span class="string">"UTF-8"</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    channel.txCommit();</span><br><span class="line">&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    channel.txRollback();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><font color=red>注意：事务机制是非常非常非常消耗性能的，最好使用Confirm机制，Confirm机制相比事务机制性能上要好很多。</font></p>
+<p><font color=red><strong>每个队列只能设置为一种模式confirm或者transaction，不能混用否则会抛异常。</strong></font></p>
+<hr>
+<h2 id="设置集群镜像模式"><a href="#设置集群镜像模式" class="headerlink" title="设置集群镜像模式"></a>设置集群镜像模式</h2><p>RabbitMQ常用的三种部署模式：</p>
+<ol>
+<li>单节点模式：最简单的情况，非集群模式，节点挂了，消息就不能用了。业务可能瘫痪，只能等待。</li>
+<li>普通模式：默认的集群模式，某个节点挂了，该节点上的消息不能用，有影响的业务瘫痪，只能等待节点恢复重启可用（前提是持久化消息情况下）。</li>
+<li>镜像模式：把需要的队列做成镜像队列，存在于多个节点，属于RabbitMQ的HA方案。</li>
+</ol>
+<p>为什么设置镜像模式集群，因为队列的内容仅仅存在某一个节点上面，不会存在所有节点上面，所有节点仅仅存放消息结构和元数据。下面自己画了一张图介绍普通集群丢失消息情况：</p>
+<p><img src="https://s2.ax1x.com/2019/10/24/KUJvEq.png" alt="KUJvEq.png"></p>
+<p>如果想解决上面途中问题，保证消息不丢失，需要采用HA 镜像模式队列。</p>
+<p><strong>下面介绍下三种HA策略模式：</strong></p>
+<ol>
+<li>同步至所有的</li>
+<li>同步最多N个机器</li>
+<li>只同步至符合指定名称的nodes</li>
+</ol>
+<p><em>命令处理HA策略模版：rabbitmqctl set_policy [-p Vhost] Name Pattern Definition [Priority]</em></p>
+<ol>
+<li>为每个以“rock.wechat”开头的队列设置所有节点的镜像，并且设置为自动同步模式<br>rabbitmqctl set_policy ha-all “^rock.wechat” ‘{“ha-mode”:”all”,”ha-sync-mode”:”automatic”}’<br>rabbitmqctl set_policy -p rock ha-all “^rock.wechat” ‘{“ha-mode”:”all”,”ha-sync-mode”:”automatic”}’</li>
+<li>为每个以“rock.wechat.”开头的队列设置两个节点的镜像，并且设置为自动同步模式<br>rabbitmqctl set_policy -p rock ha-exacly “^rock.wechat” <br>‘{“ha-mode”:”exactly”,”ha-params”:2,”ha-sync-mode”:”automatic”}’</li>
+<li>为每个以“node.”开头的队列分配指定的节点做镜像<br>rabbitmqctl set_policy ha-nodes “^nodes.“ <br>‘{“ha-mode”:”nodes”,”ha-params”:[“rabbit@nodeA”, “rabbit@nodeB”]}’</li>
+</ol>
+<p>但是：HA 镜像队列有一个很大的缺点就是：   <strong>系统的吞吐量会有所下降</strong></p>
+<hr>
+<h2 id="消息补偿机制"><a href="#消息补偿机制" class="headerlink" title="消息补偿机制"></a>消息补偿机制</h2><p>为什么还要消息补偿机制呢？难道消息还会丢失，没错，系统是在一个复杂的环境，不要想的太简单了，虽然以上的三种方案，基本可以保证消息的高可用不丢失的问题，</p>
+<p>但是作为有追求的程序员来讲，要绝对保证我的系统的稳定性，有一种危机意识。</p>
+<p>比如：持久化的消息，保存到硬盘过程中，当前队列节点挂了，存储节点硬盘又坏了，消息丢了，怎么办？</p>
+<p>产线网络环境太复杂，所以不知数太多，消息补偿机制需要建立在消息要写入DB日志，发送日志，接受日志，两者的状态必须记录。</p>
+<p>然后根据DB日志记录check 消息发送消费是否成功，不成功，进行消息补偿措施，重新发送消息处理。</p>
+<p><img src="https://s2.ax1x.com/2019/10/24/KUYbi6.png" alt="KUYbi6.png"></p>
+<hr>
+<p>菜鸟博主只是主要学习了前两种方法。后两种作为拔高，待羽翼丰满之后在做深入学习，先搬运<a href="https://www.cnblogs.com/flyrock/>" target="_blank" rel="noopener">flyrock</a>的博客中的内容作为记录了解混个“耳熟”。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/RabbitMQ/" rel="tag"><i class="fa fa-tag"></i> RabbitMQ</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/15/Redis%E5%88%9D%E4%BD%93%E9%AA%8C/" rel="prev" title="初识Redis">
+      <i class="fa fa-chevron-left"></i> 初识Redis
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/15/Postman%E5%88%9D%E4%BD%93%E9%AA%8C/" rel="next" title="Postman接口调试工具">
+      Postman接口调试工具 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#消息持久化"><span class="nav-number">1.</span> <span class="nav-text">消息持久化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ACK确认机制（重点）"><span class="nav-number">2.</span> <span class="nav-text">ACK确认机制（重点）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生产者确认"><span class="nav-number">3.</span> <span class="nav-text">生产者确认</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置集群镜像模式"><span class="nav-number">4.</span> <span class="nav-text">设置集群镜像模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息补偿机制"><span class="nav-number">5.</span> <span class="nav-text">消息补偿机制</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="M1ng"
+      src="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
+  <p class="site-author-name" itemprop="name">M1ng</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">106</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Jerrymouse1998" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Jerrymouse1998" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:577373789@qq.com" title="E-Mail → mailto:577373789@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-handshake-o"></i>
+      ↓交换友链QQ:577373789↓
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://jerrymouse1998.github.io/" title="https:&#x2F;&#x2F;jerrymouse1998.github.io&#x2F;">M1ng&Q1ng</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+	  
+	  <!--添加标签云-->
+        
+          <script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+          <script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+          <div class="widget-wrap">
+            <!--<div>标签云</div>-->
+            <div id="myCanvasContainer" class="widget tagcloud">
+              <canvas width="250" height="250" id="resCanvas" style="width=100%">
+              <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/" rel="tag">BFS</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/" rel="tag">DFS</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HashTable/" rel="tag">HashTable</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/" rel="tag">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java8/" rel="tag">Java8</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KMP%E7%AE%97%E6%B3%95/" rel="tag">KMP算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LCP/" rel="tag">LCP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LCS/" rel="tag">LCS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Manacher%E7%AE%97%E6%B3%95/" rel="tag">Manacher算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sunday%E7%AE%97%E6%B3%95/" rel="tag">Sunday算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TreeSet/" rel="tag">TreeSet</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a><span class="tag-list-count">84</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E5%BF%83%E6%89%A9%E5%B1%95/" rel="tag">中心扩展</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E5%88%86%E6%B3%95/" rel="tag">二分法</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BD%8D%E5%9B%BE/" rel="tag">位图</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E6%B2%BB%E7%AE%97%E6%B3%95/" rel="tag">分治算法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag">动态规划</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8E%84%E6%8B%89%E5%A4%9A%E5%A1%9E%E7%AD%9B/" rel="tag">厄拉多塞筛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8C%E6%8C%87%E9%92%88/" rel="tag">双指针</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E6%BA%AF/" rel="tag">回溯</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="tag">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BB%A7%E6%89%BF/" rel="tag">多继承</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="tag">字符串</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80%E5%BC%8F/" rel="tag">康托展开式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%91%A9%E5%B0%94%E6%8A%95%E7%A5%A8%E7%AE%97%E6%B3%95/" rel="tag">摩尔投票算法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E7%BB%84/" rel="tag">数组</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A5%E6%9C%9F%E7%B1%BB/" rel="tag">日期类</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A0%88/" rel="tag">栈</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E7%AE%97%E6%B3%95/" rel="tag">欧几里得算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B5%81%E5%BC%8F%E8%AF%AD%E6%B3%95/" rel="tag">流式语法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/" rel="tag">滑动窗口</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A1%AE%E5%AE%9A%E6%9C%89%E9%99%90%E8%87%AA%E5%8A%A8%E6%9C%BA/" rel="tag">确定有限自动机</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%9C%AF%E5%9F%BA%E6%9C%AC%E5%AE%9A%E7%90%86%E6%B3%95/" rel="tag">算术基本定理法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F/" rel="tag">责任链模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95/" rel="tag">贪心算法</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag">转载</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%93%BE%E8%A1%A8/" rel="tag">链表</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%9F%E5%88%97/" rel="tag">队列</a><span class="tag-list-count">2</span></li></ul>
+              </canvas>
+            </div>
+         </div>
+        
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">M1ng</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">111k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-nest@1/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdnjs.cloudflare.com/ajax/libs/valine/1.3.10/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : true,
+      notify     : true,
+      appId      : 'qeADb7jtYMKlsXEEryXe2Grg-gzGzoHsz',
+      appKey     : 'WGN1y5zOMgAbEHXpunlL2THf',
+      placeholder: "欢迎留言、纠错、交朋友 ^.^ 请注意文明哦！",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+  
+  <!-- 樱花特效 -->
+  <script type="text/javascript">
+    var windowWidth = $(window).width();
+    <!-- if (windowWidth > 480) { -->
+      document.write('<script type="text/javascript" src="/js/sakura.js"><\/script>');
+    <!-- } -->
+  </script>
+
+</body>
+</html>

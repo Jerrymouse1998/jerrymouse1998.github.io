@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<script type="text/javascript" src="//libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="mask-icon" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/blue/pace-theme-minimal.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrymouse1998.github.io","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前两篇文章已经介绍了Maven基本结构、功能和命令，并且搭建了最基本的SSM整合框架并调通。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初识Maven(三)">
+<meta property="og:url" content="https://jerrymouse1998.github.io/2020/03/15/Maven%E5%86%8D%E4%BD%93%E9%AA%8C_CRUD/index.html">
+<meta property="og:site_name" content="M1ng&amp;Q1ng">
+<meta property="og:description" content="前两篇文章已经介绍了Maven基本结构、功能和命令，并且搭建了最基本的SSM整合框架并调通。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-15T09:11:26.000Z">
+<meta property="article:modified_time" content="2020-03-16T08:31:10.617Z">
+<meta property="article:author" content="M1ng">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://jerrymouse1998.github.io/2020/03/15/Maven%E5%86%8D%E4%BD%93%E9%AA%8C_CRUD/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>初识Maven(三) | M1ng&Q1ng</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	<a href="https://github.com/Jerrymouse1998" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">M1ng&Q1ng</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">回忆有时是一种消极逃避的表现。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jerrymouse1998.github.io/2020/03/15/Maven%E5%86%8D%E4%BD%93%E9%AA%8C_CRUD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
+      <meta itemprop="name" content="M1ng">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M1ng&Q1ng">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          初识Maven(三)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-15 17:11:26" itemprop="dateCreated datePublished" datetime="2020-03-15T17:11:26+08:00">2020-03-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-16 16:31:10" itemprop="dateModified" datetime="2020-03-16T16:31:10+08:00">2020-03-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Maven/" itemprop="url" rel="index"><span itemprop="name">Maven</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/03/15/Maven%E5%86%8D%E4%BD%93%E9%AA%8C_CRUD/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/15/Maven%E5%86%8D%E4%BD%93%E9%AA%8C_CRUD/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2k</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>前两篇文章已经介绍了Maven基本结构、功能和命令，并且搭建了最基本的SSM整合框架并调通。<a id="more"></a></p>
+<hr>
+<h3 id="简单的查："><a href="#简单的查：" class="headerlink" title="简单的查："></a>简单的查：</h3><p>初学者用烂的User实体类:Integer id;String username;String password;String address;(写得很啰嗦，且缺乏典型)。</p>
+<p>controller：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"users.action"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">findAllUser</span><span class="params">(Model model)</span></span>&#123;</span><br><span class="line">    List&lt;User&gt; users = userService.findAllUser();</span><br><span class="line">    model.addAttribute(<span class="string">"users"</span>,users);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"usersList"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>jsp页面：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&lt;%--    用户信息表格--%&gt;</span><br><span class="line">    &lt;form method=<span class="string">"post"</span> action=<span class="string">"$&#123;pageContext.request.contextPath&#125;/deleteByIds.action"</span>&gt;</span><br><span class="line">        &lt;table width=<span class="string">"400px"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"table table-hover table-striped text-center"</span>&gt;</span><br><span class="line">            &lt;thead&gt;&lt;h1 class="text-center"&gt;userList&lt;/h1&gt;&lt;/thead&gt;</span><br><span class="line">            &lt;tbody&gt;</span><br><span class="line">                &lt;tr&gt;</span><br><span class="line">                    &lt;td&gt;&lt;input type="checkbox" id="changeAll" onclick="change(this)"&gt;全选&lt;/td&gt;</span><br><span class="line">                    &lt;td&gt;username&lt;/td&gt;</span><br><span class="line">                    &lt;td&gt;password&lt;/td&gt;</span><br><span class="line">                    &lt;td&gt;address&lt;/td&gt;</span><br><span class="line">                    &lt;td&gt;operate&lt;/td&gt;</span><br><span class="line">                &lt;/tr&gt;</span><br><span class="line">                &lt;c:forEach items=<span class="string">"$&#123;users&#125;"</span> <span class="keyword">var</span>=<span class="string">"user"</span>&gt;</span><br><span class="line">                    &lt;tr&gt;</span><br><span class="line">                        &lt;td&gt;&lt;input type="checkbox" value="$&#123;user.id&#125;" name="ids"&gt;&lt;/td&gt;</span><br><span class="line">                        &lt;td&gt;$&#123;user.username&#125;&lt;/td&gt;</span><br><span class="line">                        &lt;td&gt;$&#123;user.password&#125;&lt;/td&gt;</span><br><span class="line">                        &lt;td&gt;$&#123;user.address&#125;&lt;/td&gt;</span><br><span class="line">                        &lt;td&gt;</span><br><span class="line">                            &lt;input onclick=<span class="string">"find_user_byId($&#123;user.id&#125;)"</span> type=<span class="string">"button"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"btn btn-primary"</span> data-toggle=<span class="string">"modal"</span> data-target=<span class="string">"#modifyModal"</span> value=<span class="string">"modify"</span>&gt;</span><br><span class="line">                            &lt;a onclick="delete_user($&#123;user.id&#125;)" class="btn-danger btn"&gt;delete&lt;/a&gt;</span><br><span class="line">                        &lt;/td&gt;</span><br><span class="line">                    &lt;/tr&gt;</span><br><span class="line">                &lt;/c:forEach&gt;</span><br><span class="line">            &lt;/tbody&gt;</span><br><span class="line">            &lt;tfoot&gt;</span><br><span class="line">                &lt;td colspan=<span class="string">"5"</span>&gt;</span><br><span class="line">                    &lt;input type=<span class="string">"submit"</span> value=<span class="string">"删除所选项"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"btn btn-danger"</span>&gt;</span><br><span class="line">                    &lt;input type=<span class="string">"button"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"btn btn-success"</span> data-toggle=<span class="string">"modal"</span> data-target=<span class="string">"#addModal"</span> value=<span class="string">"添加新用户"</span>&gt;</span><br><span class="line">                &lt;/td&gt;</span><br><span class="line">            &lt;/tfoot&gt;</span><br><span class="line">        &lt;/table&gt;</span><br><span class="line">    &lt;/form&gt;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="简单的删："><a href="#简单的删：" class="headerlink" title="简单的删："></a>简单的删：</h3><p>VoUser中 Integer id；List&lt;Integer&gt; ids；在mapper文件中进行空值的判断即可，分开处理。</p>
+<p>controller：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"deleteByIds.action"</span>)</span><br><span class="line"><span class="comment">//根据前端传回的参数是id还是表单的ids自动对应属性赋值</span></span><br><span class="line">   <span class="keyword">public</span> <span class="meta">@ResponseBody</span> <span class="function">String <span class="title">deleteByIds</span><span class="params">(VoUser user)</span></span>&#123;</span><br><span class="line">       Integer result = userService.deleteByIds(user);</span><br><span class="line">       <span class="keyword">if</span> (result!=<span class="number">0</span>)&#123;</span><br><span class="line">           <span class="keyword">return</span> <span class="string">"OK"</span>;</span><br><span class="line">       &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">           <span class="keyword">return</span> <span class="string">"FAIL"</span>;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>@ResponseBody</strong>标签可以使方法的返回值通过适当的转换器转换为指定的格式之后，写入到response对象的body区，通常用来返回JSON数据或者是XML。</p>
+<p><font color=red><strong>注意</strong>：在使用此注解之后不会再走视图处理器，而是直接将数据写入到输入流中，他的效果类似于通过response对象输出指定格式的数据。</font></p>
+<p>jsp：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//html同上</span></span><br><span class="line"><span class="comment">//多选</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">change</span>(<span class="params">changeAll</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> checkIds = <span class="built_in">document</span>.getElementsByName(<span class="string">"ids"</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;checkIds.length;i++)&#123;</span><br><span class="line">        checkIds[i].checked=changeAll.checked;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//删除用户信息</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">delete_user</span>(<span class="params">id</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(confirm(<span class="string">"确定删除此用户么？"</span>,<span class="string">"确定"</span>,<span class="string">"取消"</span>))&#123;</span><br><span class="line">        $.post(<span class="string">"$&#123;pageContext.request.contextPath&#125;/deleteByIds.action"</span>,&#123;<span class="string">"id"</span>:id&#125;,<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(data==<span class="string">"OK"</span>)&#123;</span><br><span class="line">                alert(<span class="string">"删除成功！"</span>);</span><br><span class="line">                <span class="built_in">window</span>.location.reload();</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                alert(<span class="string">"删除失败！"</span>);</span><br><span class="line">                <span class="built_in">window</span>.location.reload();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)；</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><strong>confirm函数:</strong>用于提供确认功能，它首先显示给定的message参数所包含的信息，并提供两个可选择的回答“ok”和“cancel”，然后等待用户选择其中的一个。如果用户选择“ok”则返回true；否则，如若选择“cancel”则返回false。该函数的语法格式如下：</li>
+</ol>
+<p>window.confirm (message, ok, cancel)</p>
+<p>它有3个参数，其中参数message是欲显示的字符串形式的提示信息；参数ok也是用于显示的一个字符串信息，它可以是“OK”，也可以是其他表示OK意义的文本信息，如“I Agree”、“I Like”等等；同样，参数cancel也是用于显示的字符串信息，可以是“Cancel”文本，也可以是其他表示Cancel意义的文本信息。</p>
+<ol start="2">
+<li><p><strong>$.post()函数：</strong>通过 HTTP POST 请求从服务器载入数据。</p>
+<p>函数基本语法：jQuery.post(url,data,success(data, textStatus, jqXHR),dataType)</p>
+<ul>
+<li>url：必需。规定把请求发送到哪个 URL。</li>
+<li>data：可选。映射或字符串值(一般习惯用字符串和JSON对象)。规定连同请求发送到服务器的数据。</li>
+<li>success(data, textStatus, jqXHR)：可选。请求成功时执行的回调函数。</li>
+<li>dataType：可选。规定预期的服务器响应的数据类型。默认执行智能判断（xml、json、script 或 html）。</li>
+</ul>
+</li>
+<li><p><strong>window.location.reload()函数：</strong></p>
+<p>刷新页面。。。其他页面更新功能的函数：</p>
+<p>windows.location.href=”/url”     当前页面打开URL页面<br>window.close();                            关闭窗口，不弹出系统提示，直接关闭　<br>window.parent.close();                是parent属性是当前窗口或框架的框架组</p>
+</li>
+</ol>
+<hr>
+<h3 id="简单的增："><a href="#简单的增：" class="headerlink" title="简单的增："></a>简单的增：</h3><p>这么拽的Maven居然不能自动管理BootStrap等优秀的前端框架！！</p>
+<p>手动在webapp下创建static目录(在WEB-INF外，因为WEB-INF的东西只对服务端开放)，将BootStrap和Jquery下载后加入目录。</p>
+<p>controller：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"addUser.action"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@ResponseBody</span> <span class="function">String <span class="title">addUser</span><span class="params">(User user)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> row = userService.addUser(user);</span><br><span class="line">    <span class="keyword">if</span> (row&gt;<span class="number">0</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"OK"</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"FAIL"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>jsp：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">&lt;%--    添加用户模态框--%&gt;</span><br><span class="line">    &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"modal fade"</span> id=<span class="string">"addModal"</span> tabindex=<span class="string">"-1"</span>  role=<span class="string">"dialog"</span> aria-labelledby=<span class="string">"addModalLabel"</span>&gt;</span><br><span class="line">        &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"modal-content"</span>&gt;</span><br><span class="line">&lt;%--            模态框头--%&gt;</span><br><span class="line">            &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"modal-header"</span>&gt;</span><br><span class="line">&lt;%--                右上角关闭模态框--%&gt;</span><br><span class="line">                &lt;button type=<span class="string">"button"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"close"</span> data-dismiss=<span class="string">"modal"</span> aria-label=<span class="string">"Close"</span>&gt;</span><br><span class="line">                    &lt;span aria-hidden="true"&gt;&amp;times;&lt;/span&gt;</span><br><span class="line">                &lt;/button&gt;</span><br><span class="line">                &lt;h4 class="modal-title"&gt;添加用户信息&lt;/h4&gt;</span><br><span class="line">            &lt;/div&gt;</span><br><span class="line">&lt;%--            模态框体--%&gt;</span><br><span class="line">            &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"modal-body"</span>&gt;</span><br><span class="line">                &lt;form <span class="class"><span class="keyword">class</span></span>=<span class="string">"form-horizontal"</span> id=<span class="string">"add_user_form"</span>&gt;</span><br><span class="line">                    &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"form-group"</span>&gt;</span><br><span class="line">                        &lt;label for="add_username" class="col-sm-2 control-label"&gt;用户名&lt;/label&gt;</span><br><span class="line">                        &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"col-sm-10"</span>&gt;</span><br><span class="line">                            &lt;input type=<span class="string">"text"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"form-control"</span> id=<span class="string">"add_username"</span> placeholder=<span class="string">"用户名"</span> name=<span class="string">"username"</span> /&gt;</span><br><span class="line">                        &lt;/div&gt;</span><br><span class="line">                    &lt;/div&gt;</span><br><span class="line">                    &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"form-group"</span>&gt;</span><br><span class="line">                        &lt;label for="add_password" class="col-sm-2 control-label"&gt;密码&lt;/label&gt;</span><br><span class="line">                        &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"col-sm-10"</span>&gt;</span><br><span class="line">                            &lt;input type=<span class="string">"text"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"form-control"</span> id=<span class="string">"add_password"</span> placeholder=<span class="string">"密码"</span> name=<span class="string">"password"</span> /&gt;</span><br><span class="line">                        &lt;/div&gt;</span><br><span class="line">                    &lt;/div&gt;</span><br><span class="line">                    &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"form-group"</span>&gt;</span><br><span class="line">                        &lt;label for="add_address" class="col-sm-2 control-label"&gt;地址&lt;/label&gt;</span><br><span class="line">                        &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"col-sm-10"</span>&gt;</span><br><span class="line">                            &lt;input type=<span class="string">"text"</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">"form-control"</span> id=<span class="string">"add_address"</span> placeholder=<span class="string">"地址"</span> name=<span class="string">"address"</span> /&gt;</span><br><span class="line">                        &lt;/div&gt;</span><br><span class="line">                    &lt;/div&gt;</span><br><span class="line">                &lt;/form&gt;</span><br><span class="line">            &lt;/div&gt;</span><br><span class="line">            &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"modal-footer"</span>&gt;</span><br><span class="line">                &lt;button type="button" class="btn btn-danger" data-dismiss="modal"&gt;关闭&lt;/button&gt;</span><br><span class="line">                &lt;button type="button" class="btn btn-primary" onclick="addUser()"&gt;添加&lt;/button&gt;</span><br><span class="line">            &lt;/div&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">    &lt;/div&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  <span class="comment">// 创建用户信息</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">addUser</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  $.post(<span class="string">"$&#123;pageContext.request.contextPath&#125;/addUser.action"</span>,$(<span class="string">"#add_user_form"</span>).serialize(),<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(data ==<span class="string">"OK"</span>)&#123;</span><br><span class="line">            alert(<span class="string">"用户添加成功！"</span>);</span><br><span class="line">            <span class="built_in">window</span>.location.reload();</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            alert(<span class="string">"用户添加失败！"</span>);</span><br><span class="line">            <span class="built_in">window</span>.location.reload();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>查的部分input标签通过data-toggle=“modal”和data-target=“模态框id”属性切换出模态框。</p>
+<p><strong>serialize() 函数：</strong>通过序列化表单值，创建 URL 编码文本字符串。您可以选择一个或多个表单元素（比如 input 及/或 文本框），或者 form 元素本身。序列化的值可在生成 AJAX 请求时用于 URL 查询字符串中。</p>
+<p>基本语法：$(“input或者form”).serialize()</p>
+<hr>
+<p>U   jsp_$.post()函数_$.ajax()函数          controller接受和返回数据</p>
+<p>$.ajax()是简化的$.post()函数</p>
+<p>$.ajax()函数基本语法：</p>
+<h3 id="简单的改："><a href="#简单的改：" class="headerlink" title="简单的改："></a><strong>简单的改：</strong></h3><p>controller：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"findUserById.action"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@ResponseBody</span> <span class="function">User <span class="title">findUserById</span><span class="params">(Integer id)</span></span>&#123;</span><br><span class="line">    User user = userService.findUserById(id);</span><br><span class="line">    <span class="keyword">return</span> user;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"modifyUser.action"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@ResponseBody</span> <span class="function">String <span class="title">modifyUser</span><span class="params">(User user)</span></span>&#123;</span><br><span class="line">    Integer result = userService.modifyUser(user);</span><br><span class="line">    <span class="keyword">if</span> (result!=<span class="number">0</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"OK"</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"FAIL"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><font color=red><strong>注意：</strong>User findUserById(Integer id)方法使用了@ResponseBody标签，因为返回值是POJO对象，所以需要转换为JSON对象后放到response的body数据区中，需要额外jar包支持(json.jar、jackson-core.jar、jackson-annotations.jar、jackson-databind.jar 四个jar包)。</font></p>
+<p>jsp：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//    根据id查询用户信息，并填写到文本框中</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">find_user_byId</span>(<span class="params">id</span>) </span>&#123;</span><br><span class="line">    $.ajax(&#123;</span><br><span class="line">        type:<span class="string">"post"</span>,</span><br><span class="line">        url:<span class="string">"$&#123;pageContext.request.contextPath&#125;/findUserById.action"</span>,</span><br><span class="line">        data:&#123;<span class="string">"id"</span>:id&#125;,</span><br><span class="line">        success:<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">            $(<span class="string">"#modify_id"</span>).val(data.id);</span><br><span class="line">            $(<span class="string">"#modify_username"</span>).val(data.username);</span><br><span class="line">            $(<span class="string">"#modify_password"</span>).val(data.password);</span><br><span class="line">            $(<span class="string">"#modify_address"</span>).val(data.address);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//    修改用户</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">modify_user</span>(<span class="params"></span>) </span>&#123;                   							</span><br><span class="line">  $.post(<span class="string">"$&#123;pageContext.request.contextPath&#125;/modifyUser.action"</span>,</span><br><span class="line">         $(<span class="string">"#modify_user_form"</span>).serialize(),<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (data==<span class="string">"OK"</span>)&#123;</span><br><span class="line">                alert(<span class="string">"修改成功！"</span>);</span><br><span class="line">                <span class="built_in">window</span>.location.reload();</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                alert(<span class="string">"修改失败！"</span>);</span><br><span class="line">                <span class="built_in">window</span>.location.reload();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改的模态框和增加的模态框大同小异，只是一些标签的id和name不同罢了。</p>
+<p>切换模态框按钮的同时，事件触发find_user_byId(id)方法查询目标属性并放到模态框的对应元素中。</p>
+<p><strong>$.ajax()函数：</strong>简化后就是$.post()函数，上面的ajax()函数等价于下面的post()函数：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">find_user_byId</span>(<span class="params">id</span>) </span>&#123;</span><br><span class="line">    $.post(<span class="string">"$&#123;pageContext.request.contextPath&#125;/findUserById.action"</span>,&#123;<span class="string">"id"</span>:id&#125;,</span><br><span class="line">    <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">        $(<span class="string">"#modify_id"</span>).val(data.id);</span><br><span class="line">        $(<span class="string">"#modify_username"</span>).val(data.username);</span><br><span class="line">        $(<span class="string">"#modify_password"</span>).val(data.password);</span><br><span class="line">        $(<span class="string">"#modify_address"</span>).val(data.address);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>当然了，天天写最简单的CRUD是远远不够的，但是这些基础还是要牢牢抓死。写这些只是为了熟悉IDEA和Maven，顺便温故而知新，虽然都是些简单的操作，但是依然遇到了不少新问题，通过解决新问题多多少少还是有所提升的。废话不多说了，继续完善多条件查询、分页、拦截器等等。。。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/15/Maven%E4%BB%8B%E7%BB%8D%E7%AF%87_%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%92%8C%E4%B8%80%E9%94%AE%E6%9E%84%E5%BB%BA%E6%80%BB%E7%BB%93/" rel="prev" title="初识Maven(一)">
+      <i class="fa fa-chevron-left"></i> 初识Maven(一)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/15/java.util.Date%E5%92%8Cjava.sql.Date%E5%8C%BA%E5%88%AB/" rel="next" title="java.util.Date和java.sql.Date区别">
+      java.util.Date和java.sql.Date区别 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#简单的查："><span class="nav-number">1.</span> <span class="nav-text">简单的查：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单的删："><span class="nav-number">2.</span> <span class="nav-text">简单的删：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单的增："><span class="nav-number">3.</span> <span class="nav-text">简单的增：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单的改："><span class="nav-number">4.</span> <span class="nav-text">简单的改：</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="M1ng"
+      src="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
+  <p class="site-author-name" itemprop="name">M1ng</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">106</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Jerrymouse1998" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Jerrymouse1998" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:577373789@qq.com" title="E-Mail → mailto:577373789@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-handshake-o"></i>
+      ↓交换友链QQ:577373789↓
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://jerrymouse1998.github.io/" title="https:&#x2F;&#x2F;jerrymouse1998.github.io&#x2F;">M1ng&Q1ng</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+	  
+	  <!--添加标签云-->
+        
+          <script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+          <script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+          <div class="widget-wrap">
+            <!--<div>标签云</div>-->
+            <div id="myCanvasContainer" class="widget tagcloud">
+              <canvas width="250" height="250" id="resCanvas" style="width=100%">
+              <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/" rel="tag">BFS</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/" rel="tag">DFS</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HashTable/" rel="tag">HashTable</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/" rel="tag">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java8/" rel="tag">Java8</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KMP%E7%AE%97%E6%B3%95/" rel="tag">KMP算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LCP/" rel="tag">LCP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LCS/" rel="tag">LCS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Manacher%E7%AE%97%E6%B3%95/" rel="tag">Manacher算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sunday%E7%AE%97%E6%B3%95/" rel="tag">Sunday算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TreeSet/" rel="tag">TreeSet</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a><span class="tag-list-count">84</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E5%BF%83%E6%89%A9%E5%B1%95/" rel="tag">中心扩展</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E5%88%86%E6%B3%95/" rel="tag">二分法</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BD%8D%E5%9B%BE/" rel="tag">位图</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E6%B2%BB%E7%AE%97%E6%B3%95/" rel="tag">分治算法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag">动态规划</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8E%84%E6%8B%89%E5%A4%9A%E5%A1%9E%E7%AD%9B/" rel="tag">厄拉多塞筛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8C%E6%8C%87%E9%92%88/" rel="tag">双指针</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E6%BA%AF/" rel="tag">回溯</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="tag">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BB%A7%E6%89%BF/" rel="tag">多继承</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="tag">字符串</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80%E5%BC%8F/" rel="tag">康托展开式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%91%A9%E5%B0%94%E6%8A%95%E7%A5%A8%E7%AE%97%E6%B3%95/" rel="tag">摩尔投票算法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E7%BB%84/" rel="tag">数组</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A5%E6%9C%9F%E7%B1%BB/" rel="tag">日期类</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A0%88/" rel="tag">栈</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E7%AE%97%E6%B3%95/" rel="tag">欧几里得算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B5%81%E5%BC%8F%E8%AF%AD%E6%B3%95/" rel="tag">流式语法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/" rel="tag">滑动窗口</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A1%AE%E5%AE%9A%E6%9C%89%E9%99%90%E8%87%AA%E5%8A%A8%E6%9C%BA/" rel="tag">确定有限自动机</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%9C%AF%E5%9F%BA%E6%9C%AC%E5%AE%9A%E7%90%86%E6%B3%95/" rel="tag">算术基本定理法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F/" rel="tag">责任链模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95/" rel="tag">贪心算法</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag">转载</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%93%BE%E8%A1%A8/" rel="tag">链表</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%9F%E5%88%97/" rel="tag">队列</a><span class="tag-list-count">2</span></li></ul>
+              </canvas>
+            </div>
+         </div>
+        
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">M1ng</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">111k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-nest@1/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdnjs.cloudflare.com/ajax/libs/valine/1.3.10/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : true,
+      notify     : true,
+      appId      : 'qeADb7jtYMKlsXEEryXe2Grg-gzGzoHsz',
+      appKey     : 'WGN1y5zOMgAbEHXpunlL2THf',
+      placeholder: "欢迎留言、纠错、交朋友 ^.^ 请注意文明哦！",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+  
+  <!-- 樱花特效 -->
+  <script type="text/javascript">
+    var windowWidth = $(window).width();
+    <!-- if (windowWidth > 480) { -->
+      document.write('<script type="text/javascript" src="/js/sakura.js"><\/script>');
+    <!-- } -->
+  </script>
+
+</body>
+</html>
