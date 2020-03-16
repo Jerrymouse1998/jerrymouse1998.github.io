@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>[LeetCode]——有效数字</title>
+    <title>LeetCode——有效数字</title>
     <url>/2020/03/14/LeetCode-%E2%80%94%E2%80%94%E6%9C%89%E6%95%88%E6%95%B0%E5%AD%97/</url>
     <content><![CDATA[<p>什么是面向测试编程？试试本题就知道了！</p>
 <h2 id="NO-65-有效数字-困难"><a href="#NO-65-有效数字-困难" class="headerlink" title="NO.65 有效数字 困难 "></a>NO.65 有效数字 <font color=#ff0099>困难</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/14/8Q6Wd0.png" alt="8Q6Wd0.png"></p>
@@ -43,7 +43,27 @@
       </tags>
   </entry>
   <entry>
-    <title>[LeetCode]——最长上升子序列</title>
+    <title>LeetCode——有效括号</title>
+    <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20%20%E6%9C%89%E6%95%88%E6%8B%AC%E5%8F%B7/</url>
+    <content><![CDATA[<h2 id="NO-20-有效括号-简单"><a href="#NO-20-有效括号-简单" class="headerlink" title="NO.20 有效括号 简单 "></a>NO.20 有效括号 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2019/12/25/lFVldS.png" alt="lFVldS.png"></p>
+<p><font color=red><strong>思路一：栈</strong></font>  学校的数据结构课就是那这个作为例子来引入栈结构的。1. 遍历表达式中每个字符，如果是’(‘或’[]’或’{‘就放入栈中。2. 如果是’)’或’]’或’}’就弹出栈顶字符top，如果此时栈为空或者将此时被遍历字符和top不匹配，则说明表达式无效。3. 遍历完所有字符，检查栈是否为空，如果不为空则表达式无效，反之有效。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isValid</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (s==<span class="keyword">null</span>||s.equals(<span class="string">""</span>))<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line"><span class="comment">//        用hashmap存储括号对</span></span><br><span class="line">        HashMap&lt;Character,Character&gt; map=<span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        map.put(<span class="string">')'</span>,<span class="string">'('</span>);</span><br><span class="line">        map.put(<span class="string">']'</span>,<span class="string">'['</span>);</span><br><span class="line">        map.put(<span class="string">'&#125;'</span>,<span class="string">'&#123;'</span>);</span><br><span class="line"><span class="comment">//        用栈来保存遍历到的'(' '[' '&#123;'</span></span><br><span class="line">        Stack&lt;Character&gt; stack=<span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;s.length();i++)&#123;</span><br><span class="line">            <span class="keyword">char</span> c = s.charAt(i);</span><br><span class="line"><span class="comment">//            如果map中没有c这个key，则说明c是(或[或&#123;,就存入栈中（题目说只有六种字符）</span></span><br><span class="line">            <span class="keyword">if</span> (!map.containsKey(c))&#123;</span><br><span class="line">                stack.push(c);</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;<span class="comment">//如果存在c这个key则说明，c是)或]或&#125;，就需要去和栈顶字符进行匹配</span></span><br><span class="line"><span class="comment">//                如果栈为空，则无法匹配</span></span><br><span class="line">                <span class="keyword">if</span> (stack.size()==<span class="number">0</span>)<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line"><span class="comment">//                取出栈顶元素</span></span><br><span class="line">                Character top = stack.pop();</span><br><span class="line"><span class="comment">//                如果map中c的value和栈顶元素top不相等，则无法匹配</span></span><br><span class="line">                <span class="keyword">if</span> (map.get(c)!=top)<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="comment">//        遍历完所有字符之后，检查栈是否为空，如果为空则匹配，反之无法匹配</span></span><br><span class="line">        <span class="keyword">return</span> stack.isEmpty();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和学习记录博客:<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">博客</a>、<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>栈</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——最长上升子序列</title>
     <url>/2020/03/14/LeetCode-%E2%80%94%E2%80%94%E6%9C%80%E9%95%BF%E4%B8%8A%E5%8D%87%E5%AD%90%E5%BA%8F%E5%88%97/</url>
     <content><![CDATA[<h2 id="NO-300-最长上升子序列-中等"><a href="#NO-300-最长上升子序列-中等" class="headerlink" title="NO.300 最长上升子序列 中等 "></a>NO.300 最长上升子序列 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/14/8QQPq1.png" alt="8QQPq1.png"></p>
 <p>刚看到题，我以为寻找的这个上升子序列需要是连续的递增元素，所以我想双指针。发现行不通，重新审题发现，示例中的子序列元素不是连续的。。。</p>
@@ -76,7 +96,7 @@
       </tags>
   </entry>
   <entry>
-    <title>[LeetCode]——N皇后II</title>
+    <title>LeetCode——N皇后II</title>
     <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20N%E7%9A%87%E5%90%8EII/</url>
     <content><![CDATA[<h2 id="NO-52-N皇后II-困难"><a href="#NO-52-N皇后II-困难" class="headerlink" title="NO.52 N皇后II 困难 "></a>NO.52 N皇后II <font color=#ff0099>困难</font> <a id="more"></a></h2><p>NO.52是NO.51的姊妹题，区别在于NO.51要求返回包含”棋子摆放”的List&lt;List&lt;String&gt;&gt;集合，而本题NO.52只需要返回一共有多少种摆法。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">NO.51:public List&lt;List&lt;String&gt;&gt; solveNQueens(int n)</span><br><span class="line">NO.52:public int totalNQueens(int n)</span><br></pre></td></tr></table></figure>
@@ -98,52 +118,7 @@
       </tags>
   </entry>
   <entry>
-    <title>[LeetCode]——有效括号</title>
-    <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20%20%E6%9C%89%E6%95%88%E6%8B%AC%E5%8F%B7/</url>
-    <content><![CDATA[<h2 id="NO-20-有效括号-简单"><a href="#NO-20-有效括号-简单" class="headerlink" title="NO.20 有效括号 简单 "></a>NO.20 有效括号 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2019/12/25/lFVldS.png" alt="lFVldS.png"></p>
-<p><font color=red><strong>思路一：栈</strong></font>  学校的数据结构课就是那这个作为例子来引入栈结构的。1. 遍历表达式中每个字符，如果是’(‘或’[]’或’{‘就放入栈中。2. 如果是’)’或’]’或’}’就弹出栈顶字符top，如果此时栈为空或者将此时被遍历字符和top不匹配，则说明表达式无效。3. 遍历完所有字符，检查栈是否为空，如果不为空则表达式无效，反之有效。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isValid</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (s==<span class="keyword">null</span>||s.equals(<span class="string">""</span>))<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line"><span class="comment">//        用hashmap存储括号对</span></span><br><span class="line">        HashMap&lt;Character,Character&gt; map=<span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        map.put(<span class="string">')'</span>,<span class="string">'('</span>);</span><br><span class="line">        map.put(<span class="string">']'</span>,<span class="string">'['</span>);</span><br><span class="line">        map.put(<span class="string">'&#125;'</span>,<span class="string">'&#123;'</span>);</span><br><span class="line"><span class="comment">//        用栈来保存遍历到的'(' '[' '&#123;'</span></span><br><span class="line">        Stack&lt;Character&gt; stack=<span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;s.length();i++)&#123;</span><br><span class="line">            <span class="keyword">char</span> c = s.charAt(i);</span><br><span class="line"><span class="comment">//            如果map中没有c这个key，则说明c是(或[或&#123;,就存入栈中（题目说只有六种字符）</span></span><br><span class="line">            <span class="keyword">if</span> (!map.containsKey(c))&#123;</span><br><span class="line">                stack.push(c);</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;<span class="comment">//如果存在c这个key则说明，c是)或]或&#125;，就需要去和栈顶字符进行匹配</span></span><br><span class="line"><span class="comment">//                如果栈为空，则无法匹配</span></span><br><span class="line">                <span class="keyword">if</span> (stack.size()==<span class="number">0</span>)<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line"><span class="comment">//                取出栈顶元素</span></span><br><span class="line">                Character top = stack.pop();</span><br><span class="line"><span class="comment">//                如果map中c的value和栈顶元素top不相等，则无法匹配</span></span><br><span class="line">                <span class="keyword">if</span> (map.get(c)!=top)<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="comment">//        遍历完所有字符之后，检查栈是否为空，如果为空则匹配，反之无法匹配</span></span><br><span class="line">        <span class="keyword">return</span> stack.isEmpty();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p>时间复杂度：O(n)</p>
-<hr>
-<p>本人菜鸟，有错误请告知，感激不尽！</p>
-<p>更多题解和学习记录博客:<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">博客</a>、<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
-]]></content>
-      <categories>
-        <category>题解笔记</category>
-      </categories>
-      <tags>
-        <tag>leetcode</tag>
-        <tag>栈</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>[LeetCode]——Z字形变换</title>
-    <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20Z%E5%AD%97%E5%BD%A2%E5%8F%98%E6%8D%A2/</url>
-    <content><![CDATA[<h2 id="NO-6-Z字形变换-中等"><a href="#NO-6-Z字形变换-中等" class="headerlink" title="NO.6 Z字形变换 中等 "></a>NO.6 Z字形变换 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2019/12/10/QDB5TA.png" alt="QDB5TA.png"></p>
-<p><font color=red><strong>思路一：按列写，按行读</strong></font> 将原字符串按列写成”Z字形”，写好之后按行读取“Z字形”。1.先创建一个有min(numRows,len(s))个元素的list，且list的每个元素都是一个StringBuilder。2.用两个变量分别记录当前是第几行和当前的方向。3.然后将参数字符串中的字符逐一填入。4.仅当前行等于list的第一个参数下标0或者等于numRows-1时方向改变。</p>
-<p>这个思路很类似我们动手在纸上将参数字符串写成Z字形的过程，将所有字符逐一写出，在第一行写字符之后写字符的方向变为向下写，在最后一行（numRows）写字符之后写字符的方向变为向上写。当全部写完之后，按行将字符串读出：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">convert</span><span class="params">(String s, <span class="keyword">int</span> numRows)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (numRows==<span class="number">1</span>)<span class="keyword">return</span> s;</span><br><span class="line">        List&lt;StringBuilder&gt; list=<span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;Math.min(numRows,s.length());i++)&#123;</span><br><span class="line">            list.add(<span class="keyword">new</span> StringBuilder());</span><br><span class="line">        &#125;</span><br><span class="line"><span class="comment">//        定义一个变量记录方向，向下为false，向上为true</span></span><br><span class="line">        <span class="keyword">boolean</span> goingDown=<span class="keyword">false</span>;</span><br><span class="line"><span class="comment">//        记录当前是第几行</span></span><br><span class="line">        <span class="keyword">int</span> currentRow=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">char</span> c : s.toCharArray()) &#123;</span><br><span class="line">            list.get(currentRow).append(c);</span><br><span class="line"><span class="comment">//            如果当前行下标是第一行或者是最后一行，就改变方向标识</span></span><br><span class="line">            <span class="keyword">if</span> (currentRow==<span class="number">0</span>||currentRow==numRows-<span class="number">1</span>)goingDown=!goingDown;</span><br><span class="line"><span class="comment">//            行下标向当前方向移动，如果true就+1向下移动，如果是false就-1向上移动</span></span><br><span class="line">            currentRow+=goingDown?<span class="number">1</span>:-<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//        按行读取，获取最后的输出结果</span></span><br><span class="line">        StringBuilder ret=<span class="keyword">new</span> StringBuilder();</span><br><span class="line">        <span class="keyword">for</span> (StringBuilder stringBuilder : list) &#123;</span><br><span class="line">            ret.append(stringBuilder);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ret.toString();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p>时间复杂度：O(n)</p>
-<p><font color=red><strong>思路二：直接按行访问</strong></font>  直接按照将参数字符串写成Z字形之后的结构进行按行访问拼接到结果字符串中。经过观察，可以发现如下规律：对于所有的行i和结果字符串中的字符索引k都有，1. 行0中的字符位于原字符串的k(2*numRows-2)索引处。 2. 行numRows-1中的字符位于原字符串的k(2*numRows-2)+numRows-1索引处。3. 内部的行i中的字符位于原字符串的k(2*numRows-1)+i以及(k+1)(2*numRows-2)-i索引处。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">convert</span><span class="params">(String s, <span class="keyword">int</span> numRows)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (numRows==<span class="number">1</span>)<span class="keyword">return</span> s;</span><br><span class="line">    <span class="keyword">int</span> len=s.length();</span><br><span class="line">    StringBuilder ans=<span class="keyword">new</span> StringBuilder();</span><br><span class="line"><span class="comment">//        一个循环长度（Z字形两次方向变换，即向下写到numRows行方向变化为向上再写到0行的长度）</span></span><br><span class="line">    <span class="keyword">int</span> cycleLen=<span class="number">2</span>*numRows-<span class="number">2</span>;</span><br><span class="line"><span class="comment">//        0-numRows行</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;numRows;i++)&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">0</span>;j+i&lt;len;j+=cycleLen)&#123;</span><br><span class="line">            ans.append(s.charAt(j+i));</span><br><span class="line"><span class="comment">//     当不是第0行且不是第numRows-1行且当前行下一个字符在原字符串中存在时，将当前行下一个字符加入结果串</span></span><br><span class="line"><span class="comment">//                防止遗漏中间行的字符</span></span><br><span class="line">            <span class="keyword">if</span> (i!=<span class="number">0</span>&amp;&amp;i!=numRows-<span class="number">1</span>&amp;&amp;j+cycleLen-i&lt;len)</span><br><span class="line">                ans.append(s.charAt(j+cycleLen-i));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>时间复杂度：O(n)</p>
-<hr>
-<p>本人菜鸟，有错误请告知，感激不尽！</p>
-<p>更多题解和学习记录博客:<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">博客</a>、<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
-]]></content>
-      <categories>
-        <category>题解笔记</category>
-      </categories>
-      <tags>
-        <tag>leetcode</tag>
-        <tag>字符串</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>[LeetCode]——Pow(x,n)</title>
+    <title>LeetCode——Pow(x,n)</title>
     <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20Pow(x,n)%20/</url>
     <content><![CDATA[<h2 id="NO-50-Pow-x-n-中等"><a href="#NO-50-Pow-x-n-中等" class="headerlink" title="NO.50 Pow(x,n) 中等 "></a>NO.50 Pow(x,n) <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2020/02/07/1gKljg.png" alt="1gKljg.png"></p>
 <p><strong><font color=red>思路一：暴力法</font></strong> 这道题暴力法是不能通过leetcode判题机，会得到一个t。但是方法本身是可以得到正确答案的，所以我们需要对他进行优化。暴力法的想法很简单的：2^3=2*2*2。</p>
@@ -170,7 +145,32 @@
       </tags>
   </entry>
   <entry>
-    <title>[LeetCode]——买卖股票的最佳时机</title>
+    <title>LeetCode——Z字形变换</title>
+    <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20Z%E5%AD%97%E5%BD%A2%E5%8F%98%E6%8D%A2/</url>
+    <content><![CDATA[<h2 id="NO-6-Z字形变换-中等"><a href="#NO-6-Z字形变换-中等" class="headerlink" title="NO.6 Z字形变换 中等 "></a>NO.6 Z字形变换 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2019/12/10/QDB5TA.png" alt="QDB5TA.png"></p>
+<p><font color=red><strong>思路一：按列写，按行读</strong></font> 将原字符串按列写成”Z字形”，写好之后按行读取“Z字形”。1.先创建一个有min(numRows,len(s))个元素的list，且list的每个元素都是一个StringBuilder。2.用两个变量分别记录当前是第几行和当前的方向。3.然后将参数字符串中的字符逐一填入。4.仅当前行等于list的第一个参数下标0或者等于numRows-1时方向改变。</p>
+<p>这个思路很类似我们动手在纸上将参数字符串写成Z字形的过程，将所有字符逐一写出，在第一行写字符之后写字符的方向变为向下写，在最后一行（numRows）写字符之后写字符的方向变为向上写。当全部写完之后，按行将字符串读出：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">convert</span><span class="params">(String s, <span class="keyword">int</span> numRows)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (numRows==<span class="number">1</span>)<span class="keyword">return</span> s;</span><br><span class="line">        List&lt;StringBuilder&gt; list=<span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;Math.min(numRows,s.length());i++)&#123;</span><br><span class="line">            list.add(<span class="keyword">new</span> StringBuilder());</span><br><span class="line">        &#125;</span><br><span class="line"><span class="comment">//        定义一个变量记录方向，向下为false，向上为true</span></span><br><span class="line">        <span class="keyword">boolean</span> goingDown=<span class="keyword">false</span>;</span><br><span class="line"><span class="comment">//        记录当前是第几行</span></span><br><span class="line">        <span class="keyword">int</span> currentRow=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">char</span> c : s.toCharArray()) &#123;</span><br><span class="line">            list.get(currentRow).append(c);</span><br><span class="line"><span class="comment">//            如果当前行下标是第一行或者是最后一行，就改变方向标识</span></span><br><span class="line">            <span class="keyword">if</span> (currentRow==<span class="number">0</span>||currentRow==numRows-<span class="number">1</span>)goingDown=!goingDown;</span><br><span class="line"><span class="comment">//            行下标向当前方向移动，如果true就+1向下移动，如果是false就-1向上移动</span></span><br><span class="line">            currentRow+=goingDown?<span class="number">1</span>:-<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//        按行读取，获取最后的输出结果</span></span><br><span class="line">        StringBuilder ret=<span class="keyword">new</span> StringBuilder();</span><br><span class="line">        <span class="keyword">for</span> (StringBuilder stringBuilder : list) &#123;</span><br><span class="line">            ret.append(stringBuilder);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ret.toString();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<p><font color=red><strong>思路二：直接按行访问</strong></font>  直接按照将参数字符串写成Z字形之后的结构进行按行访问拼接到结果字符串中。经过观察，可以发现如下规律：对于所有的行i和结果字符串中的字符索引k都有，1. 行0中的字符位于原字符串的k(2*numRows-2)索引处。 2. 行numRows-1中的字符位于原字符串的k(2*numRows-2)+numRows-1索引处。3. 内部的行i中的字符位于原字符串的k(2*numRows-1)+i以及(k+1)(2*numRows-2)-i索引处。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">convert</span><span class="params">(String s, <span class="keyword">int</span> numRows)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (numRows==<span class="number">1</span>)<span class="keyword">return</span> s;</span><br><span class="line">    <span class="keyword">int</span> len=s.length();</span><br><span class="line">    StringBuilder ans=<span class="keyword">new</span> StringBuilder();</span><br><span class="line"><span class="comment">//        一个循环长度（Z字形两次方向变换，即向下写到numRows行方向变化为向上再写到0行的长度）</span></span><br><span class="line">    <span class="keyword">int</span> cycleLen=<span class="number">2</span>*numRows-<span class="number">2</span>;</span><br><span class="line"><span class="comment">//        0-numRows行</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;numRows;i++)&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">0</span>;j+i&lt;len;j+=cycleLen)&#123;</span><br><span class="line">            ans.append(s.charAt(j+i));</span><br><span class="line"><span class="comment">//     当不是第0行且不是第numRows-1行且当前行下一个字符在原字符串中存在时，将当前行下一个字符加入结果串</span></span><br><span class="line"><span class="comment">//                防止遗漏中间行的字符</span></span><br><span class="line">            <span class="keyword">if</span> (i!=<span class="number">0</span>&amp;&amp;i!=numRows-<span class="number">1</span>&amp;&amp;j+cycleLen-i&lt;len)</span><br><span class="line">                ans.append(s.charAt(j+cycleLen-i));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和学习记录博客:<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">博客</a>、<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>字符串</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——买卖股票的最佳时机</title>
     <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E7%9A%84%E6%9C%80%E4%BD%B3%E6%97%B6%E6%9C%BA/</url>
     <content><![CDATA[<h2 id="NO-121-买卖股票的最佳时机-简单"><a href="#NO-121-买卖股票的最佳时机-简单" class="headerlink" title="NO.121 买卖股票的最佳时机 简单 "></a>NO.121 买卖股票的最佳时机 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2020/03/09/3zzoW9.png" alt="3zzoW9.png"></p>
 <p><strong><font color=red>思路一：暴力法</font></strong> 没什么好说的，双重循环计算所有元素两两组合相减的结果，取最大。</p>
@@ -200,7 +200,7 @@
       </tags>
   </entry>
   <entry>
-    <title>[LeetCode]——删除排序数组中的重复项</title>
+    <title>LeetCode——删除排序数组中的重复项</title>
     <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20%E5%88%A0%E9%99%A4%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E9%A1%B9%20/</url>
     <content><![CDATA[<h2 id="NO-26-删除排序数组中的重复项-简单"><a href="#NO-26-删除排序数组中的重复项-简单" class="headerlink" title="NO.26 删除排序数组中的重复项 简单 "></a>NO.26 删除排序数组中的重复项 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2019/12/27/lZCsTU.png" alt="lZCsTU.png"></p>
 <p><img src="https://s2.ax1x.com/2019/12/27/lZCrwT.png" alt="lZCrwT.png"></p>
@@ -222,7 +222,7 @@
       </tags>
   </entry>
   <entry>
-    <title>[LeetCode]——删除排序数组中的重复项</title>
+    <title>LeetCode——删除排序数组中的重复项</title>
     <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20%E5%88%A0%E9%99%A4%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E9%A1%B9/</url>
     <content><![CDATA[<h2 id="NO-26-删除排序数组中的重复项-简单"><a href="#NO-26-删除排序数组中的重复项-简单" class="headerlink" title="NO.26 删除排序数组中的重复项 简单 "></a>NO.26 删除排序数组中的重复项 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2019/12/27/lZCsTU.png" alt="lZCsTU.png"></p>
 <p><img src="https://s2.ax1x.com/2019/12/27/lZCrwT.png" alt="lZCrwT.png"></p>
@@ -244,7 +244,7 @@
       </tags>
   </entry>
   <entry>
-    <title>[LeetCode]——第K个排列</title>
+    <title>LeetCode——第K个排列</title>
     <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20%E7%AC%ACK%E4%B8%AA%E6%8E%92%E5%88%97%20/</url>
     <content><![CDATA[<h2 id="NO-60-第K个排列-中等"><a href="#NO-60-第K个排列-中等" class="headerlink" title="NO.60 第K个排列 中等 "></a>NO.60 第K个排列 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2020/03/08/3x0skq.png" alt="3x0skq.png"></p>
 <p><strong><font color=red>思路一：逆用康托展开</font></strong> 什么是康托展开式可以先从百度了解。本文直接从示例着手。</p>
@@ -282,7 +282,7 @@
       </tags>
   </entry>
   <entry>
-    <title>[LeetCode]——解数独</title>
+    <title>LeetCode——解数独</title>
     <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%E8%A7%A3%E6%95%B0%E7%8B%AC%20/</url>
     <content><![CDATA[<h2 id="NO-37-解数独-困难"><a href="#NO-37-解数独-困难" class="headerlink" title="NO.37 解数独 困难 "></a>NO.37 解数独 <font color=#ff0099>困难</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2020/02/23/310IhV.png" alt="310IhV.png"></p>
 <p><img src="https://s2.ax1x.com/2020/02/23/3105t0.png" alt="3105t0.png"></p>
@@ -317,7 +317,7 @@
       </tags>
   </entry>
   <entry>
-    <title>[LeetCode]——两数相加</title>
+    <title>LeetCode——两数相加</title>
     <url>/2019/10/01/%5BLeetCode%5D%E2%80%94%E2%80%94%20%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0/</url>
     <content><![CDATA[<h2 id="NO-2-两数相加-中等"><a href="#NO-2-两数相加-中等" class="headerlink" title="NO.2 两数相加    中等 "></a>NO.2 两数相加    <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2019/12/03/QMw8XR.png" alt="QMw8XR.png"></p>
 <p><font color=red><strong>思路一：转换法</strong></font>    1.将两个链表先转化成int或long类型数值x和y。2.x和y相加后的值再转换成链表。</p>
@@ -343,7 +343,7 @@
       </tags>
   </entry>
   <entry>
-    <title>[LeetCode]——计算质数</title>
+    <title>LeetCode——计算质数</title>
     <url>/2019/10/01/%5BLeetCode%5D%E2%80%94%E2%80%94%20%E8%AE%A1%E7%AE%97%E8%B4%A8%E6%95%B0/</url>
     <content><![CDATA[<h2 id="NO-204-计算质数-简单"><a href="#NO-204-计算质数-简单" class="headerlink" title="NO.204 计算质数    简单 "></a>NO.204 计算质数    <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2019/12/03/QMwlp4.png" alt="QMwlp4.png"></p>
 <p><font color=red><strong>思路一：暴力法</strong></font>    双层for循环。1.第一层循环遍历逐个判断[2,n)。2.第二层循环判断参数是否为素数。：</p>
@@ -396,11 +396,10 @@
 <p>将controller方法的形参改为ItemVo类型，会自动将表单提交来的参数，按参数名绑定到pojo类的集合属性中。</p>
 ]]></content>
       <categories>
-        <category>SSM</category>
+        <category>Spring学习笔记</category>
       </categories>
       <tags>
-        <tag>SSM</tag>
-        <tag>SpringMVC</tag>
+        <tag>Spring</tag>
       </tags>
   </entry>
   <entry>
@@ -413,11 +412,10 @@
 <p>可以在字符串前加<strong>Redirect</strong>或者<strong>forward</strong>完成<strong>重定向</strong>或<strong>转发</strong>。</p>
 ]]></content>
       <categories>
-        <category>SSM</category>
+        <category>Spring学习笔记</category>
       </categories>
       <tags>
-        <tag>SSM</tag>
-        <tag>SpringMVC</tag>
+        <tag>Spring</tag>
       </tags>
   </entry>
   <entry>
@@ -432,11 +430,10 @@
 <p>并且该方法也是一个数组，可以指定多个请求的方法。</p>
 ]]></content>
       <categories>
-        <category>SSM</category>
+        <category>Spring学习笔记</category>
       </categories>
       <tags>
-        <tag>SSM</tag>
-        <tag>SpringMVC</tag>
+        <tag>Spring</tag>
       </tags>
   </entry>
 </search>
