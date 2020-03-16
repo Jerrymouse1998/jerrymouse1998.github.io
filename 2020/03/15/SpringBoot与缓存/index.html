@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<script type="text/javascript" src="//libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="mask-icon" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/blue/pace-theme-minimal.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrymouse1998.github.io","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="为Redis整合做好准备">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot与缓存">
+<meta property="og:url" content="https://jerrymouse1998.github.io/2020/03/15/SpringBoot%E4%B8%8E%E7%BC%93%E5%AD%98/index.html">
+<meta property="og:site_name" content="M1ng&amp;Q1ng">
+<meta property="og:description" content="为Redis整合做好准备">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/12/uOY5zq.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/12/uOYoQ0.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/10/u7wshR.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/10/u7w074.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/10/u7wDAJ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/10/u7wUXT.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/10/u7wrN9.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/10/u7wdnU.png">
+<meta property="article:published_time" content="2020-03-15T09:11:26.000Z">
+<meta property="article:modified_time" content="2020-03-16T08:50:33.966Z">
+<meta property="article:author" content="M1ng">
+<meta property="article:tag" content="Spring">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/10/12/uOY5zq.png">
+
+<link rel="canonical" href="https://jerrymouse1998.github.io/2020/03/15/SpringBoot%E4%B8%8E%E7%BC%93%E5%AD%98/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>SpringBoot与缓存 | M1ng&Q1ng</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	<a href="https://github.com/Jerrymouse1998" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">M1ng&Q1ng</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">回忆有时是一种消极逃避的表现。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jerrymouse1998.github.io/2020/03/15/SpringBoot%E4%B8%8E%E7%BC%93%E5%AD%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
+      <meta itemprop="name" content="M1ng">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M1ng&Q1ng">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SpringBoot与缓存
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-15 17:11:26" itemprop="dateCreated datePublished" datetime="2020-03-15T17:11:26+08:00">2020-03-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-16 16:50:33" itemprop="dateModified" datetime="2020-03-16T16:50:33+08:00">2020-03-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/03/15/SpringBoot%E4%B8%8E%E7%BC%93%E5%AD%98/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/15/SpringBoot%E4%B8%8E%E7%BC%93%E5%AD%98/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.7k</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>为Redis整合做好准备<a id="more"></a></p>
+<h2 id="JSR107缓存规范"><a href="#JSR107缓存规范" class="headerlink" title="JSR107缓存规范"></a>JSR107缓存规范</h2><p>Java Caching定义了5个核心接口，分别是<strong>CachingProvider</strong>, <strong>CacheManager</strong>, <strong>Cache</strong>, <strong>Entry</strong> 和 <strong>Expiry</strong>。</p>
+<ul>
+<li><strong>CachingProvider</strong>定义了创建、配置、获取、管理和控制多个<strong>CacheManager</strong>。一个应用可以在运行期访问多个CachingProvider。</li>
+<li><strong>CacheManager</strong>定义了创建、配置、获取、管理和控制多个唯一命名的<strong>Cache</strong>，这些Cache存在于CacheManager的上下文中。一个CacheManager仅被一个CachingProvider所拥有。</li>
+<li><strong>Cache</strong>是一个类似Map的数据结构并临时存储以Key为索引的值。一个Cache仅被一个CacheManager所拥有。</li>
+<li><strong>Entry</strong>是一个存储在Cache中的key-value对。</li>
+<li><strong>Expiry</strong> 每一个存储在Cache中的条目有一个定义的有效期。一旦超过这个时间，条目为过期的状态。一旦过期，条目将不可访问、更新和删除。缓存有效期可以通过ExpiryPolicy设置。</li>
+</ul>
+<p><img src="https://s2.ax1x.com/2019/10/12/uOY5zq.png" alt="uOY5zq.png"></p>
+<p><font color=red><strong>CacheManager</strong>管理多个Cache组件的，真正对缓存的CRUD操作在Cache组件中，每一个缓存组件有自己唯一一个名字。</font></p>
+<h2 id="Spring缓存抽象"><a href="#Spring缓存抽象" class="headerlink" title="Spring缓存抽象"></a>Spring缓存抽象</h2><p>Spring从3.1开始定义了org.springframework.cache.Cache和org.springframework.cache.CacheManager接口来统一不同的缓存技术，并支持使用JCache（JSR-107）注解简化我们开发。</p>
+<ul>
+<li><font color=red><strong>Cache</strong>接口是缓存组件的规范定义，包含缓存的各种操作集合，Cache接口下Spring提供了各种xxxCache的实现；如RedisCache，EhCacheCache , ConcurrentMapCache等等。。。</font></li>
+<li>每次调用需要缓存功能的方法时，Spring会检查检查指定参数的指定的目标方法是否已经被调用过；如果有就直接从缓存中获取方法调用后的结果，如果没有就调用方法并缓存结果后返回给用户。下次调用直接从缓存中获取。</li>
+</ul>
+<p><img src="https://s2.ax1x.com/2019/10/12/uOYoQ0.png" alt="uOYoQ0.png"></p>
+<p>使用Spring缓存抽象时我们需要关注以下两点：</p>
+<ol>
+<li><u>确定方法需要被缓存以及他们的缓存策略。</u></li>
+<li><u>从缓存中读取之前缓存存储的数据。</u></li>
+</ol>
+<h2 id="SpringBoot缓存工作原理"><a href="#SpringBoot缓存工作原理" class="headerlink" title="SpringBoot缓存工作原理"></a>SpringBoot缓存工作原理</h2><h3 id="浅读源码："><a href="#浅读源码：" class="headerlink" title="浅读源码："></a>浅读源码：</h3><ol>
+<li><p>首先肯定是从自动配置入手，如果还不了解SpringBoot自动配置原理的同学可以参考之前的博文<a href="https://jerrymouse1998.github.io/post/springboot%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E5%92%8C%E8%87%AA%E5%AE%9A%E4%B9%89%E9%85%8D%E7%BD%AE%E6%80%BB%E7%BB%93/">《SpringBoot自动配置》</a>，按照自动配置的原理来说，应该有一个CacheAutoConfiguration的类：</p>
+<p><img src="https://s2.ax1x.com/2019/10/10/u7wshR.png" alt="u7wshR.png"></p>
+</li>
+<li><p>这个类上有一个注解@Import导入了一个CacheConfigurationImportSelector内部类，这个内部类有一个方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> String[] selectImports(AnnotationMetadata importingClassMetadata) &#123;</span><br><span class="line">    CacheType[] types = CacheType.values();</span><br><span class="line">    String[] imports = <span class="keyword">new</span> String[types.length];</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; types.length; ++i) &#123;</span><br><span class="line">        imports[i] = CacheConfigurations.getConfigurationClass(types[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> imports;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>return前打上断点，debug一下发现：</p>
+<p><img src="https://s2.ax1x.com/2019/10/10/u7w074.png" alt="u7w074.png"></p>
+<p>不少名字都很眼熟JCache(JSR-107)、EhCache、Redis。。。</p>
+</li>
+<li><p>这么多的配置类，要用哪个呢？例如GenericCacheConfiguration配置类上：</p>
+<p><img src="https://s2.ax1x.com/2019/10/10/u7wDAJ.png" alt="u7wDAJ.png"></p>
+<p>配置类上都注解了各种条件，条件满足时才会匹配该配置类。</p>
+<p>可以在配置文件中加入<font color=red>debug=true</font>，启动时就会加载自动配置报告：</p>
+<p><img src="https://s2.ax1x.com/2019/10/10/u7wUXT.png" alt="u7wUXT.png"></p>
+<p>这里就是默认情况：SimpleCacheConfiguration配置类会匹配并生效。<u>（如果引入Redis依赖并使用了，这里应该匹配的就是RedisCacheConfiguration。）</u></p>
+</li>
+<li><p>SimpleCacheConfiguration配置类会给容器注册一个CacheManager[ConcurrentMapCacheManager]:</p>
+<p><img src="https://s2.ax1x.com/2019/10/10/u7wrN9.png" alt="u7wrN9.png"></p>
+</li>
+<li><p>ConcurrentMapCacheManager可以获取和创建ConcurrentMapCache类型的缓存组件，缓存组件会将数据保存在ConcurrentMap中。</p>
+</li>
+</ol>
+<h3 id="Cacheable运行流程"><a href="#Cacheable运行流程" class="headerlink" title="@Cacheable运行流程:"></a><font color=red>@Cacheable运行流程:</font></h3><hr>
+<p>本篇仅以@Cacheable为例，简述其注解的运行流程：</p>
+<ol>
+<li>方法运行之前，先查询Cache（缓存组件），按照cacheNames属性指定的名字获取。CacheManager先获取相应的缓存，第一次获取缓存如果没有，Cache组件会自动创建。</li>
+<li>使用一个key去Cache中查找缓存的内容，这个key默认就是方法的参数，使用keyGenerator生成的。上例中，默认使用SimpleKeyGenerator生成key，SimpleKeyGenerator生成key的默认策略：<ul>
+<li>如果没有参数：key=new SimpleKey()；</li>
+<li>如果有一个参数：key=参数的值</li>
+<li>如果有多个参数：key=new SimpleKey(params)；</li>
+</ul>
+</li>
+<li>没有查到缓存就调用目标方法。</li>
+<li>将目标方法返回的结果，放进缓存中。</li>
+</ol>
+<p><font color=red>@Cacheable标注的方法执行之前，首先来检查缓存中有没有这个数据，默认按照参数的值作为key去查询缓存，如果没有数据就运行方法并将结果放入缓存，以后再来调用就可以直接使用缓存中的数据。</font></p>
+<p><strong>总结：</strong></p>
+<ol>
+<li>使用CacheManager[ConcurrentMapCacheManager]按照名字得到Cache[ConcurrentMapCache]组件。</li>
+<li>用keyGenerator生成key，默认是SimpleKeyGenerator。</li>
+</ol>
+<h3 id="常用的注解："><a href="#常用的注解：" class="headerlink" title="常用的注解："></a>常用的注解：</h3><p><img src="https://s2.ax1x.com/2019/10/10/u7wdnU.png" alt="u7wdnU.png"></p>
+<h4 id="Cacheable："><a href="#Cacheable：" class="headerlink" title="@Cacheable："></a>@Cacheable：</h4><p><font color=red>使用注解时，至少要指定一个cacheNames属性，不然抛异常。</font></p>
+<p><font color=red><strong>@Cacheable注解是在目标方法执行之前生效。</strong></font></p>
+<ul>
+<li><strong>cacheNames/value</strong>:指定缓存组件的名字;将方法的返回值放在哪个缓存中，是数组的方式，可以指定多个缓存。</li>
+<li><strong>key</strong>:缓存数据使用的key;可以用它来指定。默认是使用方法参数的值。这里可以使用SpEL。</li>
+<li><strong>keyGenerator</strong>: key的生 成器;可以自己指定key的生成器的组件id，但是key/keyGenerator:二选一使用。</li>
+<li><strong>cacheManager</strong>:指定缓存管理器:或者cacheResolver指定获取解析器</li>
+<li><strong>condition</strong>:指定符合条件的情况下才缓存:</li>
+<li><strong>unless</strong>:否定缓存;当unless指定的条件为true,方法的返回值就不会被缓存，可以获取到结果进行判断unless=”#result == null”。</li>
+<li><strong>sync</strong>:是否使用异步模式</li>
+</ul>
+<h4 id="CachePut"><a href="#CachePut" class="headerlink" title="@CachePut"></a>@CachePut</h4><p>既调用方法，又更新缓存数据，同步更新缓存。<font color=red><strong>@CachePut注解是在目标方法执行之后起作用的。</strong></font></p>
+<p><strong>看一个例子并思考：</strong></p>
+<p>controller、dao层代码省略，主要是看service代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="meta">@Cacheable</span>(value = <span class="string">"user"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">selectUserById</span><span class="params">(Integer id)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> userDao.selectUserById(id);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="meta">@CachePut</span>(value = <span class="string">"user"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">updateUser</span><span class="params">(User user)</span> </span>&#123;</span><br><span class="line">    userDao.updateUser(user);</span><br><span class="line">    <span class="keyword">return</span> user;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>首先根据id=133查询请求，因为是第一次查询该数据，所以请求数据库获取结果，并将结果存入缓存，再次发起同一个请求，控制台显示没有访问数据库，而是直接从缓存中取出数据。</li>
+<li>发起根据id=133更新请求，查看数据库数据更新成功，因为有@CachePut注解，所以更新后的数据，应该也同步更新到了缓存中。</li>
+<li>为了验证缓存中数据是否同步更新了，再次发起根据id=133查询请求，从控制台看出依然没有访问数据库而是从缓存中获取了数据，但是，数据仍然是没更新前的！！！</li>
+</ol>
+<p><font color=red><strong>难道@CachePut注解没有同步更新缓存么？</strong></font></p>
+<p>原因：查询方法和更新方法的缓存操作注解中都<strong>没有指定key</strong>，所以是使用默认的key生成策略(方法参数列表作为key)，因此查询操作时缓存中存入的是：key是id(133)，value是方法返回的User对象。更新操作时缓存了：key是参数user对象，value是方法返回的User对象。这就是为什么查询id=133的数据时发现“缓存没有同步更新”的假象。</p>
+<p><font color=red><strong>解决方法：</strong></font></p>
+<p>可以在注解中用SpEl指定key，使两次缓存的数据的key保持一致。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Cacheable</span>(value = <span class="string">"user"</span>,key = <span class="string">"#id"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">selectUserById</span><span class="params">(Integer id)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> userDao.selectUserById(id);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@CachePut</span>(value = <span class="string">"user"</span>,key = <span class="string">"#user.id"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">updateUser</span><span class="params">(User user)</span> </span>&#123;</span><br><span class="line">    userDao.updateUser(user);</span><br><span class="line">    <span class="keyword">return</span> user;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>重新进行上述中的验证步骤，发现缓存中同步更新了。</p>
+<h4 id="CacheEvict："><a href="#CacheEvict：" class="headerlink" title="@CacheEvict："></a>@CacheEvict：</h4><p>清除缓存，依然可以需要用value指定缓存组件名和key指定要清除的数据。</p>
+<p><strong>allEntries：</strong>该属性默认是false，如果该属性设置为true，会清除指定缓存组件中的所有数据，就不需要指定key了。</p>
+<p><strong>beforeInvocation：</strong>该属性默认是false，代表缓存的清除工作在方法执行之后进行，如果方法出现异常，则缓存就不会清除。如果将该属性设置为true，缓存的清除工作在方法执行之前进行，即使方法出现异常，缓存依然会清除。</p>
+<h4 id="Caching"><a href="#Caching" class="headerlink" title="@Caching"></a>@Caching</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target</span>(&#123;ElementType.TYPE, ElementType.METHOD&#125;)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Inherited</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Caching &#123;</span><br><span class="line">    Cacheable[] cacheable() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line">    CachePut[] put() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line">    CacheEvict[] evict() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该注解是@Cacheable、@CachePut和@CacheEvict三个注解的合体，当一些缓存的规则比较复杂时可以使用此注解。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="meta">@Caching</span>(</span><br><span class="line">        cacheable = &#123;</span><br><span class="line">                <span class="meta">@Cacheable</span>(value = <span class="string">"user"</span>,key = <span class="string">"#username"</span>)</span><br><span class="line">        &#125;,</span><br><span class="line">        put = &#123;</span><br><span class="line">                <span class="meta">@CachePut</span>(value = <span class="string">"user"</span>,key = <span class="string">"#result.id"</span>),</span><br><span class="line">                <span class="meta">@CachePut</span>(value = <span class="string">"user"</span>,key = <span class="string">"#result.address"</span>)</span><br><span class="line">        &#125;</span><br><span class="line">)</span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">selectUserByUsername</span><span class="params">(String username)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> userDao.selectUserByUsername(username);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当该方法执行之后，方法返回值会分别以id、address、username作为key进行缓存，当其他带有缓存操作的方法以id或者addresss再次查询该条数据时，就不需要再访问数据库了。<font color=red><strong>但是,</strong>如果再次调用该方法以username进行查询时，依然会访问数据库，<strong>因为</strong>存在@CachePut注解，无论缓存中有无数据都会执行方法。</font></p>
+<h4 id="CacheConfig"><a href="#CacheConfig" class="headerlink" title="@CacheConfig"></a>@CacheConfig</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target</span>(&#123;ElementType.TYPE&#125;)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> CacheConfig &#123;</span><br><span class="line">    String[] cacheNames() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line">    <span class="function">String <span class="title">keyGenerator</span><span class="params">()</span> <span class="keyword">default</span> ""</span>;</span><br><span class="line">    <span class="function">String <span class="title">cacheManager</span><span class="params">()</span> <span class="keyword">default</span> ""</span>;</span><br><span class="line">    <span class="function">String <span class="title">cacheResolver</span><span class="params">()</span> <span class="keyword">default</span> ""</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>之前使用缓存注解时每次都要分别指定value、keyGenerator、cacheManager、cacheResolver,这样是很麻烦而且不科学的。于是@CacheConfig就可以排上用场了。</p>
+<p>在类上加@CacheConfig并设置上述四个属性，则方法中就不需要再进行指定了。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Spring/" rel="tag"><i class="fa fa-tag"></i> Spring</a>
+              <a href="/tags/Redis/" rel="tag"><i class="fa fa-tag"></i> Redis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/15/SpringBoot%E4%BD%BF%E7%94%A8JSP/" rel="prev" title="SpringBoot中使用JSP">
+      <i class="fa fa-chevron-left"></i> SpringBoot中使用JSP
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/15/SpringBoot%E4%B8%8E%E6%B6%88%E6%81%AF/" rel="next" title="SpringBoot与消息服务">
+      SpringBoot与消息服务 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#JSR107缓存规范"><span class="nav-number">1.</span> <span class="nav-text">JSR107缓存规范</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Spring缓存抽象"><span class="nav-number">2.</span> <span class="nav-text">Spring缓存抽象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SpringBoot缓存工作原理"><span class="nav-number">3.</span> <span class="nav-text">SpringBoot缓存工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#浅读源码："><span class="nav-number">3.1.</span> <span class="nav-text">浅读源码：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cacheable运行流程"><span class="nav-number">3.2.</span> <span class="nav-text">@Cacheable运行流程:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用的注解："><span class="nav-number">3.3.</span> <span class="nav-text">常用的注解：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Cacheable："><span class="nav-number">3.3.1.</span> <span class="nav-text">@Cacheable：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CachePut"><span class="nav-number">3.3.2.</span> <span class="nav-text">@CachePut</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CacheEvict："><span class="nav-number">3.3.3.</span> <span class="nav-text">@CacheEvict：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Caching"><span class="nav-number">3.3.4.</span> <span class="nav-text">@Caching</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CacheConfig"><span class="nav-number">3.3.5.</span> <span class="nav-text">@CacheConfig</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="M1ng"
+      src="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
+  <p class="site-author-name" itemprop="name">M1ng</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">116</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Jerrymouse1998" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Jerrymouse1998" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:577373789@qq.com" title="E-Mail → mailto:577373789@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-handshake-o"></i>
+      ↓交换友链QQ:577373789↓
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://jerrymouse1998.github.io/" title="https:&#x2F;&#x2F;jerrymouse1998.github.io&#x2F;">M1ng&Q1ng</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+	  
+	  <!--添加标签云-->
+        
+          <script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+          <script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+          <div class="widget-wrap">
+            <!--<div>标签云</div>-->
+            <div id="myCanvasContainer" class="widget tagcloud">
+              <canvas width="250" height="250" id="resCanvas" style="width=100%">
+              <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/" rel="tag">BFS</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/" rel="tag">DFS</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HashTable/" rel="tag">HashTable</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/" rel="tag">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java8/" rel="tag">Java8</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KMP%E7%AE%97%E6%B3%95/" rel="tag">KMP算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LCP/" rel="tag">LCP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LCS/" rel="tag">LCS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Manacher%E7%AE%97%E6%B3%95/" rel="tag">Manacher算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sunday%E7%AE%97%E6%B3%95/" rel="tag">Sunday算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TreeSet/" rel="tag">TreeSet</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a><span class="tag-list-count">84</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E5%BF%83%E6%89%A9%E5%B1%95/" rel="tag">中心扩展</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E5%88%86%E6%B3%95/" rel="tag">二分法</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BD%8D%E5%9B%BE/" rel="tag">位图</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E6%B2%BB%E7%AE%97%E6%B3%95/" rel="tag">分治算法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag">动态规划</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8E%84%E6%8B%89%E5%A4%9A%E5%A1%9E%E7%AD%9B/" rel="tag">厄拉多塞筛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8C%E6%8C%87%E9%92%88/" rel="tag">双指针</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E6%BA%AF/" rel="tag">回溯</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="tag">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BB%A7%E6%89%BF/" rel="tag">多继承</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="tag">字符串</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80%E5%BC%8F/" rel="tag">康托展开式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%91%A9%E5%B0%94%E6%8A%95%E7%A5%A8%E7%AE%97%E6%B3%95/" rel="tag">摩尔投票算法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E7%BB%84/" rel="tag">数组</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A5%E6%9C%9F%E7%B1%BB/" rel="tag">日期类</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A0%88/" rel="tag">栈</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E7%AE%97%E6%B3%95/" rel="tag">欧几里得算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B5%81%E5%BC%8F%E8%AF%AD%E6%B3%95/" rel="tag">流式语法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/" rel="tag">滑动窗口</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A1%AE%E5%AE%9A%E6%9C%89%E9%99%90%E8%87%AA%E5%8A%A8%E6%9C%BA/" rel="tag">确定有限自动机</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%9C%AF%E5%9F%BA%E6%9C%AC%E5%AE%9A%E7%90%86%E6%B3%95/" rel="tag">算术基本定理法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F/" rel="tag">责任链模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95/" rel="tag">贪心算法</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag">转载</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%93%BE%E8%A1%A8/" rel="tag">链表</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%9F%E5%88%97/" rel="tag">队列</a><span class="tag-list-count">2</span></li></ul>
+              </canvas>
+            </div>
+         </div>
+        
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">M1ng</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">133k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-nest@1/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdnjs.cloudflare.com/ajax/libs/valine/1.3.10/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : true,
+      notify     : true,
+      appId      : 'qeADb7jtYMKlsXEEryXe2Grg-gzGzoHsz',
+      appKey     : 'WGN1y5zOMgAbEHXpunlL2THf',
+      placeholder: "欢迎留言、纠错、交朋友 ^.^ 请注意文明哦！",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+  
+  <!-- 樱花特效 -->
+  <script type="text/javascript">
+    var windowWidth = $(window).width();
+    <!-- if (windowWidth > 480) { -->
+      document.write('<script type="text/javascript" src="/js/sakura.js"><\/script>');
+    <!-- } -->
+  </script>
+
+</body>
+</html>

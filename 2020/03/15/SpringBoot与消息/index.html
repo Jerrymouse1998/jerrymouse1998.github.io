@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<script type="text/javascript" src="//libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="mask-icon" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/blue/pace-theme-minimal.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrymouse1998.github.io","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="消息（Message）是指软件对象之间进行交互作用和通讯利用的一种方式。中间件（Middleware）是处于操作系统和应用程序之间的软件，也有人认为它应该属于操作系统中的一部分。消息中间件则是将软件与软件之间的交互消息、交互方式进行存储和管理的一种技术,也可以看做是一种容器。消息中间件关注于数据的发送和接收，利用高效可靠的异步消息传递机制集成分布式系统。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot与消息服务">
+<meta property="og:url" content="https://jerrymouse1998.github.io/2020/03/15/SpringBoot%E4%B8%8E%E6%B6%88%E6%81%AF/index.html">
+<meta property="og:site_name" content="M1ng&amp;Q1ng">
+<meta property="og:description" content="消息（Message）是指软件对象之间进行交互作用和通讯利用的一种方式。中间件（Middleware）是处于操作系统和应用程序之间的软件，也有人认为它应该属于操作系统中的一部分。消息中间件则是将软件与软件之间的交互消息、交互方式进行存储和管理的一种技术,也可以看做是一种容器。消息中间件关注于数据的发送和接收，利用高效可靠的异步消息传递机制集成分布式系统。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/17/KAbLlQ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/17/KAbOyj.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/17/KAbXOs.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/17/KALubn.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/17/KALnDs.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/19/KmAEM4.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/19/Kmmbin.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/19/Kmn2TJ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/19/KmMDSI.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/19/KmGXtO.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/19/KmGjhD.png">
+<meta property="article:published_time" content="2020-03-15T09:11:26.000Z">
+<meta property="article:modified_time" content="2020-03-16T08:50:49.004Z">
+<meta property="article:author" content="M1ng">
+<meta property="article:tag" content="Spring">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/10/17/KAbLlQ.png">
+
+<link rel="canonical" href="https://jerrymouse1998.github.io/2020/03/15/SpringBoot%E4%B8%8E%E6%B6%88%E6%81%AF/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>SpringBoot与消息服务 | M1ng&Q1ng</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	<a href="https://github.com/Jerrymouse1998" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">M1ng&Q1ng</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">回忆有时是一种消极逃避的表现。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jerrymouse1998.github.io/2020/03/15/SpringBoot%E4%B8%8E%E6%B6%88%E6%81%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
+      <meta itemprop="name" content="M1ng">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M1ng&Q1ng">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SpringBoot与消息服务
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-15 17:11:26" itemprop="dateCreated datePublished" datetime="2020-03-15T17:11:26+08:00">2020-03-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-16 16:50:49" itemprop="dateModified" datetime="2020-03-16T16:50:49+08:00">2020-03-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">消息队列</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/03/15/SpringBoot%E4%B8%8E%E6%B6%88%E6%81%AF/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/15/SpringBoot%E4%B8%8E%E6%B6%88%E6%81%AF/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.9k</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>消息（Message）是指软件对象之间进行交互作用和通讯利用的一种方式。中间件（Middleware）是处于操作系统和应用程序之间的软件，也有人认为它应该属于操作系统中的一部分。消息中间件则是将软件与软件之间的交互消息、交互方式进行存储和管理的一种技术,也可以看做是一种容器。消息中间件关注于数据的发送和接收，利用高效可靠的异步消息传递机制集成分布式系统。<a id="more"></a></p>
+<p>消息服务的应用场景有很多很多：系统解耦、异步、扩展、流量销峰、日志处理、消息通信等等。。。通过几个简单例子了解一下消息服务的作用和好处：</p>
+<h3 id="例子1（异步通信）："><a href="#例子1（异步通信）：" class="headerlink" title="例子1（异步通信）："></a>例子1（异步通信）：</h3><p>用户注册成功，将注册信息写入数据库然后给用户发送注册邮件和发送注册短信，串行方式：</p>
+<p><img src="https://s2.ax1x.com/2019/10/17/KAbLlQ.png" alt="KAbLlQ.png"></p>
+<p>注册信息持久化之后的发送注册邮件和注册短信可以使用多线程并发操作，并行方式：</p>
+<p><img src="https://s2.ax1x.com/2019/10/17/KAbOyj.png" alt="KAbOyj.png"></p>
+<p><u>但是，当注册信息写入数据库、发送短信和邮件之前就应该让用户完成注册了</u>。我们可以引入消息队列，只要将后序要用的数据写入消息队列就算注册流程完毕了。发送邮件和发送短信可以通过<strong>异步读取</strong>的方式从消息队列中取出数据，然后完成相应的服务。</p>
+<p><img src="https://s2.ax1x.com/2019/10/17/KAbXOs.png" alt="KAbXOs.png"></p>
+<p>传统方式的系统性能（并发量，吞吐量，响应时间）会有瓶颈。通过引入消息队列，将不是必须的业务逻辑，异步处理，从而达到提高系统性能的目的。</p>
+<h3 id="例子2（应用解耦）："><a href="#例子2（应用解耦）：" class="headerlink" title="例子2（应用解耦）："></a>例子2（应用解耦）：</h3><p>一个应用写有订单系统和库存系统，我们下单然后去调用库存系统的方法来检索库存，传统做法：订单系统去调用库存系统对外提供的接口。但是传统的做法存在缺点：</p>
+<ol>
+<li>假如库存系统无法访问，则订单减库存将失败，从而导致订单失败。</li>
+<li>订单系统与库存系统耦合。</li>
+</ol>
+<p>为了解决以上缺点，我们可以引入消息队列，并将订单系统和库存系统抽取出来作为两个独立的服务：</p>
+<ul>
+<li>订单系统：用户下单后，订单系统完成持久化处理，将消息写入消息队列，返回用户订单下单成功。</li>
+<li>库存系统：订阅下单的消息，采用拉/推的方式，获取下单信息，库存系统根据下单信息，进行库存操作。</li>
+</ul>
+<p><img src="https://s2.ax1x.com/2019/10/17/KALubn.png" alt="KALubn.png"></p>
+<p>假如：在下单时库存系统不能正常使用。也不影响正常下单，因为下单后，订单系统写入消息队列就不再关心其他的后续操作了。实现订单系统与库存系统的应用解耦。至于怎么保证两个服务之间库存量等数据一致，暂时先不讨论。。。</p>
+<h3 id="例子3（流量销峰）："><a href="#例子3（流量销峰）：" class="headerlink" title="例子3（流量销峰）："></a>例子3（流量销峰）：</h3><p>流量削锋也是消息队列中的常用场景，一般在秒杀或团抢活动中使用广泛。</p>
+<p>应用场景：秒杀活动，一般会因为流量过大，导致流量暴增，应用挂掉。为解决这个问题，一般需要加入消息队列来控制用户数量和缓解高流量的压力。</p>
+<p><img src="https://s2.ax1x.com/2019/10/17/KALnDs.png" alt="KALnDs.png"></p>
+<p>用户的请求，服务器接收后，首先写入消息队列。假如消息队列长度超过最大数量，则直接抛弃用户请求并做出一定的响应操作。秒杀业务根据消息队列中的请求信息，再做后续处理。这只是很笼统很模糊的说了一下，具体细节还有很多很多。。</p>
+<hr>
+<h2 id="消息服务规范"><a href="#消息服务规范" class="headerlink" title="消息服务规范"></a>消息服务规范</h2><h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>消息服务中有两个重要的概念：<font color=red><strong>消息代理（MassageBroker）、目的地（destination）</strong></font></p>
+<p>当消息发送者发送消息以后，将由<strong>消息代理</strong>接管，消息代理保证消息传递到指定<strong>目的地</strong>。</p>
+<p>消息队列主要有两种形式的目的地：</p>
+<ol>
+<li><font color=red><strong>队列（queue）</strong></font>：点对点式消息通信（point-to-point），消息发送者发送消息，消息代理将其放入一个队列中，消息接收者从队列中获取消息内容，消息读取后被移出队列，<font color=red>消息只有唯一的发送者和接受者，但并不是说只有一个接收者,也就是说A、B、C等等接收者都有资格去接受消息，但是一个消息最终只能被一个接收者所接受。</font>有点拗口，但是很好理解。。。</li>
+<li><font color=red><strong>主题（topic）</strong></font>：发布（publish）/订阅（subscribe）式消息通信，发布者发送消息到主题，多个接收者（订阅者）监听（订阅）这个主题，<font color=red>那么当消息到达主题的时候这个主题所有的接收者（订阅者）都会受到消息</font>。</li>
+</ol>
+<h3 id="JMS"><a href="#JMS" class="headerlink" title="JMS"></a>JMS</h3><p><strong>Java消息服务</strong>(Java Message Service)即JMS，是一个Java平台中关于面向消息中间件的api，用于在两个应用程序之间或分布式系统中发送消息，进行异步通信。</p>
+<p>基于JVM消息代理的规范，ActiveMQ、HornetMQ是JMS实现。</p>
+<h3 id="AMQP"><a href="#AMQP" class="headerlink" title="AMQP"></a>AMQP</h3><p><strong>高级消息队列协议</strong>(advanced message queuing protocol)即AMQP，是一个提供统一消息服务的应用层标准协议，基于此协议的客户端与消息中间件可传递消息，并且不受客户端/中间件不同的产品、不同的开发语言等条件的限制。</p>
+<p>也是一个消息代理的规范，兼容JMS，RabbitMQ是AMQP的实现。</p>
+<p>再偷一张JMS和AMQP对比图：</p>
+<p><img src="https://s2.ax1x.com/2019/10/19/KmAEM4.png" alt="KmAEM4.png"></p>
+<h3 id="Spring支持"><a href="#Spring支持" class="headerlink" title="Spring支持"></a>Spring支持</h3><ul>
+<li>spring-jms提供了对JMS的支持。</li>
+<li>spring-rabbit提供了对AMQP的支持。</li>
+<li>需要ConnectionFactory的实现来连接消息代理。</li>
+<li>提供JmsTemplate、RabbitTemplate来发送消息。</li>
+<li>@JmsListener（JMS）、@RabbitListener（AMQP）注解在方法上监听消息代理发布的消息。</li>
+<li>@EnableJms、@EnableRabbit开启支持。</li>
+</ul>
+<p>SpringBoot自动配置：</p>
+<ul>
+<li>JmsAutoConfiguration</li>
+<li>RabbitAutoConfiguration</li>
+</ul>
+<h2 id="RabbitMQ"><a href="#RabbitMQ" class="headerlink" title="RabbitMQ"></a>RabbitMQ</h2><p>RabbitMQ是一个基于AMQP使用erlang开发的开源实现。</p>
+<h3 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h3><p><img src="https://s2.ax1x.com/2019/10/19/Kmmbin.png" alt="Kmmbin.png"></p>
+<p><strong>Message：</strong>消息，消息是不具名的，他有消息头和消息体组成，消息体是不透明的，而消息头则由一系列的可选属性组成，这些属性包括<strong>routing-key（路由键）、priority（相对于其他消息的优先权）、delivery-mode（指出该消息可能需要持久性存储）</strong>等等。。</p>
+<p><strong>Publisher：</strong>消息的生产者，也是一个向<strong>交换器</strong>发布消息的客户端应用程序。</p>
+<p><strong>Exchange：</strong>交换器，用来接收<strong>生产者</strong>发送的消息并将这些消息路由给容器中的<strong>队列</strong>，<strong>交换器</strong>有点像是网络中的交换机，而容器中的队列像是连接在交换机上的主机。Exchange有四种类型：<strong>direct（默认）、fanout、topic和headers</strong>，不同类型的Exchange转发消息的策略有所区别。</p>
+<p><strong>Queue：</strong>消息队列，用来保存消息直到发送给<strong>消费者</strong>。它是消息的容器，也是消息的终点。一个消息可投入一个或者多个队列。消息一直在队列里面，等待<strong>消费者</strong>连接到这个队列将其取走。</p>
+<p><strong>Binding：</strong>绑定，用于<strong>消息队列</strong>和<strong>交换器</strong>之间的关联。一个绑定就是基于<strong>路由键</strong>将<strong>交换器</strong>和<strong>消息队列</strong>连接起来的路由规则，所以可以将其理解成一个由<strong>绑定</strong>构成的路由表。<strong>Exchange</strong>和<strong>Queue</strong>的绑定可以是<strong>多对多</strong>的关系。</p>
+<p><strong>Connection：</strong>网络连接，比如一个TCP连接。</p>
+<p><strong>Channel：</strong>信道，多路复用连接中的一条独立的双向数据流通道。信道是建立在真实的TCP连接内的虚拟连接，AMQP命令都是通过信道发出去的，不管是发布消息、订阅队列还是接收消息，这些动作都是通过信道完成。因为对于操作系统来说建立和销毁TCP都是非常昂贵的开销，所以引入了信道的概念，以复用一条TCP连接。</p>
+<p><strong>Consumer：</strong>消息的消费者，表示一个从消息队列中取得信息的客户端应用程序。</p>
+<p><strong>Virtual Host：</strong>虚拟主机，表示一批<strong>交换器</strong>、<strong>消息队列</strong>和<strong>相关对象</strong>。<u>虚拟主机是共享相同的身份认证和加密环境的独立服务器域</u>。每个<strong>虚拟主机</strong>本质上就是一个mini版的RabbitMQ服务器，拥有自己的<strong>队列</strong>、<strong>交换器</strong>、<strong>绑定</strong>和<strong>权限机制</strong>。<strong>虚拟主机</strong>是AMQP概念的基础，必须在连接时指定，RabbitMQ<strong>默认的虚拟主机是/</strong>。</p>
+<p><strong>Broker：</strong>表示消息队列服务器实体。</p>
+<h3 id="运行机制"><a href="#运行机制" class="headerlink" title="运行机制"></a>运行机制</h3><p>AMQP中的消息路由过程和Java开发者熟悉的JMS存在一些差别，AMQP中增加了<font color=red><strong>Exchange</strong></font>和<font color=red><strong>Binding</strong></font>的角色，<strong>生产者</strong>把<strong>消息</strong>发布到<strong>Exchange</strong>上，<strong>消息</strong>最终到达<strong>队列</strong>并被<strong>消费者</strong>接收，而<strong>Binding</strong>决定<strong>交换器</strong>的<strong>消息</strong>应该发送到哪个<strong>队列</strong>。</p>
+<p><a href="https://imgchr.com/i/Kmn2TJ" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/10/19/Kmn2TJ.png" alt="Kmn2TJ.png"></a></p>
+<h4 id="Exchange："><a href="#Exchange：" class="headerlink" title="Exchange："></a><font color=red>Exchange：</font></h4><p>分发消息时根据<strong>交换器类型</strong>的不同分发策略有区别，之前说过共有四种交换器类型：<font color=red><strong>direct、fanout、topic、headers（很少用）。</strong></font>header匹配AMQP消息的<strong>header</strong>而不是<strong>路由键</strong>，headers交换器和direct交换器完全一致，但性能差很多，目前几乎用不到了，所以着重学习另外三种类型：</p>
+<h5 id="DirectExchange"><a href="#DirectExchange" class="headerlink" title="DirectExchange"></a>DirectExchange</h5><p><img src="https://s2.ax1x.com/2019/10/19/KmMDSI.png" alt="KmMDSI.png"></p>
+<p>消息中<strong>路由键(routing key)</strong>如果和<strong>Binding</strong>中的<strong>binding key</strong>一致，<strong>交换器</strong>就将<strong>消息</strong>发送到对应的<strong>队列</strong>中。<font color=red><strong>路由键</strong>与<strong>队列名</strong>必须完全匹配</font>，如果一个<strong>队列</strong>绑定到<strong>交换器</strong>要求<strong>路由键</strong>为“dog”，则其转发<strong>routing key</strong>标记为“dog”的消息，不会转发“dog.puppy”，也不转发”dog.guard”等等。<font color=red>它是完全匹配、单播的模式</font>，典型的点对点通信模型。</p>
+<h5 id="FanoutExchange"><a href="#FanoutExchange" class="headerlink" title="FanoutExchange"></a>FanoutExchange</h5><p><img src="https://s2.ax1x.com/2019/10/19/KmGXtO.png" alt="KmGXtO.png"></p>
+<p>每个发到fanout类型交换器的消息都会分到所有绑定的队列上去。fanout交换器不处理路由键，只是简单的将队列绑定到交换器上，<font color=red>每个发送到<strong>交换器</strong>的消息都会被转发到与该交换器绑定的<strong>所有队列</strong>上</font>。很像<font color=red>子网广播，每台子网内的主机都获得了一份赋值的消息</font>。fanout类型转发消息是最快的。这也是JMS里面发布/订阅模型一个参考实现。</p>
+<h5 id="TopicExchange"><a href="#TopicExchange" class="headerlink" title="TopicExchange"></a>TopicExchange</h5><p><img src="https://s2.ax1x.com/2019/10/19/KmGjhD.png" alt="KmGjhD.png"></p>
+<p>topic交换器<font color=red>通过<strong>模式匹配</strong>分配消息的路由键属性，将路由键和某个模式进行匹配，此时队列需要绑定到一个模式上。</font>它将路由键和绑定建的字符串切分成单词，这些单词之间用点隔开。它同样也会识别两个通配符“#”和“<em>”，#匹配0个或多个任意单词，\</em>匹配一个任意单词。</p>
+<hr>
+<p>RabbitMq的安装和测试就不记录了，网上教程很多很详细，各种问题大多也都有解决方案。</p>
+<p>接下来另起新篇，记录简单的SpringBoot整合RabbitMQ！</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Spring/" rel="tag"><i class="fa fa-tag"></i> Spring</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/15/SpringBoot%E4%B8%8E%E7%BC%93%E5%AD%98/" rel="prev" title="SpringBoot与缓存">
+      <i class="fa fa-chevron-left"></i> SpringBoot与缓存
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/15/SpringBoot%E4%B8%8ERedis%E9%9B%86%E6%88%90%E7%AF%87/" rel="next" title="SpringBoot与Redis集成">
+      SpringBoot与Redis集成 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#例子1（异步通信）："><span class="nav-number">1.</span> <span class="nav-text">例子1（异步通信）：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子2（应用解耦）："><span class="nav-number">2.</span> <span class="nav-text">例子2（应用解耦）：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子3（流量销峰）："><span class="nav-number">3.</span> <span class="nav-text">例子3（流量销峰）：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息服务规范"><span class="nav-number"></span> <span class="nav-text">消息服务规范</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概念"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JMS"><span class="nav-number">2.</span> <span class="nav-text">JMS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AMQP"><span class="nav-number">3.</span> <span class="nav-text">AMQP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spring支持"><span class="nav-number">4.</span> <span class="nav-text">Spring支持</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RabbitMQ"><span class="nav-number"></span> <span class="nav-text">RabbitMQ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#核心概念"><span class="nav-number">1.</span> <span class="nav-text">核心概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行机制"><span class="nav-number">2.</span> <span class="nav-text">运行机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Exchange："><span class="nav-number">2.1.</span> <span class="nav-text">Exchange：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#DirectExchange"><span class="nav-number">2.1.1.</span> <span class="nav-text">DirectExchange</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#FanoutExchange"><span class="nav-number">2.1.2.</span> <span class="nav-text">FanoutExchange</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#TopicExchange"><span class="nav-number">2.1.3.</span> <span class="nav-text">TopicExchange</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="M1ng"
+      src="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
+  <p class="site-author-name" itemprop="name">M1ng</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">116</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Jerrymouse1998" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Jerrymouse1998" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:577373789@qq.com" title="E-Mail → mailto:577373789@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-handshake-o"></i>
+      ↓交换友链QQ:577373789↓
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://jerrymouse1998.github.io/" title="https:&#x2F;&#x2F;jerrymouse1998.github.io&#x2F;">M1ng&Q1ng</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+	  
+	  <!--添加标签云-->
+        
+          <script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+          <script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+          <div class="widget-wrap">
+            <!--<div>标签云</div>-->
+            <div id="myCanvasContainer" class="widget tagcloud">
+              <canvas width="250" height="250" id="resCanvas" style="width=100%">
+              <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/" rel="tag">BFS</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/" rel="tag">DFS</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HashTable/" rel="tag">HashTable</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/" rel="tag">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java8/" rel="tag">Java8</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KMP%E7%AE%97%E6%B3%95/" rel="tag">KMP算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LCP/" rel="tag">LCP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LCS/" rel="tag">LCS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Manacher%E7%AE%97%E6%B3%95/" rel="tag">Manacher算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sunday%E7%AE%97%E6%B3%95/" rel="tag">Sunday算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TreeSet/" rel="tag">TreeSet</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a><span class="tag-list-count">84</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E5%BF%83%E6%89%A9%E5%B1%95/" rel="tag">中心扩展</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E5%88%86%E6%B3%95/" rel="tag">二分法</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BD%8D%E5%9B%BE/" rel="tag">位图</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E6%B2%BB%E7%AE%97%E6%B3%95/" rel="tag">分治算法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag">动态规划</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8E%84%E6%8B%89%E5%A4%9A%E5%A1%9E%E7%AD%9B/" rel="tag">厄拉多塞筛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8C%E6%8C%87%E9%92%88/" rel="tag">双指针</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E6%BA%AF/" rel="tag">回溯</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="tag">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BB%A7%E6%89%BF/" rel="tag">多继承</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="tag">字符串</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80%E5%BC%8F/" rel="tag">康托展开式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%91%A9%E5%B0%94%E6%8A%95%E7%A5%A8%E7%AE%97%E6%B3%95/" rel="tag">摩尔投票算法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E7%BB%84/" rel="tag">数组</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A5%E6%9C%9F%E7%B1%BB/" rel="tag">日期类</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A0%88/" rel="tag">栈</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E7%AE%97%E6%B3%95/" rel="tag">欧几里得算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B5%81%E5%BC%8F%E8%AF%AD%E6%B3%95/" rel="tag">流式语法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/" rel="tag">滑动窗口</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A1%AE%E5%AE%9A%E6%9C%89%E9%99%90%E8%87%AA%E5%8A%A8%E6%9C%BA/" rel="tag">确定有限自动机</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%9C%AF%E5%9F%BA%E6%9C%AC%E5%AE%9A%E7%90%86%E6%B3%95/" rel="tag">算术基本定理法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F/" rel="tag">责任链模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95/" rel="tag">贪心算法</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag">转载</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%93%BE%E8%A1%A8/" rel="tag">链表</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%9F%E5%88%97/" rel="tag">队列</a><span class="tag-list-count">2</span></li></ul>
+              </canvas>
+            </div>
+         </div>
+        
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">M1ng</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">133k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-nest@1/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdnjs.cloudflare.com/ajax/libs/valine/1.3.10/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : true,
+      notify     : true,
+      appId      : 'qeADb7jtYMKlsXEEryXe2Grg-gzGzoHsz',
+      appKey     : 'WGN1y5zOMgAbEHXpunlL2THf',
+      placeholder: "欢迎留言、纠错、交朋友 ^.^ 请注意文明哦！",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+  
+  <!-- 樱花特效 -->
+  <script type="text/javascript">
+    var windowWidth = $(window).width();
+    <!-- if (windowWidth > 480) { -->
+      document.write('<script type="text/javascript" src="/js/sakura.js"><\/script>');
+    <!-- } -->
+  </script>
+
+</body>
+</html>
