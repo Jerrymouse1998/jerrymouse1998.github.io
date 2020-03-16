@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<script type="text/javascript" src="//libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="mask-icon" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/blue/pace-theme-minimal.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrymouse1998.github.io","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="NO.5 最长回文子串 中等">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LeetCode——最长回文子串">
+<meta property="og:url" content="https://jerrymouse1998.github.io/2020/03/14/[LeetCode]%E2%80%94%E2%80%94%20%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2/index.html">
+<meta property="og:site_name" content="M1ng&amp;Q1ng">
+<meta property="og:description" content="NO.5 最长回文子串 中等">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/05/Q8ZSII.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/08/Qamn76.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/08/QawkCQ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/09/Q0m8Ld.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/09/Q0mJeA.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/09/Q0mtot.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/09/Q0mYdI.png">
+<meta property="article:published_time" content="2020-03-14T09:11:26.000Z">
+<meta property="article:modified_time" content="2020-03-16T04:46:34.417Z">
+<meta property="article:author" content="M1ng">
+<meta property="article:tag" content="leetcode">
+<meta property="article:tag" content="Manacher算法">
+<meta property="article:tag" content="中心扩展">
+<meta property="article:tag" content="LCS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/12/05/Q8ZSII.png">
+
+<link rel="canonical" href="https://jerrymouse1998.github.io/2020/03/14/[LeetCode]%E2%80%94%E2%80%94%20%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>LeetCode——最长回文子串 | M1ng&Q1ng</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	<a href="https://github.com/Jerrymouse1998" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">M1ng&Q1ng</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">回忆有时是一种消极逃避的表现。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jerrymouse1998.github.io/2020/03/14/[LeetCode]%E2%80%94%E2%80%94%20%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
+      <meta itemprop="name" content="M1ng">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M1ng&Q1ng">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          LeetCode——最长回文子串
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-14 17:11:26" itemprop="dateCreated datePublished" datetime="2020-03-14T17:11:26+08:00">2020-03-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-16 12:46:34" itemprop="dateModified" datetime="2020-03-16T12:46:34+08:00">2020-03-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%A2%98%E8%A7%A3%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">题解笔记</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.9k</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="NO-5-最长回文子串-中等"><a href="#NO-5-最长回文子串-中等" class="headerlink" title="NO.5 最长回文子串 中等 "></a>NO.5 最长回文子串 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2019/12/05/Q8ZSII.png" alt="Q8ZSII.png"></p>
+<p><font color=red><strong>思路一：暴力法</strong></font> 用两个for循环划分出所有子串，并依次判断划分出的子串是否为回文，如果是回文并且子串长度大于ans当前记录的值，就更新ans。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">longestPalindrome</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    String ans=<span class="string">""</span>;</span><br><span class="line">    <span class="keyword">int</span> len=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;s.length();i++)&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=i+<span class="number">1</span>;j&lt;s.length();j++)&#123;</span><br><span class="line">            <span class="keyword">if</span> (isPalindrome(s.substring(i,j))&amp;&amp;len&lt;j-i+<span class="number">1</span>)&#123;</span><br><span class="line">                ans=s.substring(i,j);</span><br><span class="line">                len=Math.max(len,ans.length());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">isPalindrome</span><span class="params">(String s)</span></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;s.length()/<span class="number">2</span>;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span> (s.charAt(i)!=s.charAt(s.length()-<span class="number">1</span>-i))</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度:O(n^3)</p>
+<p><font color=red><strong>思路二：扩展中心法</strong></font> 经过对回文特点的观察发现，回文都是中心对称的。所以我们可以从中心进行展开判断，一个长度为n的字符串中有2n-1个中心（因为回文长度有可能是基数或偶数，基数回文的中心有n个，如abc中心是b；偶数回文的中心有n-1个，如abbc中心是bb）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">longestPalindrome</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line"><span class="comment">//        如果是空串，则直接返回空串表示没有回文串</span></span><br><span class="line">        <span class="keyword">if</span> (s==<span class="keyword">null</span>||s.length()&lt;<span class="number">1</span>)<span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">        <span class="keyword">int</span> start=<span class="number">0</span>,end=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;s.length();i++)&#123;</span><br><span class="line"><span class="comment">//            判断i为中心的基数回文长度</span></span><br><span class="line">            <span class="keyword">int</span> len1=expandAroundCenter(s,i,i);</span><br><span class="line"><span class="comment">//            判断i，i+1为中心的偶数回文长度</span></span><br><span class="line">            <span class="keyword">int</span> len2=expandAroundCenter(s,i,i+<span class="number">1</span>);</span><br><span class="line">            <span class="keyword">int</span> len=Math.max(len1,len2);</span><br><span class="line"><span class="comment">//            如果新回文串的长度大于之前的回文串长度，则更新</span></span><br><span class="line">            <span class="keyword">if</span> (len&gt;end-start)&#123;</span><br><span class="line"><span class="comment">//                </span></span><br><span class="line">                start=i-(len-<span class="number">1</span>)/<span class="number">2</span>;</span><br><span class="line">                end=i+len/<span class="number">2</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="comment">//        因为substring()方法截取的范围是[起始索引,结束索引)，所以第二个参数需要+1</span></span><br><span class="line">        <span class="keyword">return</span> s.substring(start,end+<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">expandAroundCenter</span><span class="params">(String s,<span class="keyword">int</span> left,<span class="keyword">int</span> right)</span></span>&#123;</span><br><span class="line"><span class="comment">//        当左标记大于等于0,且右标记小于输入串长，且当前左右标记的字符相等时，左右标记分别中心扩展</span></span><br><span class="line">        <span class="keyword">while</span> (left&gt;=<span class="number">0</span>&amp;&amp;right&lt;s.length()&amp;&amp;s.charAt(left)==s.charAt(right))&#123;</span><br><span class="line">            left--;</span><br><span class="line">            right++;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="comment">//        返回以i或(i，i+1)为中心的回文串长度。</span></span><br><span class="line">        <span class="keyword">return</span> right-left-<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n^2)</p>
+<p><font color=red><strong>思路三：最长公共子串法(LCS)</strong></font> 回文是从左向右读和从右向左读都是一样的，所以我们可以将原字符串s倒置之后获得s’，然后取s和s’的最长公共子串ans作为最长回文子串。</p>
+<p>用动态规划法求最长公共子串，大概思路是：1.申请一个二维数组arr[s.length][s’.length]。2.判断每个对应位置的字符是否相等，如果相等 arr[i][j]=arr[i-1][j-1]+1；当i=0或j=0时候单独分析，如果对应位置字符相等 arr[i][j]=1。(<strong>PS：</strong>arr[i][j]保存的就是公共子串的长度。)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">longestPalindrome</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (s.equals(<span class="string">""</span>))<span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">        String origin=s;</span><br><span class="line"><span class="comment">//        倒置原字符串</span></span><br><span class="line">        String reverse=<span class="keyword">new</span> StringBuffer(s).reverse().toString();</span><br><span class="line"><span class="comment">//        maxLen记录最长公共子序列，maxEnd记录最长公共子序列的结尾下标</span></span><br><span class="line">        <span class="keyword">int</span> maxLen=<span class="number">0</span>,maxEnd=<span class="number">0</span>;</span><br><span class="line"><span class="comment">//        分别以原字符串长度和倒置字符串长度来表示，是为了更直观的理解该二维数组</span></span><br><span class="line">        <span class="keyword">int</span>[][] arr=<span class="keyword">new</span> <span class="keyword">int</span>[origin.length()][reverse.length()];</span><br><span class="line"><span class="comment">//        双重循环遍历二维数组</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;origin.length();i++)&#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;reverse.length();j++)&#123;</span><br><span class="line"><span class="comment">//                判断原字符串i位置字符和倒置字符串j位置字符是否相等</span></span><br><span class="line">                <span class="keyword">if</span> (origin.charAt(i)==reverse.charAt(j))&#123;</span><br><span class="line">                    <span class="keyword">if</span> (i==<span class="number">0</span>||j==<span class="number">0</span>)&#123;<span class="comment">//当i=0或j=0时候单独分析，如果对应位置字符相等 arr[i][j]=1</span></span><br><span class="line">                        arr[i][j]=<span class="number">1</span>;</span><br><span class="line">                    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                        arr[i][j]=arr[i-<span class="number">1</span>][j-<span class="number">1</span>]+<span class="number">1</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"><span class="comment">//                如果当前公共子串长度比maxLen所记录的值更大，则更新最长公共子串的长度及其结束下标</span></span><br><span class="line">                <span class="keyword">if</span> (arr[i][j]&gt;maxLen)&#123;</span><br><span class="line">                    maxLen=arr[i][j];</span><br><span class="line">                    maxEnd=i;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> s.substring(maxEnd-maxLen+<span class="number">1</span>,maxEnd+<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><font color=red>当S=”abc435cba”，S’=”abc534cba”时，上述算法依然可以计算出最长公共子串”abc”来作为最长回文子串，这显然是不对的。</font>对于这个问题的解决思路是：1.因为j一直指向倒置字符串中子串的末尾字符，可以先求出j指向的字符X倒置之前的下标beforeReverse=length-1-j。2.此时求出的beforeReverse是X在<strong>原字符串中的子串首位的下标</strong>，还需要加上当前子串的长度才是<strong>原字符串中子串末尾的下标</strong>e，即e=beforeReverse+arr[i][j]-1。3.因为i一直指向原字符串中子串的末尾字符，所以将e与i进行比较，如果相等，则说明当前找到的公共子串是回文子串。</p>
+<p>例如，字符串倒置前后分别是S=”abc435cba”，S’=”abc534cba”，当i=2且j=2时，arr[2][2]=3,然后进行计算出beforeReverse=length-1-j=9-1-2=6，判断beforeReverse+arr[2][2]-1是否等于i，显然 6+3-1!=2，所以当前子串不是回文子串且不需要更新maxLen和maxEnd。</p>
+<p><img src="https://s2.ax1x.com/2019/12/08/Qamn76.png" alt="Qamn76.png"></p>
+<p>针对该思路，只需要在更新maxLen和maxEnd之前添加<strong>下标是否匹配的判断</strong>即可：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">longestPalindrome</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (s.equals(<span class="string">""</span>))<span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">        String origin=s;</span><br><span class="line"><span class="comment">//        倒置原字符串</span></span><br><span class="line">        String reverse=<span class="keyword">new</span> StringBuffer(s).reverse().toString();</span><br><span class="line"><span class="comment">//        maxLen记录最长公共子序列，maxEnd记录最长公共子序列的结尾下标</span></span><br><span class="line">        <span class="keyword">int</span> maxLen=<span class="number">0</span>,maxEnd=<span class="number">0</span>;</span><br><span class="line"><span class="comment">//        分别以原字符串长度和倒置字符串长度来表示，是为了更直观的理解该二维数组</span></span><br><span class="line">        <span class="keyword">int</span>[][] arr=<span class="keyword">new</span> <span class="keyword">int</span>[origin.length()][reverse.length()];</span><br><span class="line"><span class="comment">//        双重循环遍历二维数组</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;origin.length();i++)&#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;reverse.length();j++)&#123;</span><br><span class="line"><span class="comment">//                判断原字符串i位置字符和倒置字符串j位置字符是否相等</span></span><br><span class="line">                <span class="keyword">if</span> (origin.charAt(i)==reverse.charAt(j))&#123;</span><br><span class="line">                    <span class="keyword">if</span> (i==<span class="number">0</span>||j==<span class="number">0</span>)&#123;<span class="comment">//当i=0或j=0时候单独分析，如果对应位置字符相等 arr[i][j]=1</span></span><br><span class="line">                        arr[i][j]=<span class="number">1</span>;</span><br><span class="line">                    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                        arr[i][j]=arr[i-<span class="number">1</span>][j-<span class="number">1</span>]+<span class="number">1</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"><span class="comment">//                如果当前公共子串长度比maxLen所记录的值更大，则更新最长公共子串的长度及其结束下标</span></span><br><span class="line">                <span class="keyword">if</span> (arr[i][j]&gt;maxLen)&#123;</span><br><span class="line">                    <span class="keyword">int</span> beforeReverse=origin.length()-<span class="number">1</span>-j;</span><br><span class="line"><span class="comment">//					  添加下标是否匹配的判断                 </span></span><br><span class="line">                    <span class="keyword">if</span> (beforeReverse+arr[i][j]-<span class="number">1</span>==i) &#123;</span><br><span class="line">                        maxLen = arr[i][j];</span><br><span class="line">                        maxEnd = i;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> s.substring(maxEnd-maxLen+<span class="number">1</span>,maxEnd+<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度:O(n^2)</p>
+<p>写到这里，利用LCS算法解决求最长回文子串的问题已经基本完成了,经过查阅资料和学习之后发现：其实可以使用一个一位数组即可，而不必使用上述的二维数组arr[][]。空间复杂度从之前的用二维数组时的O(n^2)降到了用一维数组后的O(n)。</p>
+<p>例如还是上面的那个数组S=”abc435cba”，i=0，j=1、2、3、4、5、6、7、8更新了第一列；i=2j=1、2、3、4、5、6、7、8更新了第二列，以此类推直到i=8且j=8每一列都更新完毕。但是经过观察发现，每次更新时只需要参考前一列的值，更新第三列时，第一列的值就用不到了，所以只需要一个一维数组就可以了。但是，更新arr[i]的时候需要arr[i-1]的值，例如arr[3]=arr[2]+1，arr[4]=arr[3]+1，此时的arr[3]的信息已经被更新过了并不是”之前一列的信息了“，所以循环时j不能从0到8递增，应该倒过来，arr[8]=arr[7]+1、arr[7]=arr[6]+1。。。更新arr[8]时用arr[7]，用完之后才能去更新arr[7]：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">longestPalindrome</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (s.equals(<span class="string">""</span>))<span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">        String origin=s;</span><br><span class="line"><span class="comment">//        倒置原字符串</span></span><br><span class="line">        String reverse=<span class="keyword">new</span> StringBuffer(s).reverse().toString();</span><br><span class="line"><span class="comment">//        maxLen记录最长公共子序列，maxEnd记录最长公共子序列的结尾下标</span></span><br><span class="line">        <span class="keyword">int</span> maxLen=<span class="number">0</span>,maxEnd=<span class="number">0</span>;</span><br><span class="line"><span class="comment">//        分别以原字符串长度和倒置字符串长度来表示，是为了更直观的理解该二维数组</span></span><br><span class="line">        <span class="keyword">int</span>[] arr=<span class="keyword">new</span> <span class="keyword">int</span>[s.length()];</span><br><span class="line"><span class="comment">//        双重循环遍历二维数组</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;origin.length();i++)&#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j=reverse.length()-<span class="number">1</span>;j&gt;=<span class="number">0</span>;j--)&#123;</span><br><span class="line"><span class="comment">//                判断原字符串i位置字符和倒置字符串j位置字符是否相等</span></span><br><span class="line">                <span class="keyword">if</span> (origin.charAt(i)==reverse.charAt(j))&#123;</span><br><span class="line">                    <span class="keyword">if</span> (i==<span class="number">0</span>||j==<span class="number">0</span>)&#123;<span class="comment">//当i=0或j=0时候单独分析，如果对应位置字符相等 arr[j]=1</span></span><br><span class="line">                        arr[j]=<span class="number">1</span>;</span><br><span class="line">                    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                        arr[j]=arr[j-<span class="number">1</span>]+<span class="number">1</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;<span class="keyword">else</span> &#123;<span class="comment">//之前是二维数组每一列默认值就是0，现在是一维数组所以需要手动更新为0</span></span><br><span class="line">                    arr[j]=<span class="number">0</span>;</span><br><span class="line">                &#125;</span><br><span class="line"><span class="comment">//                如果当前公共子串长度比maxLen所记录的值更大，则更新最长公共子串的长度及其结束下标</span></span><br><span class="line">                <span class="keyword">if</span> (arr[j]&gt;maxLen)&#123;</span><br><span class="line">                    <span class="keyword">int</span> beforeReverse=origin.length()-<span class="number">1</span>-j;</span><br><span class="line">                    <span class="keyword">if</span> (beforeReverse+arr[j]-<span class="number">1</span>==i) &#123;</span><br><span class="line">                        maxLen = arr[j];</span><br><span class="line">                        maxEnd = i;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> s.substring(maxEnd-maxLen+<span class="number">1</span>,maxEnd+<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><font color=red><strong>思路四：Manacher算法</strong></font> 在扩展中心算法中，将奇数长度回文子串和偶数长度的回文子串分别进行了处理。本算法首先解决了奇数和偶数的问题，在每个字符间插入“#”，并且为了使得扩展的过程中，到边界后自动结束，在两端分别插入“^”和“$”，这样重心扩展的时候，判断两端字符是否相等时，如果到了边界就一定不会相等，从而结束循环（这里的“#”“^”“$”是字符串中不存在的字符）。并且，经过插入特殊字符处理后，字符串的长度永远都是奇数了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">例如，</span><br><span class="line">	&quot;aba&quot; 扩展为 &quot;^#a#b#a#$&quot;</span><br><span class="line">	&quot;acca&quot; 扩展为 &quot;^#a#c#c#a#$&quot;</span><br><span class="line">	&quot;cbcbccde&quot; 扩展为 &quot;^#c#b#c#b#c#c#d#e#$&quot;</span><br></pre></td></tr></table></figure>
+
+<p>字符串扩展之后，我们申请一个数组p[]保存从中心扩展的最大个数，而这个数也刚好是去掉”#“之后原子串的长度。例如下图中下标为6的字符，p[6]=5,所以它是从左边扩展5个字符，相应的右边也是扩展5个字符，也就是“#c#b#c#b#c#”。而去掉“#”恢复到原来的子串，变成“cbcbc”，它的长度刚好也是5。</p>
+<p><img src="https://s2.ax1x.com/2019/12/08/QawkCQ.png" alt="QawkCQ.png"></p>
+<p><strong>求原字符串下标</strong>：用p的下标i减去p[i]，再除以2，就是原字符串的开头下标了。例如，我们找到上图中p[i]最大值为5，也就是回文串的最大长度是5，对应的下标是6，所以原子串在原字符串中的开头下标是（6-5）/2=0。所以我们只需要返回原字符串的第0到第（5-1）位就可以了。</p>
+<p>既然已经知道了如何利用p[]数组巧妙地取得结果子串了，那么就要进行马拉车算法最重要的步骤了，即<strong>如何求p[]数组？</strong></p>
+<p>这一步是马拉车算法的精髓所在，充分利用的回文的对称性。用c表示回文子串的中心，用r表示回文子串的右边半径。所以r=c+p[i]。C 和 R 所对应的回文串是当前循环中 R 最靠右的回文串，而不一定是最长的回文串。</p>
+<p><img src="https://s2.ax1x.com/2019/12/09/Q0m8Ld.png" alt="Q0m8Ld.png"></p>
+<p>用 i_mirror 表示当前需要求的第 i 个字符关于 C 对应的下标。 我们现在要求 P [ i ]，如果是用中心扩展法，那就向两边扩展比对就行了。但是我们其实可以利用回文串中心 C 的对称性。i 关于 C 的对称点是 i_mirror，P [ i_mirror ] = 3，所以 P [ i ] 也等于 3。</p>
+<p><font color=green>但是有三种情况将会造成直接赋值为 P [ i_mirror ] 是不正确的，下边一一讨论:</font></p>
+<p><font color=green><strong>情况一：超出了 R</strong></font></p>
+<p><img src="https://s2.ax1x.com/2019/12/09/Q0mJeA.png" alt="Q0mJeA.png"></p>
+<p>当我们要求 P [ i ] 的时候，P [ mirror ] = 7，而此时 P [ i ] 并不等于 7，为什么呢，因为我们从 i 开始往后数 7 个，等于 22，已经超过了最右的 R，此时不能利用对称性了，但我们一定可以扩展到 R 的，所以 P [ i ] 至少等于 R - i = 20 - 15 = 5，会不会更大呢，我们只需要比较 T [ R+1 ] 和 T [ R+1 ]关于 i 的对称点就行了，就像中心扩展法一样一个个扩展。</p>
+<p><font color=green><strong>情况二：P [ i_mirror ] 遇到了原字符串的左边界</strong></font></p>
+<p><img src="https://s2.ax1x.com/2019/12/09/Q0mtot.png" alt="Q0mtot.png"></p>
+<p>此时P [ i_mirror ] = 1，但是 P [ i ] 赋值成 1 是不正确的，出现这种情况的原因是 P [ i_mirror ] 在扩展的时候首先是 “#” == “#”，之后遇到了 “^” 和另一个字符比较，也就是到了边界，才终止循环的。而 P [ i ] 并没有遇到边界，所以我们可以继续通过中心扩展法一步一步向两边扩展就行了。</p>
+<p><font color=green><strong>情况三：i 等于了 R</strong></font></p>
+<p>此时我们先把 P [ i ] 赋值为 0，然后通过中心扩展法一步一步扩展就行了。</p>
+<p><strong>考虑 C 和 R 的更新</strong><br>就这样一步一步的求出每个 P [ i ]，当求出的 P [ i ] 的右边界大于当前的 R 时，我们就需要更新 C 和 R 为当前的回文串了。因为我们必须保证 i 在 R 里面，所以一旦有更右边的 R 就要更新 R。</p>
+<p><img src="https://s2.ax1x.com/2019/12/09/Q0mYdI.png" alt="Q0mYdI.png"></p>
+<p>此时的 P [ i ] 求出来将会是 3，P [ i ] 对应的右边界将是 10 + 3 = 13，所以大于当前的 R，我们需要把 C 更新成 i 的值，也就是 10，R 更新成 13。继续下边的循环。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">longestPalindrome</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line"><span class="comment">//        获取扩充后的字符串T</span></span><br><span class="line">        String T=preProsess(s);</span><br><span class="line">        <span class="keyword">int</span> len=T.length();</span><br><span class="line">        <span class="keyword">int</span>[] p=<span class="keyword">new</span> <span class="keyword">int</span>[len];</span><br><span class="line">        <span class="keyword">int</span> c=<span class="number">0</span>,r=<span class="number">0</span>;</span><br><span class="line"><span class="comment">//        不需要判断前后边界字符“^"和“$”，所以循环范围是[1,len-1)</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;len-<span class="number">1</span>;i++)&#123;</span><br><span class="line"><span class="comment">//            第i个字符关于c对称的下标</span></span><br><span class="line">            <span class="keyword">int</span> i_mirror=<span class="number">2</span>*c-i;</span><br><span class="line">            <span class="keyword">if</span> (r&gt;i)&#123;<span class="comment">//如果i小于对称半径r</span></span><br><span class="line">                p[i]=Math.max(r-i,p[i_mirror]);</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                p[i]=<span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//            遇到三种特殊情况时，需要退化到中心扩展法</span></span><br><span class="line">            <span class="keyword">while</span> (T.charAt(i+<span class="number">1</span>+p[i])==T.charAt(i-<span class="number">1</span>-p[i]))&#123;</span><br><span class="line">                p[i]++;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//            判断是否需要更新c和r</span></span><br><span class="line">            <span class="keyword">if</span> (i+p[i]&gt;r)&#123;</span><br><span class="line">                c=i;</span><br><span class="line">                r=p[i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="comment">//        找出p[]数组中最大的值</span></span><br><span class="line">        <span class="keyword">int</span> currentIndex=<span class="number">0</span>,maxLen=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;p.length;i++)&#123;</span><br><span class="line">            <span class="keyword">if</span> (p[i]&gt;maxLen)&#123;</span><br><span class="line">                currentIndex=i;</span><br><span class="line">                maxLen=p[i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//        求子串首字符在原字符串中的下标</span></span><br><span class="line">        <span class="keyword">int</span> start=(currentIndex-maxLen)/<span class="number">2</span>;</span><br><span class="line">        <span class="keyword">return</span> s.substring(start,start+maxLen);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">//    扩充字符串</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">preProsess</span><span class="params">(String s)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (s.equals(<span class="string">""</span>))<span class="keyword">return</span> <span class="string">"$"</span>;</span><br><span class="line">        String result=<span class="string">"^"</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;s.length();i++)&#123;</span><br><span class="line">            result+=<span class="string">"#"</span>+s.charAt(i);</span><br><span class="line">        &#125;</span><br><span class="line">        result+=<span class="string">"#$"</span>;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度:O(n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和学习记录博客:<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">博客</a>、<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/leetcode/" rel="tag"><i class="fa fa-tag"></i> leetcode</a>
+              <a href="/tags/Manacher%E7%AE%97%E6%B3%95/" rel="tag"><i class="fa fa-tag"></i> Manacher算法</a>
+              <a href="/tags/%E4%B8%AD%E5%BF%83%E6%89%A9%E5%B1%95/" rel="tag"><i class="fa fa-tag"></i> 中心扩展</a>
+              <a href="/tags/LCS/" rel="tag"><i class="fa fa-tag"></i> LCS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20N%E7%9A%87%E5%90%8E/" rel="prev" title="LeetCode——N皇后">
+      <i class="fa fa-chevron-left"></i> LeetCode——N皇后
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20%E5%9B%9B%E6%95%B0%E4%B9%8B%E5%92%8C/" rel="next" title="LeetCode——四数之和">
+      LeetCode——四数之和 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NO-5-最长回文子串-中等"><span class="nav-number">1.</span> <span class="nav-text">NO.5 最长回文子串 中等 </span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="M1ng"
+      src="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
+  <p class="site-author-name" itemprop="name">M1ng</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Jerrymouse1998" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Jerrymouse1998" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:577373789@qq.com" title="E-Mail → mailto:577373789@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-handshake-o"></i>
+      ↓交换友链QQ:577373789↓
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://jerrymouse1998.github.io/" title="https:&#x2F;&#x2F;jerrymouse1998.github.io&#x2F;">M1ng&Q1ng</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+	  
+	  <!--添加标签云-->
+        
+          <script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+          <script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+          <div class="widget-wrap">
+            <!--<div>标签云</div>-->
+            <div id="myCanvasContainer" class="widget tagcloud">
+              <canvas width="250" height="250" id="resCanvas" style="width=100%">
+              <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/" rel="tag">BFS</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/" rel="tag">DFS</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HashTable/" rel="tag">HashTable</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LCS/" rel="tag">LCS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Manacher%E7%AE%97%E6%B3%95/" rel="tag">Manacher算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TreeSet/" rel="tag">TreeSet</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E5%BF%83%E6%89%A9%E5%B1%95/" rel="tag">中心扩展</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E5%88%86%E6%B3%95/" rel="tag">二分法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag">动态规划</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8E%84%E6%8B%89%E5%A4%9A%E5%A1%9E%E7%AD%9B/" rel="tag">厄拉多塞筛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8C%E6%8C%87%E9%92%88/" rel="tag">双指针</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E6%BA%AF/" rel="tag">回溯</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="tag">字符串</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80%E5%BC%8F/" rel="tag">康托展开式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%91%A9%E5%B0%94%E6%8A%95%E7%A5%A8%E7%AE%97%E6%B3%95/" rel="tag">摩尔投票算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A0%88/" rel="tag">栈</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/" rel="tag">滑动窗口</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A1%AE%E5%AE%9A%E6%9C%89%E9%99%90%E8%87%AA%E5%8A%A8%E6%9C%BA/" rel="tag">确定有限自动机</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F/" rel="tag">责任链模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95/" rel="tag">贪心算法</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%93%BE%E8%A1%A8/" rel="tag">链表</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%9F%E5%88%97/" rel="tag">队列</a><span class="tag-list-count">1</span></li></ul>
+              </canvas>
+            </div>
+         </div>
+        
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">M1ng</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">17k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-nest@1/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdnjs.cloudflare.com/ajax/libs/valine/1.3.10/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : true,
+      notify     : true,
+      appId      : 'qeADb7jtYMKlsXEEryXe2Grg-gzGzoHsz',
+      appKey     : 'WGN1y5zOMgAbEHXpunlL2THf',
+      placeholder: "欢迎留言、纠错、交朋友 ^.^ 请注意文明哦！",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+  
+  <!-- 樱花特效 -->
+  <script type="text/javascript">
+    var windowWidth = $(window).width();
+    <!-- if (windowWidth > 480) { -->
+      document.write('<script type="text/javascript" src="/js/sakura.js"><\/script>');
+    <!-- } -->
+  </script>
+
+</body>
+</html>
