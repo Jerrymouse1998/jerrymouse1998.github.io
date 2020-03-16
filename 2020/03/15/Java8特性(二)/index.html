@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<script type="text/javascript" src="//libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="mask-icon" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/blue/pace-theme-minimal.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jerrymouse1998.github.io","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Java8特性—流式语法总结过Java8流式语法相关特性：函数式接口、默认方法、Lambda表达式、方法引用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java8特性(二)">
+<meta property="og:url" content="https://jerrymouse1998.github.io/2020/03/15/Java8%E7%89%B9%E6%80%A7(%E4%BA%8C)/index.html">
+<meta property="og:site_name" content="M1ng&amp;Q1ng">
+<meta property="og:description" content="Java8特性—流式语法总结过Java8流式语法相关特性：函数式接口、默认方法、Lambda表达式、方法引用。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/21/nxrlVO.png">
+<meta property="article:published_time" content="2020-03-15T09:11:26.000Z">
+<meta property="article:modified_time" content="2020-03-16T08:08:02.678Z">
+<meta property="article:author" content="M1ng">
+<meta property="article:tag" content="流式语法">
+<meta property="article:tag" content="Java8">
+<meta property="article:tag" content="日期类">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/09/21/nxrlVO.png">
+
+<link rel="canonical" href="https://jerrymouse1998.github.io/2020/03/15/Java8%E7%89%B9%E6%80%A7(%E4%BA%8C)/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>Java8特性(二) | M1ng&Q1ng</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	<a href="https://github.com/Jerrymouse1998" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">M1ng&Q1ng</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">回忆有时是一种消极逃避的表现。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jerrymouse1998.github.io/2020/03/15/Java8%E7%89%B9%E6%80%A7(%E4%BA%8C)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
+      <meta itemprop="name" content="M1ng">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M1ng&Q1ng">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java8特性(二)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-15 17:11:26" itemprop="dateCreated datePublished" datetime="2020-03-15T17:11:26+08:00">2020-03-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-16 16:08:02" itemprop="dateModified" datetime="2020-03-16T16:08:02+08:00">2020-03-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Java学习笔记</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/03/15/Java8%E7%89%B9%E6%80%A7(%E4%BA%8C)/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/15/Java8%E7%89%B9%E6%80%A7(%E4%BA%8C)/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.7k</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="https://jerrymouse1998.github.io/post/java8特性一/">Java8特性—流式语法</a>总结过Java8流式语法相关特性：函数式接口、默认方法、Lambda表达式、方法引用。<a id="more"></a></p>
+<p>这次学一下Java8的其他特性：Stream API、Optional类、Date-Time API、Base64编码、Nashorn。</p>
+<blockquote>
+<p>——转载自<a href="https://www.runoob.com/java/java8-new-features.html" target="_blank" rel="noopener">RUNOOB</a>、<a href="https://www.cnblogs.com/rjzheng/p/9163246.html#4025294" target="_blank" rel="noopener">孤独烟</a>、<a href="https://blog.csdn.net/h_xiao_x/article/details/79729507" target="_blank" rel="noopener">回梦游先</a></p>
+</blockquote>
+<p>[TOC]</p>
+<h2 id="Stream-API"><a href="#Stream-API" class="headerlink" title="Stream API"></a><strong>Stream API</strong></h2><p>Java8API添加了一个新的抽象成为流Stream，可以让你以一种声明的方式处理数据。</p>
+<p>Stream使用一种类似于SQL语句从数据库查询数据的直观方式来提供一种对Java集合运算和表达的高阶抽象。</p>
+<ul>
+<li>StreamAPI可以极大提高Java程序员的生产力，让程序员写出高效率，干净，简洁的代码。</li>
+</ul>
+<p>这种风格将要处理的元素集合看作一种流，流在管道中传输，并且可以在管道的结点上进行处理，比如筛选，排序，聚合等。。。</p>
+<p>元素流在管道中经过中间操作(intermediate operation)的处理，最后由最终操作(terminal operation)得到前面处理的结果。</p>
+<p>流程：stream of elements —–&gt; filter-&gt; sorted-&gt; map-&gt; collect</p>
+<p>以上的流程转换为Java代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; transactionsIds = </span><br><span class="line">widgets.stream()</span><br><span class="line">             .filter(b -&gt; b.getColor() == RED)</span><br><span class="line">             .sorted((x,y) -&gt; x.getWeight() - y.getWeight())</span><br><span class="line">             .mapToInt(Widget::getWeight)</span><br><span class="line">             .sum();</span><br></pre></td></tr></table></figure>
+
+<h3 id="什么是Stream？"><a href="#什么是Stream？" class="headerlink" title="什么是Stream？"></a>什么是Stream？</h3><p>Stream(流)是一个来自数据源的元素队列并支持聚合操作</p>
+<ul>
+<li>元素是特定类型的对象，形成的一个队列。Java中的Steam并不会存储元素，而是按需计算。</li>
+<li><strong>数据源</strong> 流的来源。可以是集合、数组、I/O channel、产生器geanerator等等。</li>
+<li><strong>聚合操作</strong> 类似SQL语句一样的操作，比如filter、map、reduce、find、match、sorted等。和以前的Collection操作不同，Stream操作还有两个基础的特征：<ul>
+<li><strong>Pipelining</strong>：中间操作都会返回流对象本身。这样多个操作可以串联成一个管道，如同流式风格(fluent style)。这样做可以对操作进行优化，比如延迟执行(laziness)和短路(shor-circuiting)。</li>
+<li><strong>内部迭代</strong>：以前对集合遍历都是通过Iterator或者For-Each的方式，显式的在集合外部进行迭代，这叫做<strong>外部迭代</strong>。Stream提供了<strong>内部迭代</strong>的方式，通过<strong>访问者模式(Visitor)</strong>实现。</li>
+</ul>
+</li>
+</ul>
+<h3 id="生成流"><a href="#生成流" class="headerlink" title="生成流"></a>生成流</h3><p>在Java8中，集合接口有两个方法来生成流：</p>
+<ul>
+<li><strong>stream()</strong>—为集合创建串行流。</li>
+<li><strong>parallel Stream()</strong>—为集合创建并行流。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt; strings = Arrays.asList(<span class="string">"abc"</span>, <span class="string">""</span>, <span class="string">"bc"</span>, <span class="string">"efg"</span>, <span class="string">"abcd"</span>,<span class="string">""</span>, <span class="string">"jkl"</span>);</span><br><span class="line">List&lt;String&gt; filtered = strings.stream().filter(string -&gt; !string.isEmpty()).collect(Collectors.toList());</span><br></pre></td></tr></table></figure>
+
+<h3 id="forEach"><a href="#forEach" class="headerlink" title="forEach"></a>forEach</h3><p>Stream提供了新的方法“forEach”来迭代流中的每个数据。以下代码片段使用forEach输出了10个随机数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Random random = <span class="keyword">new</span> Random();</span><br><span class="line">random.ints().limit(<span class="number">10</span>).forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+<h3 id="map"><a href="#map" class="headerlink" title="map"></a>map</h3><p>map方法用于映射每个元素到对应的结果，以下代码片段使用map输出了元素对应的平方数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; numbers = Arrays.asList(<span class="number">3</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">7</span>, <span class="number">3</span>, <span class="number">5</span>);</span><br><span class="line"><span class="comment">// 获取对应的平方数</span></span><br><span class="line">List&lt;Integer&gt; squaresList = numbers.stream().map( i -&gt; i*i).distinct().collect(Collectors.toList());</span><br></pre></td></tr></table></figure>
+
+<h3 id="filter"><a href="#filter" class="headerlink" title="filter"></a>filter</h3><p>filter方法用于通过设置的条件过滤出元素。以下代码片段使用filter方法过滤出空字符串：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt;strings = Arrays.asList(<span class="string">"abc"</span>, <span class="string">""</span>, <span class="string">"bc"</span>, <span class="string">"efg"</span>, <span class="string">"abcd"</span>,<span class="string">""</span>, <span class="string">"jkl"</span>);</span><br><span class="line"><span class="comment">// 获取空字符串的数量</span></span><br><span class="line"><span class="keyword">int</span> count = strings.stream().filter(string -&gt; string.isEmpty()).count();</span><br></pre></td></tr></table></figure>
+
+<h3 id="limit"><a href="#limit" class="headerlink" title="limit"></a>limit</h3><p>limit方法用于获取指定数量的流。以下代码片段使用limit方法打印出10条数据：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Random random = <span class="keyword">new</span> Random();</span><br><span class="line">random.ints().limit(<span class="number">10</span>).forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+<h3 id="sorted"><a href="#sorted" class="headerlink" title="sorted"></a>sorted</h3><p>sorted方法用于对流进行排序。以下代码片段使用sorted方法对输出的10个随机数进行排序：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Random random = <span class="keyword">new</span> Random();</span><br><span class="line">random.ints().limit(<span class="number">10</span>).sorted().forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+<h3 id="并行-parallel-程序"><a href="#并行-parallel-程序" class="headerlink" title="并行(parallel)程序"></a>并行(parallel)程序</h3><p>parallelStream是流并行处理程序的替代方法。以下实例我们使用parallelStream来输出空字符串的数量：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt; strings = Arrays.asList(<span class="string">"abc"</span>, <span class="string">""</span>, <span class="string">"bc"</span>, <span class="string">"efg"</span>, <span class="string">"abcd"</span>,<span class="string">""</span>, <span class="string">"jkl"</span>);</span><br><span class="line"><span class="comment">// 获取空字符串的数量</span></span><br><span class="line"><span class="keyword">int</span> count = strings.parallelStream().filter(string -&gt; string.isEmpty()).count();</span><br></pre></td></tr></table></figure>
+
+<h3 id="Collectors"><a href="#Collectors" class="headerlink" title="Collectors"></a>Collectors</h3><p>Collectors类实现了很多归约操作，例如将流转换成集合和聚合元素。Collectors可用于返回列表或字符串：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt;strings = Arrays.asList(<span class="string">"abc"</span>, <span class="string">""</span>, <span class="string">"bc"</span>, <span class="string">"efg"</span>, <span class="string">"abcd"</span>,<span class="string">""</span>, <span class="string">"jkl"</span>);</span><br><span class="line">List&lt;String&gt; filtered = strings.stream().filter(string -&gt; !string.isEmpty()).collect(Collectors.toList());</span><br><span class="line">System.out.println(<span class="string">"筛选列表: "</span> + filtered);</span><br><span class="line">String mergedString = strings.stream().filter(string -&gt; !string.isEmpty()).collect(Collectors.joining(<span class="string">", "</span>));</span><br><span class="line">System.out.println(<span class="string">"合并字符串: "</span> + mergedString);</span><br></pre></td></tr></table></figure>
+
+<h3 id="统计"><a href="#统计" class="headerlink" title="统计"></a>统计</h3><p>一些产生统计结果的收集器也非常有用。他们主要用于int、double、long等基本类型上，他们可以用来产生类似如下的统计结果。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; numbers = Arrays.asList(<span class="number">3</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">7</span>, <span class="number">3</span>, <span class="number">5</span>);</span><br><span class="line"><span class="comment">//mapToInt((x) -&gt; x)返回一个IntStream对象</span></span><br><span class="line"><span class="comment">//summaryStatistics()返回一个IntSummaryStatistics对象</span></span><br><span class="line">IntSummaryStatistics stats = numbers.stream().mapToInt((x) -&gt; x).summaryStatistics();</span><br><span class="line"> </span><br><span class="line">System.out.println(<span class="string">"列表中最大的数 : "</span> + stats.getMax());</span><br><span class="line">System.out.println(<span class="string">"列表中最小的数 : "</span> + stats.getMin());</span><br><span class="line">System.out.println(<span class="string">"所有数之和 : "</span> + stats.getSum());</span><br><span class="line">System.out.println(<span class="string">"平均数 : "</span> + stats.getAverage());</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Optional类"><a href="#Optional类" class="headerlink" title="Optional类"></a><strong>Optional类</strong></h2><p>Optional类是一个可以为null的容器对象。如果值存在则isPresent()方法会返回true，调用get()方法会返回该对象。</p>
+<p>Optional是个容器：他可以保存类型T的值，或者仅仅保存null。Optional提供很多有用的方法，这样我们就不用显式进行空值检测。</p>
+<p>Optional类的引用很好的解决空指针异常。</p>
+<h3 id="类声明"><a href="#类声明" class="headerlink" title="类声明"></a>类声明</h3><p>java.util.Optinoal&lt;T&gt;类的声明:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Optional</span>&lt;<span class="title">T</span>&gt;<span class="keyword">extends</span> <span class="title">Object</span></span></span><br></pre></td></tr></table></figure>
+
+<h3 id="类方法"><a href="#类方法" class="headerlink" title="类方法"></a>类方法</h3><p><strong>注意：</strong> 这些方法是从 <strong>java.lang.Object</strong> 类继承来的。</p>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th align="left">方法   &amp; 描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td align="left">*<em>static &lt;T&gt;  Optional&lt;T&gt;   empty()  *</em>      返回空的 Optional 实例。</td>
+</tr>
+<tr>
+<td>2</td>
+<td align="left"><strong>boolean equals(Object   obj)</strong>        判断其他对象是否等于 Optional。</td>
+</tr>
+<tr>
+<td>3</td>
+<td align="left">*<em>Optional&lt;T&gt;   filter(Predicate&lt;? super &lt;T&gt; predicate)   *</em>如果值存在，并且这个值匹配给定的   predicate，返回一个Optional用以描述这个值，否则返回一个空的Optional。</td>
+</tr>
+<tr>
+<td>4</td>
+<td align="left"><strong>Optional&lt;T&gt; filter(Predicate&lt;? super &lt;T&gt; predicate)</strong>      如果值存在，并且这个值匹配给定的 predicate，返回一个Optional用以描述这个值，否则返回一个空的Optional。</td>
+</tr>
+<tr>
+<td>5</td>
+<td align="left">*<em>T   get() *</em>  如果在这个Optional中包含这个值，返回值，否则抛出异常：NoSuchElementException，使用get()方法前，最好进行isPresent()校验。</td>
+</tr>
+<tr>
+<td>6</td>
+<td align="left"><strong>int hashCode()</strong>      返回存在值的哈希码，如果值不存在 返回   0。</td>
+</tr>
+<tr>
+<td>7</td>
+<td align="left"><strong>void ifPresent(Consumer&lt;? super   T&gt; consumer)</strong>     如果值存在则使用该值调用 consumer</td>
+</tr>
+<tr>
+<td>8</td>
+<td align="left"><strong>boolean   isPresent()</strong>      如果值存在则方法会返回true，否则返回 false。</td>
+</tr>
+<tr>
+<td>9</td>
+<td align="left"><strong>&lt;U&gt;Optional&lt;U&gt; map(Function&lt;? super T,? extends U&gt; mapper)</strong>  如果有值，则对其执行调用映射函数得到返回值。如果返回值不为 null，则创建包含映射返回值的Optional作为map方法返回值，否则返回空Optional。</td>
+</tr>
+<tr>
+<td>10</td>
+<td align="left"><strong>static &lt;T&gt; Optional&lt;T&gt;   of(T value)</strong>  返回一个指定非null值的Optional。</td>
+</tr>
+<tr>
+<td>11</td>
+<td align="left">*<em>static &lt;T&gt; Optional&lt;T&gt;   ofNullable(T value)  *</em>如果为非空，返回 Optional 描述的指定值，否则返回空的 Optional。</td>
+</tr>
+<tr>
+<td>12</td>
+<td align="left"><strong>T orElse(T other)</strong>  如果存在该值，返回值， 否则返回   other。</td>
+</tr>
+<tr>
+<td>13</td>
+<td align="left"><strong>T orElseGet(Supplier&lt;? extends   T&gt; other)</strong>   如果存在该值，返回值， 否则触发 other，并返回 other 调用的结果。</td>
+</tr>
+<tr>
+<td>14</td>
+<td align="left">*<em>&lt;X extends Throwable&gt; T   orElseThrow(Supplier&lt;? extends X&gt; exceptionSupplier)    *</em>如果存在该值，返回包含的值，否则抛出由   Supplier 继承的异常。</td>
+</tr>
+<tr>
+<td>15</td>
+<td align="left"><strong>String   toString()</strong>    返回一个Optional的非空字符串，用来调试。</td>
+</tr>
+</tbody></table>
+<h4 id="1、Optional-T-value-empty-of-T-value-ofNullable-T-value"><a href="#1、Optional-T-value-empty-of-T-value-ofNullable-T-value" class="headerlink" title="1、Optional(T value),empty(),of(T value),ofNullable(T value)"></a>1、Optional(T value),empty(),of(T value),ofNullable(T value)</h4><p>这四个函数之间具有相关性，因此放在一组进行记忆。</p>
+<p>先说明一下，Optional(T value)即构造函数，它是private权限的，不能由外部调用的。其余三个函数是public权限，供用户调用。<strong>那么Optional的本质就是内部储存了一个真实的值，在构造的时候，就直接判断其值是否为空</strong>。直接上Optional(T value)构造函数的源码，如下图：</p>
+<p><img src="https://s2.ax1x.com/2019/09/21/nxrlVO.png" alt="nxrlVO.png"></p>
+<p><strong>of(T value)</strong>的源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">Optional&lt;T&gt; <span class="title">of</span><span class="params">(T var0)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Optional(var0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其内部直接调用了构造函数，根据构造函数可以得到两个结论：</p>
+<ol>
+<li>通过of(T value)函数所构造出的Optional对象，当value属性值为空时，依然会报出NPE。</li>
+<li>通过of(T value)函数所构造出的Optional对象，当value属性值不为空是，能正常构造Optional对象。</li>
+</ol>
+<p>除此之外，Optional内部还维护一个value为null的对象，大概长下面这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Optional</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Optional&lt;?&gt; EMPTY = <span class="keyword">new</span> Optional&lt;&gt;();</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Optional</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.value = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span>&lt;T&gt; Optional&lt;T&gt; <span class="title">empty</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">        Optional&lt;T&gt; t = (Optional&lt;T&gt;) EMPTY;</span><br><span class="line">        <span class="keyword">return</span> t;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//省略...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>那么，<strong>empty()的作用</strong>就是返回EMPTY对象。</p>
+<p>说前面三个方法都是为了铺垫，可以说<strong>ofNullable(T value)的作用</strong>了，上源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">Optional&lt;T&gt; <span class="title">ofNullable</span><span class="params">(T var0)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> var0 == <span class="keyword">null</span> ? empty() : of(var0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>显而易见，相比较of(T value)的<strong>区别</strong>就是，当value值为null时，<strong>of(T value)</strong>会报NPE异常；而<strong>ofNullable(T value)</strong>不会throw Exception，ofNullable(T value)直接返回一个EMPTY对象。</p>
+<p><strong>那是不是意味着，我们在项目中只用ofNullable(T value)函数而不需要of(T value)函数了呢？</strong></p>
+<p>不是的，既然存在那么自然有存在的价值。当我们在运行过程中，不想隐藏NPE，而是要立刻报告，这种情况下就用of(T value)函数。但是不得不说，这种场景很少很少，博主也仅在写junit测试用例中用到过此函数。</p>
+<h4 id="2、orElse-T-other-、orElseGet-Supplier-lt-extendsT-gt-other-、orElseThrow-Supplier-lt-extends-X-gt-exceptionSupplier"><a href="#2、orElse-T-other-、orElseGet-Supplier-lt-extendsT-gt-other-、orElseThrow-Supplier-lt-extends-X-gt-exceptionSupplier" class="headerlink" title="2、orElse(T other)、orElseGet(Supplier&lt;? extendsT&gt; other)、orElseThrow(Supplier&lt;? extends X&gt; exceptionSupplier)"></a>2、orElse(T other)、orElseGet(Supplier&lt;? extendsT&gt; other)、orElseThrow(Supplier&lt;? extends X&gt; exceptionSupplier)</h4><p>这三个函数放一组进行记忆，都是在构造函数传入的value值为null时，进行调用的。<strong>orElse</strong>和<strong>orElseGet</strong>的用法如下所示，相当于value值为null时，给予一个默认值：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    User user = <span class="keyword">null</span>;</span><br><span class="line">    user = Optional.ofNullable(user).orElse(createUser());</span><br><span class="line">    user = Optional.ofNullable(user).orElseGet(() -&gt; createUser());</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">createUser</span><span class="params">()</span></span>&#123;</span><br><span class="line">    User user = <span class="keyword">new</span> User();</span><br><span class="line">    user.setName(<span class="string">"zhangsan"</span>);</span><br><span class="line">    <span class="keyword">return</span> user;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这两个函数的<strong>区别</strong>：当user值不为null时，orElse函数依然会执行createUser()函数，而orElseGet函数并不会执行createUser()函数。</p>
+<p>至于orElseThrow，就是value值为null时，直接抛一个异常出去，用法如下所示</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">User user = <span class="keyword">null</span>;</span><br><span class="line">Optional.ofNullable(user).orElseThrow(()-&gt;<span class="keyword">new</span> Exception(<span class="string">"用户不存在"</span>));</span><br></pre></td></tr></table></figure>
+
+<h4 id="3、map-Function-lt-super-T-extends-U-gt-mapper-和flatMap-Function-lt-super-T-Optional-lt-U-gt-gt-mapper"><a href="#3、map-Function-lt-super-T-extends-U-gt-mapper-和flatMap-Function-lt-super-T-Optional-lt-U-gt-gt-mapper" class="headerlink" title="3、map(Function &lt;? super T,? extends U&gt; mapper)和flatMap(Function &lt;? super T,Optional&lt;U&gt;&gt; mapper)"></a>3、map(Function &lt;? super T,? extends U&gt; mapper)和flatMap(Function &lt;? super T,Optional&lt;U&gt;&gt; mapper)</h4><p>这两个函数放在一组记忆，这两个函数做的是转换值的操作。上源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Optional</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> &lt;U&gt; <span class="function">Optional&lt;U&gt; <span class="title">map</span><span class="params">(Function&lt;? <span class="keyword">super</span> T, ? extends U&gt; var1)</span> </span>&#123;</span><br><span class="line">        Objects.requireNonNull(var1);</span><br><span class="line">        <span class="keyword">return</span> !<span class="keyword">this</span>.isPresent() ? empty() : ofNullable(var1.apply(<span class="keyword">this</span>.value));</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> &lt;U&gt; <span class="function">Optional&lt;U&gt; <span class="title">flatMap</span><span class="params">(Function&lt;? <span class="keyword">super</span> T, Optional&lt;U&gt;&gt; var1)</span> </span>&#123;</span><br><span class="line">        Objects.requireNonNull(var1);</span><br><span class="line">        <span class="keyword">return</span> !<span class="keyword">this</span>.isPresent() ? empty() : (Optional)Objects.requireNonNull(var1.apply(<span class="keyword">this</span>.value));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//省略。。。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这两个函数，在函数体的上的区别不大，<strong>主要的区别</strong>就是入参，map函数所接受的入参类型为Function&lt;? supper T,? extends U&gt;,而flapMap的入参类型为Function&lt;? super T,Optional&lt;U&gt;&gt;。</p>
+<p>具体用法上，对于<strong>map</strong>而言：</p>
+<p>如果User结构是下面这样</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这时候取name的写法如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String name = Optional.ofNullable(user).map(u-&gt; u.getName()).get()；</span><br></pre></td></tr></table></figure>
+
+<p>对于<strong>flatmap</strong>而言则是这样：</p>
+<p>如果User结构是下面这样的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Optional&lt;String&gt; <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Optional.ofNullable(name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这时候取name的写法如下所示</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String name = Optional.ofNullable(user).flatMap(u-&gt;u.getName()).get()；</span><br></pre></td></tr></table></figure>
+
+<h4 id="4、isPresent-和ifPresent-Consumer-lt-super-T-gt-consumer"><a href="#4、isPresent-和ifPresent-Consumer-lt-super-T-gt-consumer" class="headerlink" title="4、isPresent()和ifPresent(Consumer&lt;? super T&gt; consumer)"></a>4、isPresent()和ifPresent(Consumer&lt;? super T&gt; consumer)</h4><p>这两个函数放在一起记忆，isPresent即判断value值是否为空，而ifPresent就是在value值不为空时，做一些操作。上源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPresent</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.value != <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ifPresent</span><span class="params">(Consumer&lt;? <span class="keyword">super</span> T&gt; var1)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.value != <span class="keyword">null</span>) &#123;</span><br><span class="line">        var1.accept(<span class="keyword">this</span>.value);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><font color=red>注意：</font>不要进行下面这种鸡肋的操作</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (user != <span class="keyword">null</span>)&#123;</span><br><span class="line">   <span class="comment">// <span class="doctag">TODO:</span> do something</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//写成</span></span><br><span class="line">User user = Optional.ofNullable(user);</span><br><span class="line"><span class="keyword">if</span> (Optional.isPresent())&#123;</span><br><span class="line">   <span class="comment">// <span class="doctag">TODO:</span> do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为这样写，代码结构依然丑陋。后面会给出正确写法</p>
+<p>至于ifPresent(Consumer &lt;?super T&gt; consumer),用法也很简单，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Optional.ofNullable(user).ifPresent(u-&gt;&#123;</span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> do something</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="5、filter-Predicate-lt-super-T-gt-predicate"><a href="#5、filter-Predicate-lt-super-T-gt-predicate" class="headerlink" title="5、filter(Predicate&lt;? super T&gt; predicate)"></a>5、filter(Predicate&lt;? super T&gt; predicate)</h4><p>直接上源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Optional</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">//省略....</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Optional&lt;T&gt; <span class="title">filter</span><span class="params">(Predicate&lt;? <span class="keyword">super</span> T&gt; predicate)</span> </span>&#123;</span><br><span class="line">        Objects.requireNonNull(predicate);</span><br><span class="line">        <span class="keyword">if</span> (!isPresent())</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">return</span> predicate.test(value) ? <span class="keyword">this</span> : empty();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>filter方法接受一个Predicate来对Optional中包含的值进行过滤，如果包含的值满足条件，那么还是返回这个Optional；否则返回Optional.empty。</p>
+<p>用法如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Optional&lt;User&gt; user1 = Optional.ofNullable(user).filter(u -&gt; u.getName().length()&lt;<span class="number">6</span>);</span><br></pre></td></tr></table></figure>
+
+<p>如上所示，如果user的name的长度是小于6的，则返回。如果是大于6的，则返回一个EMPTY对象。</p>
+<h3 id="实战使用"><a href="#实战使用" class="headerlink" title="实战使用"></a>实战使用</h3><h4 id="例一"><a href="#例一" class="headerlink" title="例一"></a>例一</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//以前写法</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getCity</span><span class="params">(User user)</span>  <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(user!=<span class="keyword">null</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span>(user.getAddress()!=<span class="keyword">null</span>)&#123;</span><br><span class="line">            Address address = user.getAddress();</span><br><span class="line">            <span class="keyword">if</span>(address.getCity()!=<span class="keyword">null</span>)&#123;</span><br><span class="line">                <span class="keyword">return</span> address.getCity();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> Excpetion(<span class="string">"取值错误"</span>); </span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//JAVA8写法</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getCity</span><span class="params">(User user)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Optional.ofNullable(user)</span><br><span class="line">        .map(u-&gt; u.getAddress())</span><br><span class="line">        .map(a-&gt;a.getCity())</span><br><span class="line">        .orElseThrow(()-&gt;<span class="keyword">new</span> Exception(<span class="string">"取指错误"</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="例二"><a href="#例二" class="headerlink" title="例二"></a>例二</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//以前写法</span></span><br><span class="line"><span class="keyword">if</span>(user!=<span class="keyword">null</span>)&#123;</span><br><span class="line">    dosomething(user);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//JAVA8写法</span></span><br><span class="line">Optional.ofNullable(user)</span><br><span class="line">    .ifPresent(u-&gt;&#123;</span><br><span class="line">        dosomething(u);</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="例三"><a href="#例三" class="headerlink" title="例三"></a>例三</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//以前写法</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">getUser</span><span class="params">(User user)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(user!=<span class="keyword">null</span>)&#123;</span><br><span class="line">        String name = user.getName();</span><br><span class="line">        <span class="keyword">if</span>(<span class="string">"zhangsan"</span>.equals(name))&#123;</span><br><span class="line">            <span class="keyword">return</span> user;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        user = <span class="keyword">new</span> User();</span><br><span class="line">        user.setName(<span class="string">"zhangsan"</span>);</span><br><span class="line">        <span class="keyword">return</span> user;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//java8写法</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">getUser</span><span class="params">(User user)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Optional.ofNullable(user)</span><br><span class="line">        .filter(u-&gt;<span class="string">"zhangsan"</span>.equals(u.getName()))</span><br><span class="line">        .orElseGet(()-&gt; &#123;</span><br><span class="line">            User user1 = <span class="keyword">new</span> User();</span><br><span class="line">            user1.setName(<span class="string">"zhangsan"</span>);</span><br><span class="line">            <span class="keyword">return</span> user1;</span><br><span class="line">        &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>还有很多应用的例子，就不一一列举了。不过采用这种链式编程，虽然代码优雅了。但是，逻辑性没那么明显，可读性有所下降，大家项目中看情况酌情使用。</p>
+<hr>
+<h2 id="Date-Time-API"><a href="#Date-Time-API" class="headerlink" title="Date-Time API"></a><strong>Date-Time API</strong></h2><p>Java8发布新的Date-Time API(JSR 310)来进一步加强对日期和时间的处理。</p>
+<p>在旧版的Java中，日期时间API存在诸多问题，其中有：</p>
+<ul>
+<li><strong>非线程安全</strong>：java.util.Date是非线程安全的，所有的日期类都是可变的，这是Java日期类最大的问题之一。</li>
+<li><strong>设计很差</strong>：Java的日期/时间类的定义并不一致，在java.util和java.sql的包中都有日期类，此外用于格式化和解析的类在java.text包中定义。java.util.Date同时包含日期和时间，而java.sql.Date仅包含日期，将其纳入java.sql包并不合理。另外这两个类都有相同的名字，这本身就是一个非常糟糕的设计。</li>
+<li><strong>时区处理麻烦</strong>：日期类并不提供国际化，没有时区支持，因此Java引入了java.util.Calendar和java.util.TimeZone类，但他们同样存在上述所有问题。</li>
+</ul>
+<p>Java8在<strong>java.time</strong>包下提供了很多的新的API。以下为两个比较重要的API：</p>
+<ul>
+<li><strong>Local(本地)</strong>：简化了日期时间的处理，没有时区的问题。</li>
+<li><strong>Zoned(时区)</strong>：通过制定的时区处理日期时间。</li>
+</ul>
+<p>新的java.time包涵盖了所有处理日期、时间、日期/时间、时区、时刻(instants)、过程(during)与时钟(clock)的操作。</p>
+<h3 id="常用、重要对象介绍："><a href="#常用、重要对象介绍：" class="headerlink" title="常用、重要对象介绍："></a>常用、重要对象介绍：</h3><p><strong>ZoneId：时区ID，用来确定Instant和LocalDateTime互相转换的规则。</strong></p>
+<p><strong>Instant：用来表示时间线上的一个点（瞬时）。</strong></p>
+<p><strong>LocalDate：表示没有时区的日期，LocalDate是不可变并且线程安全的。</strong></p>
+<p><strong>LocalTime：表示没有时区的时间，LocalTime是不可变并且线程安全的。</strong></p>
+<p><strong>LocalDateTime：表示没有时区的日期时间，LocalDateTime是不可变并且线程安全的。</strong></p>
+<p><strong>Clock：用于访问当前时刻、日期、时间，用到时区。</strong></p>
+<p><strong>Duration：用秒和纳秒表示时间的数量（长短），用于计算两个日期的“时间”间隔。</strong></p>
+<p><strong>Period：用于计算两个“日期”间隔。</strong></p>
+<p><u>其中，LocalDate、LocalTime、LocalDateTime都是新API里的基础对象，绝大多数操作都是围绕这三个对象来进行的，有必要啰嗦一遍：</u></p>
+<p><strong>LocalDate：只含年 月 日的日期对象。</strong></p>
+<p><strong>LocalTime：只含时 分 秒的时间对象。</strong></p>
+<p><strong>LocalDateTime：同时含有年 月 日 时 分 秒的日期对象。</strong></p>
+<h3 id="直接上示例："><a href="#直接上示例：" class="headerlink" title="直接上示例："></a>直接上示例：</h3><h4 id="1-获取当前时间："><a href="#1-获取当前时间：" class="headerlink" title="1.获取当前时间："></a>1.获取当前时间：</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Demo.testZonedDateTime();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testZonedDateTime</span><span class="params">()</span></span>&#123;</span><br><span class="line">        LocalDateTime localDateTime = LocalDateTime.now();</span><br><span class="line">        LocalDate localDate = LocalDate.now();</span><br><span class="line">        LocalTime localTime = LocalTime.now();</span><br><span class="line">        System.out.println(localDateTime);</span><br><span class="line">        System.out.println(localDate);</span><br><span class="line">        System.out.println(localTime);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//2019-09-22T12:22:10.214</span></span><br><span class="line"><span class="comment">//2019-09-22</span></span><br><span class="line"><span class="comment">//12:22:10.215</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-根据指定日期-时间创建对象："><a href="#2-根据指定日期-时间创建对象：" class="headerlink" title="2.根据指定日期/时间创建对象："></a>2.根据指定日期/时间创建对象：</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Demo.testZonedDateTime();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testZonedDateTime</span><span class="params">()</span></span>&#123;</span><br><span class="line">        LocalDateTime localDateTime = LocalDateTime.of(<span class="number">2018</span>,<span class="number">8</span>,<span class="number">8</span>,<span class="number">8</span>,<span class="number">8</span>,<span class="number">8</span>);</span><br><span class="line">        LocalDate localDate = LocalDate.of(<span class="number">2018</span>,<span class="number">8</span>,<span class="number">8</span>);</span><br><span class="line">        LocalTime localTime = LocalTime.of(<span class="number">8</span>,<span class="number">8</span>,<span class="number">8</span>);</span><br><span class="line">        System.out.println(localDateTime);</span><br><span class="line">        System.out.println(localDate);</span><br><span class="line">        System.out.println(localTime);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//2018-08-08T08:08:08</span></span><br><span class="line"><span class="comment">//2018-08-08</span></span><br><span class="line"><span class="comment">//08:08:08</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-日期时间的加减："><a href="#3-日期时间的加减：" class="headerlink" title="3.日期时间的加减："></a>3.日期时间的加减：</h4><p><font color=red>注意：对于<strong>LocalDate</strong>，只有精度大于等于日的加减，如年，月，日；对于<strong>LocalTime</strong>，只有精度小于等于时加减，如时，分，秒，纳秒；对于<strong>LocalDateTime</strong>，则可以进行任意精度的时间相加减；否则会抛出异常：java.time.temporal.UnsupportedTemporalTypeException: Unsupported unit: XXX</font></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Demo.testZonedDateTime();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testZonedDateTime</span><span class="params">()</span></span>&#123;</span><br><span class="line">        LocalDateTime localDateTime = LocalDateTime.now();</span><br><span class="line"><span class="comment">//以下方法的参数都是long型，返回值都是LocalDateTime</span></span><br><span class="line">        LocalDateTime plusYearsResult = localDateTime.plusYears(<span class="number">2L</span>);</span><br><span class="line">        LocalDateTime plusMonthsResult = localDateTime.plusMonths(<span class="number">4L</span>);</span><br><span class="line">        LocalDateTime plusDaysResult = localDateTime.plusDays(<span class="number">7L</span>);</span><br><span class="line">        LocalDateTime plusHoursResult = localDateTime.plusHours(<span class="number">2L</span>);</span><br><span class="line">        LocalDateTime plusMinutesResult = localDateTime.plusMinutes(<span class="number">10L</span>);</span><br><span class="line">        LocalDateTime plusSecondsResult = localDateTime.plusSeconds(<span class="number">10L</span>);</span><br><span class="line">        System.out.println(<span class="string">"当前时间是 : "</span> + localDateTime + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">"当前时间加2年后为 : "</span> + plusYearsResult + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">"当前时间加3个月后为 : "</span> + plusMonthsResult + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">"当前时间加7日后为 : "</span> + plusDaysResult + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">"当前时间加2小时后为 : "</span> + plusHoursResult + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">"当前时间加10分钟后为 : "</span> + plusMinutesResult + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">"当前时间加10秒后为 : "</span> + plusSecondsResult + <span class="string">"\n"</span></span><br><span class="line">        );</span><br><span class="line"><span class="comment">//也可以以另一种方式来相加减日期，即plus(long amountToAdd, TemporalUnit unit)</span></span><br><span class="line"><span class="comment">//             参数1 ： 相加的数量， 参数2 ： 相加的单位</span></span><br><span class="line">        LocalDateTime nextMonth = localDateTime.plus(<span class="number">1</span>, ChronoUnit.MONTHS);</span><br><span class="line">        LocalDateTime nextYear = localDateTime.plus(<span class="number">1</span>, ChronoUnit.YEARS);</span><br><span class="line">        LocalDateTime nextWeek = localDateTime.plus(<span class="number">1</span>, ChronoUnit.WEEKS);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">"now : "</span> + localDateTime + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">"nextYear : "</span> + nextYear + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">"nextMonth : "</span> + nextMonth + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">"nextWeek :"</span> + nextWeek + <span class="string">"\n"</span></span><br><span class="line">        );</span><br><span class="line"><span class="comment">//日期的减法用法一样，在此不再举例用minus()方法或者minusXXX()方法</span></span><br><span class="line">        LocalDateTime minus = localDateTime.minus(<span class="number">1L</span>, ChronoUnit.YEARS);</span><br><span class="line">        System.out.println(minus);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//当前时间是 : 2019-09-22T13:01:41.773</span></span><br><span class="line"><span class="comment">//当前时间加2年后为 : 2021-09-22T13:01:41.773</span></span><br><span class="line"><span class="comment">//当前时间加3个月后为 : 2020-01-22T13:01:41.773</span></span><br><span class="line"><span class="comment">//当前时间加7日后为 : 2019-09-29T13:01:41.773</span></span><br><span class="line"><span class="comment">//当前时间加2小时后为 : 2019-09-22T15:01:41.773</span></span><br><span class="line"><span class="comment">//当前时间加10分钟后为 : 2019-09-22T13:11:41.773</span></span><br><span class="line"><span class="comment">//当前时间加10秒后为 : 2019-09-22T13:01:51.773</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//now : 2019-09-22T13:01:41.773</span></span><br><span class="line"><span class="comment">//nextYear : 2020-09-22T13:01:41.773</span></span><br><span class="line"><span class="comment">//nextMonth : 2019-10-22T13:01:41.773</span></span><br><span class="line"><span class="comment">//nextWeek :2019-09-29T13:01:41.773</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//2018-09-22T13:01:41.773</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="4-将年、月、日、等修改为指定的值，并返回新的日期-时间对象："><a href="#4-将年、月、日、等修改为指定的值，并返回新的日期-时间对象：" class="headerlink" title="4.将年、月、日、等修改为指定的值，并返回新的日期/时间对象："></a>4.将年、月、日、等修改为指定的值，并返回新的日期/时间对象：</h4><p><font color=red>注意：在指定日期/时间时要注意取值范围，日期还要注意日期基础上是否为闰年(leap year)，如果超出取值范围会报出：java.time.DateTimeException: Invalid value for DayOfYear (valid values 1 - 365/366): XXX，如果没有注意是否为闰年去特殊范围值的时候会报出：java.time.DateTimeException: Invalid date ‘DayOfYear XXX’ as ‘XXXX’ is not a leap year</font></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Demo.testZonedDateTime();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testZonedDateTime</span><span class="params">()</span></span>&#123;</span><br><span class="line">        LocalDate localDate = LocalDate.now();</span><br><span class="line"><span class="comment">//当前时间基础上，指定本年当中的第几天，取值范围为1-365,366</span></span><br><span class="line">        LocalDate withDayOfYearResult = localDate.withDayOfYear(<span class="number">200</span>);</span><br><span class="line"><span class="comment">//当前时间基础上，指定本月当中的第几天，取值范围为1-29,30,31</span></span><br><span class="line">        LocalDate withDayOfMonthResult = localDate.withDayOfMonth(<span class="number">5</span>);</span><br><span class="line"><span class="comment">//当前时间基础上，直接指定年份</span></span><br><span class="line">        LocalDate withYearResult = localDate.withYear(<span class="number">2017</span>);</span><br><span class="line"><span class="comment">//当前时间基础上，直接指定月份</span></span><br><span class="line">        LocalDate withMonthResult = localDate.withMonth(<span class="number">5</span>);</span><br><span class="line">        System.out.println(<span class="string">"当前时间是 : "</span> + localDate + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">"指定本年当中的第200天 : "</span> + withDayOfYearResult + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">"指定本月当中的第5天 : "</span> + withDayOfMonthResult + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">"直接指定年份为2017 : "</span> + withYearResult + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">"直接指定月份为5月 : "</span> + withMonthResult + <span class="string">"\n"</span></span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//当前时间是 : 2019-09-22</span></span><br><span class="line"><span class="comment">//指定本年当中的第200天 : 2019-07-19</span></span><br><span class="line"><span class="comment">//指定本月当中的第5天 : 2019-09-05</span></span><br><span class="line"><span class="comment">//直接指定年份为2017 : 2017-09-22</span></span><br><span class="line"><span class="comment">//直接指定月份为5月 : 2019-05-22</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="5-获取日期的年月日周时分秒："><a href="#5-获取日期的年月日周时分秒：" class="headerlink" title="5.获取日期的年月日周时分秒："></a>5.获取日期的年月日周时分秒：</h4><p>直接用getDayOfWeek或者getMonth取得的是枚举类型(enum)的英文单词，可以用可以再用Week或者Month枚举类提供的getValue方法转换为数字。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Demo.testZonedDateTime();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testZonedDateTime</span><span class="params">()</span></span>&#123;</span><br><span class="line">        LocalDateTime localDateTime = LocalDateTime.now();</span><br><span class="line">        <span class="keyword">int</span> dayOfYear = localDateTime.getDayOfYear();</span><br><span class="line">        <span class="keyword">int</span> dayOfMonth = localDateTime.getDayOfMonth();</span><br><span class="line">        DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();</span><br><span class="line">        System.out.println(<span class="string">"今天是"</span> + localDateTime + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">"本年当中第"</span> + dayOfYear + <span class="string">"天"</span> + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">"本月当中第"</span> + dayOfMonth + <span class="string">"天"</span> + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">"本周中星期"</span> + dayOfWeek.getValue() + <span class="string">"-即"</span> + dayOfWeek + <span class="string">"\n"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取当天时间的年月日时分秒</span></span><br><span class="line">        <span class="keyword">int</span> year = localDateTime.getYear();</span><br><span class="line">        Month month = localDateTime.getMonth();</span><br><span class="line">        <span class="keyword">int</span> day = localDateTime.getDayOfMonth();</span><br><span class="line">        <span class="keyword">int</span> hour = localDateTime.getHour();</span><br><span class="line">        <span class="keyword">int</span> minute = localDateTime.getMinute();</span><br><span class="line">        <span class="keyword">int</span> second = localDateTime.getSecond();</span><br><span class="line">        System.out.println(<span class="string">"今天是"</span> + localDateTime + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">"年 ： "</span> + year + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">"月 ： "</span> + month.getValue() + <span class="string">"-即 "</span>+ month + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">"日 ： "</span> + day + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">"时 ： "</span> + hour + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">"分 ： "</span> + minute + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">"秒 ： "</span> + second + <span class="string">"\n"</span></span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//今天是2019-09-22T13:30:03.943</span></span><br><span class="line"><span class="comment">//本年当中第265天</span></span><br><span class="line"><span class="comment">//本月当中第22天</span></span><br><span class="line"><span class="comment">//本周中星期7-即SUNDAY</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//今天是2019-09-22T13:30:03.943</span></span><br><span class="line"><span class="comment">//年 ： 2019</span></span><br><span class="line"><span class="comment">//月 ： 9-即 SEPTEMBER</span></span><br><span class="line"><span class="comment">//日 ： 22</span></span><br><span class="line"><span class="comment">//时 ： 13</span></span><br><span class="line"><span class="comment">//分 ： 30</span></span><br><span class="line"><span class="comment">//秒 ： 3</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="6-时间-日期前后的比较与判断："><a href="#6-时间-日期前后的比较与判断：" class="headerlink" title="6.时间/日期前后的比较与判断："></a>6.时间/日期前后的比较与判断：</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Demo.testZonedDateTime();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testZonedDateTime</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">//判断两个时间点的前后</span></span><br><span class="line">        LocalDate localDate1 = LocalDate.of(<span class="number">2019</span>, <span class="number">8</span>, <span class="number">8</span>);</span><br><span class="line">        LocalDate localDate2 = LocalDate.of(<span class="number">2018</span>, <span class="number">8</span>, <span class="number">8</span>);</span><br><span class="line">        <span class="keyword">boolean</span> date1IsBeforeDate2 = localDate1.isBefore(localDate2);</span><br><span class="line">        System.out.println(<span class="string">"date1IsBeforeDate2 : "</span> + date1IsBeforeDate2);</span><br><span class="line">        <span class="comment">//API还提供了isAfter()、isEqual()，顾名思义就不必举例了</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//date1IsBeforeDate2 : false</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="7-判断是否为闰年："><a href="#7-判断是否为闰年：" class="headerlink" title="7.判断是否为闰年："></a>7.判断是否为闰年：</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Demo.testZonedDateTime();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testZonedDateTime</span><span class="params">()</span></span>&#123;</span><br><span class="line">        LocalDate now = LocalDate.now();</span><br><span class="line">        System.out.println(<span class="string">"now : "</span> + now + <span class="string">", is leap year ? "</span> + now.isLeapYear());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//now : 2019-09-22, is leap year ? false</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="8-java8时钟-：-clock"><a href="#8-java8时钟-：-clock" class="headerlink" title="8.java8时钟 ： clock()"></a>8.java8时钟 ： clock()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Demo.testZonedDateTime();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testZonedDateTime</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">//返回当前时间，根据系统时间和UTC</span></span><br><span class="line">        Clock clock = Clock.systemUTC();</span><br><span class="line">        System.out.println(clock);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//SystemClock[Z]</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="9-时间戳"><a href="#9-时间戳" class="headerlink" title="9.时间戳:"></a>9.时间戳:</h4><p><font color=red>事实上<strong>Instant</strong>就是Java8之前的Date，可以使用以下两个类中的方法在这两个类型之间进行转换，比如Date.from(Instant)就是用来把Instant转换成java.util.date的，而new Date().toInstant()就是将Date转换为Instant的。</font></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Demo.testZonedDateTime();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testZonedDateTime</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Instant instant = Instant.now();</span><br><span class="line">        System.out.println(instant);</span><br><span class="line">        Date date = Date.from(instant);</span><br><span class="line">        Instant instant2 = date.toInstant();</span><br><span class="line">        System.out.println(date);</span><br><span class="line">        System.out.println(instant2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//2019-09-22T05:51:30.257Z</span></span><br><span class="line"><span class="comment">//Sun Sep 22 13:51:30 CST 2019</span></span><br><span class="line"><span class="comment">//2019-09-22T05:51:30.257Z</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="10-计算时间-日期间隔"><a href="#10-计算时间-日期间隔" class="headerlink" title="10.计算时间/日期间隔:"></a>10.计算时间/日期间隔:</h4><p>Duration：用于计算两个“时间”间隔</p>
+<p>Period：用于计算两个“日期”间隔</p>
+<p><font color=red>注意：当获取两个日期的间隔时，并不是单纯的年月日对应的数字相加减，而是会先算出具体差多少天，在折算成相差几年几月几日的</font></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Demo.testZonedDateTime();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testZonedDateTime</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">//计算两个日期的日期间隔-年月日</span></span><br><span class="line">        LocalDate date1 = LocalDate.of(<span class="number">2018</span>, <span class="number">2</span>, <span class="number">13</span>);</span><br><span class="line">        LocalDate date2 = LocalDate.of(<span class="number">2017</span>, <span class="number">3</span>, <span class="number">12</span>);</span><br><span class="line"><span class="comment">//内部是用date2-date1，所以得到的结果是负数</span></span><br><span class="line">        Period period = Period.between(date1, date2);</span><br><span class="line">        System.out.println(<span class="string">"相差年数 ： "</span> + period.getYears());</span><br><span class="line">        System.out.println(<span class="string">"相差月数 ： "</span> + period.getMonths());</span><br><span class="line">        System.out.println(<span class="string">"相差日数 ： "</span> + period.getDays());</span><br><span class="line"><span class="comment">//还可以这样获取相差的年月日</span></span><br><span class="line">        System.out.println(<span class="string">"-------------------------------"</span>);</span><br><span class="line">        <span class="keyword">long</span> years = period.get(ChronoUnit.YEARS);</span><br><span class="line">        <span class="keyword">long</span> months = period.get(ChronoUnit.MONTHS);</span><br><span class="line">        <span class="keyword">long</span> days = period.get(ChronoUnit.DAYS);</span><br><span class="line">        System.out.println(<span class="string">"相差的年月日分别为 ： "</span> + years + <span class="string">","</span> + months + <span class="string">","</span> + days);</span><br><span class="line"></span><br><span class="line"><span class="comment">//计算两个时间的间隔</span></span><br><span class="line">        System.out.println(<span class="string">"-------------------------------"</span>);</span><br><span class="line">        LocalDateTime date3 = LocalDateTime.now();</span><br><span class="line">        LocalDateTime date4 = LocalDateTime.of(<span class="number">2018</span>, <span class="number">1</span>, <span class="number">13</span>, <span class="number">22</span>, <span class="number">30</span>, <span class="number">10</span>);</span><br><span class="line">        Duration duration = Duration.between(date3, date4);</span><br><span class="line">        System.out.println(date3 + <span class="string">" 与 "</span> + date4 + <span class="string">" 间隔  "</span> + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">" 天 :"</span> + duration.toDays() + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">" 时 :"</span> + duration.toHours() + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">" 分 :"</span> + duration.toMinutes() + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">" 毫秒 :"</span> + duration.toMillis() + <span class="string">"\n"</span></span><br><span class="line">                + <span class="string">" 纳秒 :"</span> + duration.toNanos() + <span class="string">"\n"</span></span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//相差年数 ： 0</span></span><br><span class="line"><span class="comment">//相差月数 ： -11</span></span><br><span class="line"><span class="comment">//相差日数 ： -1</span></span><br><span class="line"><span class="comment">//-------------------------------</span></span><br><span class="line"><span class="comment">//相差的年月日分别为 ： 0,-11,-1</span></span><br><span class="line"><span class="comment">//-------------------------------</span></span><br><span class="line"><span class="comment">//2019-09-22T13:58:43.623 与 2018-01-13T22:30:10 间隔  </span></span><br><span class="line"><span class="comment">// 天 :-616</span></span><br><span class="line"><span class="comment">// 时 :-14799</span></span><br><span class="line"><span class="comment">// 分 :-887968</span></span><br><span class="line"><span class="comment">// 毫秒 :-53278113623</span></span><br><span class="line"><span class="comment">// 纳秒 :-53278113623000000</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="11-当计算程序的运行时间时，应当使用时间戳Instant"><a href="#11-当计算程序的运行时间时，应当使用时间戳Instant" class="headerlink" title="11.当计算程序的运行时间时，应当使用时间戳Instant:"></a>11.当计算程序的运行时间时，应当使用时间戳Instant:</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Demo.testZonedDateTime();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testZonedDateTime</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Instant ins1 = Instant.now();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1000000</span>; i++) &#123;</span><br><span class="line">            <span class="comment">//循环一百万次</span></span><br><span class="line">        &#125;</span><br><span class="line">        Instant ins2 = Instant.now();</span><br><span class="line">        Duration duration = Duration.between(ins1, ins2);</span><br><span class="line">        System.out.println(<span class="string">"程序运行耗时为 ： "</span> + duration.toMillis() + <span class="string">"毫秒"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//程序运行耗时为 ： 1毫秒</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="12-时间日期的格式化（格式化后返回的类型是String）"><a href="#12-时间日期的格式化（格式化后返回的类型是String）" class="headerlink" title="12.时间日期的格式化（格式化后返回的类型是String）:"></a>12.时间日期的格式化（格式化后返回的类型是String）:</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Demo.testZonedDateTime();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testZonedDateTime</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">//使用jdk自身配置好的日期格式</span></span><br><span class="line">        DateTimeFormatter formatter1 = DateTimeFormatter.ISO_DATE_TIME;</span><br><span class="line">        LocalDateTime date1 = LocalDateTime.now();</span><br><span class="line">        System.out.println(<span class="string">"LocalDateTime："</span>+date1);</span><br><span class="line">        <span class="comment">//反过来调用也可以 : date1.format(formatter1);</span></span><br><span class="line">        String date1Str = formatter1.format(date1);</span><br><span class="line">        System.out.println(<span class="string">"jdk自身配置好的日期格式："</span>+date1Str);</span><br><span class="line">        <span class="comment">//使用自定义的日期格式</span></span><br><span class="line">        DateTimeFormatter dtf= DateTimeFormatter.ofPattern(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>);</span><br><span class="line">        String formatDateTime = date1.format(dtf);</span><br><span class="line">        System.out.println(<span class="string">"自定义日期格式:"</span>+formatDateTime);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//LocalDateTime：2019-09-22T14:21:21.762</span></span><br><span class="line"><span class="comment">//jdk自身配置好的日期格式：2019-09-22T14:21:21.762</span></span><br><span class="line"><span class="comment">//自定义日期格式:2019-09-22 14:21:21</span></span><br></pre></td></tr></table></figure>
+
+<p><font color=red><strong>注意</strong>：格式的写法必须与字符串的形式一样：如：</font></p>
+<p><font color=red>2018-01-13 21:27:30 对应  yyyy-MM-dd HH:mm:ss</font></p>
+<p><font color=red>20180113213328  对应   yyyyMMddHHmmss</font></p>
+<p><font color=red>否则会有运行时异常！</font></p>
+<p>看一个例子，思考原因：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Demo.testZonedDateTime();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testZonedDateTime</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//新的格式化API中，格式化后的结果都默认是String，有时我们也需要返回经过格式化的同类型对象</span></span><br><span class="line">        LocalDateTime ldt1 = LocalDateTime.now();</span><br><span class="line">        System.out.println(ldt1);</span><br><span class="line">        DateTimeFormatter dtf1 = DateTimeFormatter.ofPattern(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>);</span><br><span class="line">        String temp = dtf1.format(ldt1);</span><br><span class="line">        LocalDateTime formatedDateTime = LocalDateTime.parse(temp, dtf1);</span><br><span class="line">        System.out.println(formatedDateTime);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//2019-09-22T14:34:24.653</span></span><br><span class="line"><span class="comment">//2019-09-22 14:39:54</span></span><br><span class="line"><span class="comment">//2019-09-22T14:34:24</span></span><br></pre></td></tr></table></figure>
+
+<p><font color=red><strong>记住</strong>：得到的最终结果都是类似2019-09-22T14:34:24的格式因为在输出LocalDateTime对象时，会调用其重写的toString方法，读者可以读读源码就可知道，对于LocalDateTime对象，无论是String类型的时间日期转为LocalDatetime对象，还是LocalDateTime对象转为格式化后的LocalDateTime对象，得到的最终输出都是：yyyy-MM-ddThh:mm:ss 这样的格式！</font></p>
+<p><font color=red>至于为什么这样，应该是为了符合国际化吧，也正因为如此，才有了LocalDate和LocalTime，以便于开发者有更多的选择。</font></p>
+<p><font color=red>但上述说法仅限于LocalDateTime对象，而如果是LocalDateTime对象格式化转为String对象是可以任意格式的，如上文自定义格式示例！<br></font></p>
+<h4 id="13-long毫秒值转换为日期"><a href="#13-long毫秒值转换为日期" class="headerlink" title="13.long毫秒值转换为日期:"></a>13.long毫秒值转换为日期:</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Demo.testZonedDateTime();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testZonedDateTime</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"---------long毫秒值转换为日期---------"</span>);</span><br><span class="line">        DateTimeFormatter df= DateTimeFormatter.ofPattern(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>);</span><br><span class="line">        String longToDateTime = df.format(LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.of(<span class="string">"Asia/Shanghai"</span>)));</span><br><span class="line">        System.out.println(longToDateTime);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//---------long毫秒值转换为日期---------</span></span><br><span class="line"><span class="comment">//2019-09-22 14:41:25</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Base64编码"><a href="#Base64编码" class="headerlink" title="Base64编码"></a><strong>Base64编码</strong></h2><p>在Java8中，Base64编码已经成为Java类库的标准。</p>
+<p>Java8内置了Base64编码的编码器和解码器。</p>
+<p>Base64工具类提供了一套静态方法获取下面三种Base64编解码器：</p>
+<ul>
+<li><strong>基本：</strong>输出被映射到一组字符A-Z a-z 0-9+/，编码不添加任何行标，输出的解码仅支持A-Z a-z 0-9+/。</li>
+<li><strong>URL：</strong>输出映射到一组字符A-Z a-z 0-9+_，输出时URL和文件。</li>
+<li><strong>MIME：</strong>输出映射到MIME友好格式。输出每行不超过76字符，并且使用’\r’并跟随’\n’作为分割。编码输出最后没有行分割。</li>
+</ul>
+<h3 id="内嵌类"><a href="#内嵌类" class="headerlink" title="内嵌类"></a>内嵌类</h3><table>
+<thead>
+<tr>
+<th>序号</th>
+<th>内嵌类   &amp; 描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>static class   Base64.Decoder</strong>    该类实现一个解码器用于，使用 Base64 编码来解码字节数据。</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>static class   Base64.Encoder</strong>    该类实现一个编码器，使用 Base64 编码来编码字节数据。</td>
+</tr>
+</tbody></table>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><table>
+<thead>
+<tr>
+<th>序号</th>
+<th>方法名   &amp; 描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>static Base64.Decoder   getDecoder()</strong>      返回一个 Base64.Decoder ，解码使用基本型 base64 编码方案。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>*<em>static Base64.Encoder   getEncoder() *</em>     返回一个 Base64.Encoder ，编码使用基本型 base64 编码方案。</td>
+</tr>
+<tr>
+<td>3</td>
+<td>*<em>static Base64.Decoder   getMimeDecoder() *</em>      返回一个 Base64.Decoder ，解码使用 MIME 型 base64 编码方案。</td>
+</tr>
+<tr>
+<td>4</td>
+<td>*<em>static Base64.Encoder   getMimeEncoder() *</em>     返回一个 Base64.Encoder ，编码使用 MIME 型 base64 编码方案。</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>static Base64.Encoder getMimeEncoder(int lineLength, byte[] lineSeparator)</strong>       返回一个 Base64.Encoder ，编码使用 MIME 型 base64 编码方案，可以通过参数指定每行的长度及行的分隔符。</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>static Base64.Decoder   getUrlDecoder()</strong>      返回一个 Base64.Decoder ，解码使用 URL 和文件名安全型 base64 编码方案。</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>static Base64.Encoder   getUrlEncoder()</strong>       返回一个 Base64.Encoder ，编码使用 URL 和文件名安全型 base64 编码方案。</td>
+</tr>
+</tbody></table>
+<h3 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Java8Tester</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 使用基本编码</span></span><br><span class="line">            String base64encodedString = Base64.getEncoder().encodeToString(<span class="string">"runoob?java8"</span>.getBytes(<span class="string">"utf-8"</span>));</span><br><span class="line">            System.out.println(<span class="string">"Base64 编码字符串 (基本) :"</span> + base64encodedString);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 解码</span></span><br><span class="line">            <span class="keyword">byte</span>[] base64decodedBytes = Base64.getDecoder().decode(base64encodedString);</span><br><span class="line"></span><br><span class="line">            System.out.println(<span class="string">"原始字符串: "</span> + <span class="keyword">new</span> String(base64decodedBytes, <span class="string">"utf-8"</span>));</span><br><span class="line">            base64encodedString = Base64.getUrlEncoder().encodeToString(<span class="string">"runoob?java8"</span>.getBytes(<span class="string">"utf-8"</span>));</span><br><span class="line">            System.out.println(<span class="string">"Base64 编码字符串 (URL) :"</span> + base64encodedString);</span><br><span class="line"></span><br><span class="line">            StringBuilder stringBuilder = <span class="keyword">new</span> StringBuilder();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; ++i) &#123;</span><br><span class="line">                stringBuilder.append(UUID.randomUUID().toString());</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">byte</span>[] mimeBytes = stringBuilder.toString().getBytes(<span class="string">"utf-8"</span>);</span><br><span class="line">            String mimeEncodedString = Base64.getMimeEncoder().encodeToString(mimeBytes);</span><br><span class="line">            System.out.println(<span class="string">"Base64 编码字符串 (MIME) :"</span> + mimeEncodedString);</span><br><span class="line"></span><br><span class="line">        &#125;<span class="keyword">catch</span>(UnsupportedEncodingException e)&#123;</span><br><span class="line">            System.out.println(<span class="string">"Error :"</span> + e.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">输出结果：</span><br><span class="line">$ javac Java8Tester.java </span><br><span class="line">$ java Java8Tester</span><br><span class="line">原始字符串: runoob?java8</span><br><span class="line">Base64 编码字符串 (URL) :VHV0b3JpYWxzUG9pbnQ_amF2YTg&#x3D;</span><br><span class="line">Base64 编码字符串 (MIME) :M2Q4YmUxMTEtYWRkZi00NzBlLTgyZDgtN2MwNjgzOGY2NGFlOTQ3NDYyMWEtZDM4ZS00YWVhLTkz</span><br><span class="line">OTYtY2ZjMzZiMzFhNmZmOGJmOGI2OTYtMzkxZi00OTJiLWEyMTQtMjgwN2RjOGI0MTBmZWUwMGNk</span><br><span class="line">NTktY2ZiZS00MTMxLTgzODctNDRjMjFkYmZmNGM4Njg1NDc3OGItNzNlMC00ZWM4LTgxNzAtNjY3</span><br><span class="line">NTgyMGY3YzVhZWQyMmNiZGItOTIwZi00NGUzLTlkMjAtOTkzZTI1MjUwMDU5ZjdkYjg2M2UtZTJm</span><br><span class="line">YS00Y2Y2LWIwNDYtNWQ2MGRiOWQyZjFiMzJhMzYxOWQtNDE0ZS00MmRiLTk3NDgtNmM4NTczYjMx</span><br><span class="line">ZDIzNGRhOWU4NDAtNTBiMi00ZmE2LWE0M2ItZjU3MWFiNTI2NmQ2NTlmMTFmZjctYjg1NC00NmE1</span><br><span class="line">LWEzMWItYjk3MmEwZTYyNTdk</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Nashorn"><a href="#Nashorn" class="headerlink" title="Nashorn"></a><strong>Nashorn</strong></h2><p>这部分仅仅是科普一下。。。知道有这么个东西，具体细节等到后序用到时再记录。。。</p>
+<p><strong>Nashorn一个JavaScript引擎。</strong></p>
+<p>从JDK1.8开始，Nashorn取代Rhino(JDK1.6，JDK1.7)成为Java嵌入式JavaScript引擎。Nashorn完全支持ECMAScript 5.1规范以及一些扩展。它使用基于JSP 292的新语言特性，其中包含在JDK7中引入的invokedynamic，将JavaScript编译成Java字节码。</p>
+<p>与先前的Rhino实现相比，这带来了2到10倍的性能提升。</p>
+<h3 id="jjs"><a href="#jjs" class="headerlink" title="jjs"></a>jjs</h3><p>jjs是个基于Nashorn引擎的命令行工具。它接受一些JavaScript源代码为参数，并且执行这些源代码。jjs可以提供交互式编程体验。</p>
+<h3 id="Java中调用JavaScript"><a href="#Java中调用JavaScript" class="headerlink" title="Java中调用JavaScript"></a>Java中调用JavaScript</h3><p>使用ScriptEngineManager类，JavaScript代码可以在Java中执行。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/%E6%B5%81%E5%BC%8F%E8%AF%AD%E6%B3%95/" rel="tag"><i class="fa fa-tag"></i> 流式语法</a>
+              <a href="/tags/Java8/" rel="tag"><i class="fa fa-tag"></i> Java8</a>
+              <a href="/tags/%E6%97%A5%E6%9C%9F%E7%B1%BB/" rel="tag"><i class="fa fa-tag"></i> 日期类</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/15/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1/" rel="prev" title="Java多线程">
+      <i class="fa fa-chevron-left"></i> Java多线程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/15/Java8%E7%89%B9%E6%80%A7(%E4%B8%80)/" rel="next" title="Java8特性(一)">
+      Java8特性(一) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Stream-API"><span class="nav-number">1.</span> <span class="nav-text">Stream API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是Stream？"><span class="nav-number">1.1.</span> <span class="nav-text">什么是Stream？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成流"><span class="nav-number">1.2.</span> <span class="nav-text">生成流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#forEach"><span class="nav-number">1.3.</span> <span class="nav-text">forEach</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#map"><span class="nav-number">1.4.</span> <span class="nav-text">map</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#filter"><span class="nav-number">1.5.</span> <span class="nav-text">filter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#limit"><span class="nav-number">1.6.</span> <span class="nav-text">limit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sorted"><span class="nav-number">1.7.</span> <span class="nav-text">sorted</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#并行-parallel-程序"><span class="nav-number">1.8.</span> <span class="nav-text">并行(parallel)程序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Collectors"><span class="nav-number">1.9.</span> <span class="nav-text">Collectors</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#统计"><span class="nav-number">1.10.</span> <span class="nav-text">统计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Optional类"><span class="nav-number">2.</span> <span class="nav-text">Optional类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#类声明"><span class="nav-number">2.1.</span> <span class="nav-text">类声明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类方法"><span class="nav-number">2.2.</span> <span class="nav-text">类方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、Optional-T-value-empty-of-T-value-ofNullable-T-value"><span class="nav-number">2.2.1.</span> <span class="nav-text">1、Optional(T value),empty(),of(T value),ofNullable(T value)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、orElse-T-other-、orElseGet-Supplier-lt-extendsT-gt-other-、orElseThrow-Supplier-lt-extends-X-gt-exceptionSupplier"><span class="nav-number">2.2.2.</span> <span class="nav-text">2、orElse(T other)、orElseGet(Supplier&lt;? extendsT&gt; other)、orElseThrow(Supplier&lt;? extends X&gt; exceptionSupplier)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、map-Function-lt-super-T-extends-U-gt-mapper-和flatMap-Function-lt-super-T-Optional-lt-U-gt-gt-mapper"><span class="nav-number">2.2.3.</span> <span class="nav-text">3、map(Function &lt;? super T,? extends U&gt; mapper)和flatMap(Function &lt;? super T,Optional&lt;U&gt;&gt; mapper)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、isPresent-和ifPresent-Consumer-lt-super-T-gt-consumer"><span class="nav-number">2.2.4.</span> <span class="nav-text">4、isPresent()和ifPresent(Consumer&lt;? super T&gt; consumer)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5、filter-Predicate-lt-super-T-gt-predicate"><span class="nav-number">2.2.5.</span> <span class="nav-text">5、filter(Predicate&lt;? super T&gt; predicate)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实战使用"><span class="nav-number">2.3.</span> <span class="nav-text">实战使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#例一"><span class="nav-number">2.3.1.</span> <span class="nav-text">例一</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#例二"><span class="nav-number">2.3.2.</span> <span class="nav-text">例二</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#例三"><span class="nav-number">2.3.3.</span> <span class="nav-text">例三</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Date-Time-API"><span class="nav-number">3.</span> <span class="nav-text">Date-Time API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常用、重要对象介绍："><span class="nav-number">3.1.</span> <span class="nav-text">常用、重要对象介绍：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#直接上示例："><span class="nav-number">3.2.</span> <span class="nav-text">直接上示例：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-获取当前时间："><span class="nav-number">3.2.1.</span> <span class="nav-text">1.获取当前时间：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-根据指定日期-时间创建对象："><span class="nav-number">3.2.2.</span> <span class="nav-text">2.根据指定日期&#x2F;时间创建对象：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-日期时间的加减："><span class="nav-number">3.2.3.</span> <span class="nav-text">3.日期时间的加减：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-将年、月、日、等修改为指定的值，并返回新的日期-时间对象："><span class="nav-number">3.2.4.</span> <span class="nav-text">4.将年、月、日、等修改为指定的值，并返回新的日期&#x2F;时间对象：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-获取日期的年月日周时分秒："><span class="nav-number">3.2.5.</span> <span class="nav-text">5.获取日期的年月日周时分秒：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-时间-日期前后的比较与判断："><span class="nav-number">3.2.6.</span> <span class="nav-text">6.时间&#x2F;日期前后的比较与判断：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-判断是否为闰年："><span class="nav-number">3.2.7.</span> <span class="nav-text">7.判断是否为闰年：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-java8时钟-：-clock"><span class="nav-number">3.2.8.</span> <span class="nav-text">8.java8时钟 ： clock()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-时间戳"><span class="nav-number">3.2.9.</span> <span class="nav-text">9.时间戳:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10-计算时间-日期间隔"><span class="nav-number">3.2.10.</span> <span class="nav-text">10.计算时间&#x2F;日期间隔:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#11-当计算程序的运行时间时，应当使用时间戳Instant"><span class="nav-number">3.2.11.</span> <span class="nav-text">11.当计算程序的运行时间时，应当使用时间戳Instant:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#12-时间日期的格式化（格式化后返回的类型是String）"><span class="nav-number">3.2.12.</span> <span class="nav-text">12.时间日期的格式化（格式化后返回的类型是String）:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#13-long毫秒值转换为日期"><span class="nav-number">3.2.13.</span> <span class="nav-text">13.long毫秒值转换为日期:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Base64编码"><span class="nav-number">4.</span> <span class="nav-text">Base64编码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#内嵌类"><span class="nav-number">4.1.</span> <span class="nav-text">内嵌类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法"><span class="nav-number">4.2.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例"><span class="nav-number">4.3.</span> <span class="nav-text">实例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nashorn"><span class="nav-number">5.</span> <span class="nav-text">Nashorn</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#jjs"><span class="nav-number">5.1.</span> <span class="nav-text">jjs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java中调用JavaScript"><span class="nav-number">5.2.</span> <span class="nav-text">Java中调用JavaScript</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="M1ng"
+      src="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
+  <p class="site-author-name" itemprop="name">M1ng</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Jerrymouse1998" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Jerrymouse1998" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:577373789@qq.com" title="E-Mail → mailto:577373789@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-handshake-o"></i>
+      ↓交换友链QQ:577373789↓
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://jerrymouse1998.github.io/" title="https:&#x2F;&#x2F;jerrymouse1998.github.io&#x2F;">M1ng&Q1ng</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+	  
+	  <!--添加标签云-->
+        
+          <script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+          <script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+          <div class="widget-wrap">
+            <!--<div>标签云</div>-->
+            <div id="myCanvasContainer" class="widget tagcloud">
+              <canvas width="250" height="250" id="resCanvas" style="width=100%">
+              <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/" rel="tag">BFS</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/" rel="tag">DFS</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HashTable/" rel="tag">HashTable</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/" rel="tag">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java8/" rel="tag">Java8</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KMP%E7%AE%97%E6%B3%95/" rel="tag">KMP算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LCP/" rel="tag">LCP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LCS/" rel="tag">LCS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Manacher%E7%AE%97%E6%B3%95/" rel="tag">Manacher算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sunday%E7%AE%97%E6%B3%95/" rel="tag">Sunday算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TreeSet/" rel="tag">TreeSet</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a><span class="tag-list-count">83</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E5%BF%83%E6%89%A9%E5%B1%95/" rel="tag">中心扩展</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E5%88%86%E6%B3%95/" rel="tag">二分法</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BD%8D%E5%9B%BE/" rel="tag">位图</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E6%B2%BB%E7%AE%97%E6%B3%95/" rel="tag">分治算法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag">动态规划</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8E%84%E6%8B%89%E5%A4%9A%E5%A1%9E%E7%AD%9B/" rel="tag">厄拉多塞筛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8C%E6%8C%87%E9%92%88/" rel="tag">双指针</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E6%BA%AF/" rel="tag">回溯</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="tag">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BB%A7%E6%89%BF/" rel="tag">多继承</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="tag">字符串</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80%E5%BC%8F/" rel="tag">康托展开式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%91%A9%E5%B0%94%E6%8A%95%E7%A5%A8%E7%AE%97%E6%B3%95/" rel="tag">摩尔投票算法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E7%BB%84/" rel="tag">数组</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A5%E6%9C%9F%E7%B1%BB/" rel="tag">日期类</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A0%88/" rel="tag">栈</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E7%AE%97%E6%B3%95/" rel="tag">欧几里得算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B5%81%E5%BC%8F%E8%AF%AD%E6%B3%95/" rel="tag">流式语法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/" rel="tag">滑动窗口</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A1%AE%E5%AE%9A%E6%9C%89%E9%99%90%E8%87%AA%E5%8A%A8%E6%9C%BA/" rel="tag">确定有限自动机</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%9C%AF%E5%9F%BA%E6%9C%AC%E5%AE%9A%E7%90%86%E6%B3%95/" rel="tag">算术基本定理法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F/" rel="tag">责任链模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95/" rel="tag">贪心算法</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag">转载</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%93%BE%E8%A1%A8/" rel="tag">链表</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%9F%E5%88%97/" rel="tag">队列</a><span class="tag-list-count">2</span></li></ul>
+              </canvas>
+            </div>
+         </div>
+        
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">M1ng</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">82k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-nest@1/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdnjs.cloudflare.com/ajax/libs/valine/1.3.10/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : true,
+      notify     : true,
+      appId      : 'qeADb7jtYMKlsXEEryXe2Grg-gzGzoHsz',
+      appKey     : 'WGN1y5zOMgAbEHXpunlL2THf',
+      placeholder: "欢迎留言、纠错、交朋友 ^.^ 请注意文明哦！",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+  
+  <!-- 樱花特效 -->
+  <script type="text/javascript">
+    var windowWidth = $(window).width();
+    <!-- if (windowWidth > 480) { -->
+      document.write('<script type="text/javascript" src="/js/sakura.js"><\/script>');
+    <!-- } -->
+  </script>
+
+</body>
+</html>
