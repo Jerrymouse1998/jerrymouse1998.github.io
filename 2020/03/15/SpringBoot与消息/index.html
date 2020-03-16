@@ -17,20 +17,20 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-
+<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/blue/pace-theme-minimal.min.css">
   <script src="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrymouse1998.github.io","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"www.m1ng.top","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="消息（Message）是指软件对象之间进行交互作用和通讯利用的一种方式。中间件（Middleware）是处于操作系统和应用程序之间的软件，也有人认为它应该属于操作系统中的一部分。消息中间件则是将软件与软件之间的交互消息、交互方式进行存储和管理的一种技术,也可以看做是一种容器。消息中间件关注于数据的发送和接收，利用高效可靠的异步消息传递机制集成分布式系统。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SpringBoot与消息服务">
-<meta property="og:url" content="https://jerrymouse1998.github.io/2020/03/15/SpringBoot%E4%B8%8E%E6%B6%88%E6%81%AF/index.html">
+<meta property="og:url" content="http://www.m1ng.top/2020/03/15/SpringBoot%E4%B8%8E%E6%B6%88%E6%81%AF/index.html">
 <meta property="og:site_name" content="M1ng&amp;Q1ng">
 <meta property="og:description" content="消息（Message）是指软件对象之间进行交互作用和通讯利用的一种方式。中间件（Middleware）是处于操作系统和应用程序之间的软件，也有人认为它应该属于操作系统中的一部分。消息中间件则是将软件与软件之间的交互消息、交互方式进行存储和管理的一种技术,也可以看做是一种容器。消息中间件关注于数据的发送和接收，利用高效可靠的异步消息传递机制集成分布式系统。">
 <meta property="og:locale" content="zh_CN">
@@ -52,7 +52,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://s2.ax1x.com/2019/10/17/KAbLlQ.png">
 
-<link rel="canonical" href="https://jerrymouse1998.github.io/2020/03/15/SpringBoot%E4%B8%8E%E6%B6%88%E6%81%AF/">
+<link rel="canonical" href="http://www.m1ng.top/2020/03/15/SpringBoot%E4%B8%8E%E6%B6%88%E6%81%AF/">
 
 
 <script id="page-configurations">
@@ -213,7 +213,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://jerrymouse1998.github.io/2020/03/15/SpringBoot%E4%B8%8E%E6%B6%88%E6%81%AF/">
+    <link itemprop="mainEntityOfPage" href="http://www.m1ng.top/2020/03/15/SpringBoot%E4%B8%8E%E6%B6%88%E6%81%AF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
@@ -507,7 +507,7 @@
     </div>
     <ul class="links-of-blogroll-list">
         <li class="links-of-blogroll-item">
-          <a href="https://jerrymouse1998.github.io/" title="https:&#x2F;&#x2F;jerrymouse1998.github.io&#x2F;">M1ng&Q1ng</a>
+          <a href="https://jerrymouse1998.github.io/" title="https:&#x2F;&#x2F;jerrymouse1998.github.io&#x2F;" rel="noopener" target="_blank">M1ng&Q1ng</a>
         </li>
     </ul>
   </div>

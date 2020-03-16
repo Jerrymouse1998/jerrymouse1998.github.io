@@ -17,20 +17,20 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-
+<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/blue/pace-theme-minimal.min.css">
   <script src="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrymouse1998.github.io","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"www.m1ng.top","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="SpringBoot内部对jsp的支持并不是很理想，而SpringBoot推荐的视图是Thymeleaf、FreeMarker。但是我更加喜欢使用jsp(因为我不会用Thymeleaf)，所以学习一下SpringBoot中使用JSP视图。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SpringBoot中使用JSP">
-<meta property="og:url" content="https://jerrymouse1998.github.io/2020/03/15/SpringBoot%E4%BD%BF%E7%94%A8JSP/index.html">
+<meta property="og:url" content="http://www.m1ng.top/2020/03/15/SpringBoot%E4%BD%BF%E7%94%A8JSP/index.html">
 <meta property="og:site_name" content="M1ng&amp;Q1ng">
 <meta property="og:description" content="SpringBoot内部对jsp的支持并不是很理想，而SpringBoot推荐的视图是Thymeleaf、FreeMarker。但是我更加喜欢使用jsp(因为我不会用Thymeleaf)，所以学习一下SpringBoot中使用JSP视图。">
 <meta property="og:locale" content="zh_CN">
@@ -44,7 +44,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://s2.ax1x.com/2019/09/11/nd7tER.png">
 
-<link rel="canonical" href="https://jerrymouse1998.github.io/2020/03/15/SpringBoot%E4%BD%BF%E7%94%A8JSP/">
+<link rel="canonical" href="http://www.m1ng.top/2020/03/15/SpringBoot%E4%BD%BF%E7%94%A8JSP/">
 
 
 <script id="page-configurations">
@@ -205,7 +205,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://jerrymouse1998.github.io/2020/03/15/SpringBoot%E4%BD%BF%E7%94%A8JSP/">
+    <link itemprop="mainEntityOfPage" href="http://www.m1ng.top/2020/03/15/SpringBoot%E4%BD%BF%E7%94%A8JSP/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
@@ -292,7 +292,7 @@
 <p>然后可以根据自己的需求选择预先加入工程的依赖，我这里选择了web、mysql、mybatis。</p>
 <p>创建出来的项目目录：</p>
 <p><img src="https://s2.ax1x.com/2019/09/11/nd7NU1.png" alt="nd7NU1.png"></p>
-<p>可以发现和上一篇文章<a href="https://jerrymouse1998.github.io/post/springboot入门/">《SpringBoot入门》</a>创建的目录相比多了一个ServletInitializer类，打开这个类：</p>
+<p>可以发现和上一篇文章<a href="https://jerrymouse1998.github.io/post/springboot入门/" target="_blank" rel="noopener">《SpringBoot入门》</a>创建的目录相比多了一个ServletInitializer类，打开这个类：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServletInitializer</span> <span class="keyword">extends</span> <span class="title">SpringBootServletInitializer</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> SpringApplicationBuilder <span class="title">configure</span><span class="params">(SpringApplicationBuilder application)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> application.sources(SpringbootJspApplication<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>发现它继承了<strong>SpringBootServletInitializer</strong>这个父类，而<strong>SpringBootServletInitializer</strong>这个类是<strong>springboot</strong>提供的<strong>web</strong>程序初始化的入口，当我们使用外部容器运行web项目时会自动加载并且装配（不使用SpringBoot内置的tomcat时也需要这个）。这是一个类似于web.xml配置的方式启动spring应用。</p>
@@ -447,7 +447,7 @@
     </div>
     <ul class="links-of-blogroll-list">
         <li class="links-of-blogroll-item">
-          <a href="https://jerrymouse1998.github.io/" title="https:&#x2F;&#x2F;jerrymouse1998.github.io&#x2F;">M1ng&Q1ng</a>
+          <a href="https://jerrymouse1998.github.io/" title="https:&#x2F;&#x2F;jerrymouse1998.github.io&#x2F;" rel="noopener" target="_blank">M1ng&Q1ng</a>
         </li>
     </ul>
   </div>

@@ -17,20 +17,20 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-
+<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/blue/pace-theme-minimal.min.css">
   <script src="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrymouse1998.github.io","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"www.m1ng.top","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="作者：孤独烟  出处： http:&#x2F;&#x2F;rjzheng.cnblogs.com&#x2F; 本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文连接，否则保留追究法律责任的权利。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="分布式之Redis之为什么">
-<meta property="og:url" content="https://jerrymouse1998.github.io/2020/03/15/(%E8%BD%AC)%E5%88%86%E5%B8%83%E5%BC%8F%E4%B9%8BRedis/index.html">
+<meta property="og:url" content="http://www.m1ng.top/2020/03/15/(%E8%BD%AC)%E5%88%86%E5%B8%83%E5%BC%8F%E4%B9%8BRedis/index.html">
 <meta property="og:site_name" content="M1ng&amp;Q1ng">
 <meta property="og:description" content="作者：孤独烟  出处： http:&#x2F;&#x2F;rjzheng.cnblogs.com&#x2F; 本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文连接，否则保留追究法律责任的权利。">
 <meta property="og:locale" content="zh_CN">
@@ -45,7 +45,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://s2.ax1x.com/2019/10/09/uopDIO.png">
 
-<link rel="canonical" href="https://jerrymouse1998.github.io/2020/03/15/(%E8%BD%AC)%E5%88%86%E5%B8%83%E5%BC%8F%E4%B9%8BRedis/">
+<link rel="canonical" href="http://www.m1ng.top/2020/03/15/(%E8%BD%AC)%E5%88%86%E5%B8%83%E5%BC%8F%E4%B9%8BRedis/">
 
 
 <script id="page-configurations">
@@ -206,7 +206,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://jerrymouse1998.github.io/2020/03/15/(%E8%BD%AC)%E5%88%86%E5%B8%83%E5%BC%8F%E4%B9%8BRedis/">
+    <link itemprop="mainEntityOfPage" href="http://www.m1ng.top/2020/03/15/(%E8%BD%AC)%E5%88%86%E5%B8%83%E5%BC%8F%E4%B9%8BRedis/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
@@ -511,7 +511,7 @@
     </div>
     <ul class="links-of-blogroll-list">
         <li class="links-of-blogroll-item">
-          <a href="https://jerrymouse1998.github.io/" title="https:&#x2F;&#x2F;jerrymouse1998.github.io&#x2F;">M1ng&Q1ng</a>
+          <a href="https://jerrymouse1998.github.io/" title="https:&#x2F;&#x2F;jerrymouse1998.github.io&#x2F;" rel="noopener" target="_blank">M1ng&Q1ng</a>
         </li>
     </ul>
   </div>

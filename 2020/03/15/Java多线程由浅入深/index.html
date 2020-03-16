@@ -17,20 +17,20 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-
+<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/blue/pace-theme-minimal.min.css">
   <script src="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrymouse1998.github.io","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"www.m1ng.top","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="进程和线程的概念：这不是一个复杂的概念，网上的解释有很多，引用百度到的一个解释。 转载自博客园。 进程：指在系统中正在运行的一个应用程序；程序一旦运行就是进程；或者更专业化来说：进程是指程序执行时的一个实例，即它是程序已经执行到课中程度的数据结构的汇集。从内核的观点看，进程的目的就是担当分配系统资源（CPU时间、内存等）的基本单位。 线程：系统分配处理器时间资源的基本单元，或者说进程之内独立执">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java多线程">
-<meta property="og:url" content="https://jerrymouse1998.github.io/2020/03/15/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1/index.html">
+<meta property="og:url" content="http://www.m1ng.top/2020/03/15/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1/index.html">
 <meta property="og:site_name" content="M1ng&amp;Q1ng">
 <meta property="og:description" content="进程和线程的概念：这不是一个复杂的概念，网上的解释有很多，引用百度到的一个解释。 转载自博客园。 进程：指在系统中正在运行的一个应用程序；程序一旦运行就是进程；或者更专业化来说：进程是指程序执行时的一个实例，即它是程序已经执行到课中程度的数据结构的汇集。从内核的观点看，进程的目的就是担当分配系统资源（CPU时间、内存等）的基本单位。 线程：系统分配处理器时间资源的基本单元，或者说进程之内独立执">
 <meta property="og:locale" content="zh_CN">
@@ -43,7 +43,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://s2.ax1x.com/2019/09/24/uAzL6I.png">
 
-<link rel="canonical" href="https://jerrymouse1998.github.io/2020/03/15/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1/">
+<link rel="canonical" href="http://www.m1ng.top/2020/03/15/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1/">
 
 
 <script id="page-configurations">
@@ -204,7 +204,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://jerrymouse1998.github.io/2020/03/15/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1/">
+    <link itemprop="mainEntityOfPage" href="http://www.m1ng.top/2020/03/15/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
@@ -341,7 +341,7 @@
 
 <p>运行程序，两个while循环中的字符串不断地交替打印。大概是下图这个样子：</p>
 <p><img src="https://s2.ax1x.com/2019/09/24/uAzL6I.png" alt="uAzL6I.png"></p>
-<p>虽然继承Thread类实现了多线程，但是这种方式有一定的局限性：因为Java只支持单继承(之前写的<a href="https://jerrymouse1998.github.io/post/java%E5%A4%9A%E7%BB%A7%E6%89%BF%E9%97%AE%E9%A2%98/">Java继承策略</a>中聊过)，一个类一旦继承了某个父类就无法再继承Thread类。</p>
+<p>虽然继承Thread类实现了多线程，但是这种方式有一定的局限性：因为Java只支持单继承(之前写的<a href="https://jerrymouse1998.github.io/post/java%E5%A4%9A%E7%BB%A7%E6%89%BF%E9%97%AE%E9%A2%98/" target="_blank" rel="noopener">Java继承策略</a>中聊过)，一个类一旦继承了某个父类就无法再继承Thread类。</p>
 <p>虽然可以通过内部类继承Thread类的方法解决这个问题，但是显然这不会是一个好的方法。于是，Java还提供了<strong>实现Runnable接口</strong>创建多线程的方法，Thread类提供了一个<strong>构造方法Thread(Runnable target)</strong>。其中，Runnable是一个接口，他只有一个run()方法：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -353,7 +353,7 @@
 <p>也可以实现和继承Thread类一样的效果，Runnable再应用时经常用匿名内部类的方式创建实例：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Thread thread = <span class="keyword">new</span> Thread(()-&gt;&#123;</span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>)&#123;</span><br><span class="line">                System.out.println(<span class="string">"MyThread的run方法在运行"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);<span class="comment">//Lambda表达式创建Runnable的匿名内部类传参</span></span><br><span class="line">        thread.start();</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>)&#123;</span><br><span class="line">            System.out.println(<span class="string">"Main方法的循环"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>还不会流式语法的朋友可以参考之前的文章：<a href="https://jerrymouse1998.github.io/post/java8特性一/">Java8特性(一)</a></p>
+<p>还不会流式语法的朋友可以参考之前的文章：<a href="https://jerrymouse1998.github.io/post/java8特性一/" target="_blank" rel="noopener">Java8特性(一)</a></p>
 <hr>
 <h2 id="继承Thread类和实现Runnable接口的区别："><a href="#继承Thread类和实现Runnable接口的区别：" class="headerlink" title="继承Thread类和实现Runnable接口的区别："></a>继承Thread类和实现Runnable接口的区别：</h2><p>还是先看个例子：假设售票厅有4个窗口可发售某日某次列车的票100张，这时100张车票可以看作是共享资源，四个售票窗口需要创建4个线程。</p>
 <p>先用继承Thread类方式创建多线程：</p>
@@ -691,7 +691,7 @@
     </div>
     <ul class="links-of-blogroll-list">
         <li class="links-of-blogroll-item">
-          <a href="https://jerrymouse1998.github.io/" title="https:&#x2F;&#x2F;jerrymouse1998.github.io&#x2F;">M1ng&Q1ng</a>
+          <a href="https://jerrymouse1998.github.io/" title="https:&#x2F;&#x2F;jerrymouse1998.github.io&#x2F;" rel="noopener" target="_blank">M1ng&Q1ng</a>
         </li>
     </ul>
   </div>

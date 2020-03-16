@@ -17,20 +17,20 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-
+<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/blue/pace-theme-minimal.min.css">
   <script src="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrymouse1998.github.io","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"www.m1ng.top","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="在开发SpringBoot的Web应用时，经常需要的重启Web服务器才能使最新修改的代码、配置文件、静态文件生效，这样就不够“优雅”了。想要改变这种情况也并不繁琐，需要我们加入“热部署”的支持，就可以在不重启Web服务器的情况下保证各项文件的修改立即生效。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="优雅编程(四)——热部署">
-<meta property="og:url" content="https://jerrymouse1998.github.io/2020/03/15/%E4%BC%98%E9%9B%85%E7%BC%96%E7%A8%8B(%E5%9B%9B)%E2%80%94%E2%80%94%E7%83%AD%E9%83%A8%E7%BD%B2/index.html">
+<meta property="og:url" content="http://www.m1ng.top/2020/03/15/%E4%BC%98%E9%9B%85%E7%BC%96%E7%A8%8B(%E5%9B%9B)%E2%80%94%E2%80%94%E7%83%AD%E9%83%A8%E7%BD%B2/index.html">
 <meta property="og:site_name" content="M1ng&amp;Q1ng">
 <meta property="og:description" content="在开发SpringBoot的Web应用时，经常需要的重启Web服务器才能使最新修改的代码、配置文件、静态文件生效，这样就不够“优雅”了。想要改变这种情况也并不繁琐，需要我们加入“热部署”的支持，就可以在不重启Web服务器的情况下保证各项文件的修改立即生效。">
 <meta property="og:locale" content="zh_CN">
@@ -45,7 +45,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://s2.ax1x.com/2019/11/28/QiSQTH.md.png">
 
-<link rel="canonical" href="https://jerrymouse1998.github.io/2020/03/15/%E4%BC%98%E9%9B%85%E7%BC%96%E7%A8%8B(%E5%9B%9B)%E2%80%94%E2%80%94%E7%83%AD%E9%83%A8%E7%BD%B2/">
+<link rel="canonical" href="http://www.m1ng.top/2020/03/15/%E4%BC%98%E9%9B%85%E7%BC%96%E7%A8%8B(%E5%9B%9B)%E2%80%94%E2%80%94%E7%83%AD%E9%83%A8%E7%BD%B2/">
 
 
 <script id="page-configurations">
@@ -206,7 +206,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://jerrymouse1998.github.io/2020/03/15/%E4%BC%98%E9%9B%85%E7%BC%96%E7%A8%8B(%E5%9B%9B)%E2%80%94%E2%80%94%E7%83%AD%E9%83%A8%E7%BD%B2/">
+    <link itemprop="mainEntityOfPage" href="http://www.m1ng.top/2020/03/15/%E4%BC%98%E9%9B%85%E7%BC%96%E7%A8%8B(%E5%9B%9B)%E2%80%94%E2%80%94%E7%83%AD%E9%83%A8%E7%BD%B2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
@@ -442,7 +442,7 @@
     </div>
     <ul class="links-of-blogroll-list">
         <li class="links-of-blogroll-item">
-          <a href="https://jerrymouse1998.github.io/" title="https:&#x2F;&#x2F;jerrymouse1998.github.io&#x2F;">M1ng&Q1ng</a>
+          <a href="https://jerrymouse1998.github.io/" title="https:&#x2F;&#x2F;jerrymouse1998.github.io&#x2F;" rel="noopener" target="_blank">M1ng&Q1ng</a>
         </li>
     </ul>
   </div>

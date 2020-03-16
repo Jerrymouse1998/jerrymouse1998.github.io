@@ -17,20 +17,20 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-
+<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/blue/pace-theme-minimal.min.css">
   <script src="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jerrymouse1998.github.io","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"www.m1ng.top","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="如果你也在用 MyBatis，建议尝试该分页插件，该插件支持很多复杂的单表、多表物理分页。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="优雅编程（三）——MybatisPageHelper">
-<meta property="og:url" content="https://jerrymouse1998.github.io/2020/03/15/%E4%BC%98%E9%9B%85%E7%BC%96%E7%A8%8B(%E4%B8%89)%E2%80%94%E2%80%94MybatisPageHelper/index.html">
+<meta property="og:url" content="http://www.m1ng.top/2020/03/15/%E4%BC%98%E9%9B%85%E7%BC%96%E7%A8%8B(%E4%B8%89)%E2%80%94%E2%80%94MybatisPageHelper/index.html">
 <meta property="og:site_name" content="M1ng&amp;Q1ng">
 <meta property="og:description" content="如果你也在用 MyBatis，建议尝试该分页插件，该插件支持很多复杂的单表、多表物理分页。">
 <meta property="og:locale" content="zh_CN">
@@ -42,7 +42,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://s2.ax1x.com/2019/11/23/MHIcWj.md.png">
 
-<link rel="canonical" href="https://jerrymouse1998.github.io/2020/03/15/%E4%BC%98%E9%9B%85%E7%BC%96%E7%A8%8B(%E4%B8%89)%E2%80%94%E2%80%94MybatisPageHelper/">
+<link rel="canonical" href="http://www.m1ng.top/2020/03/15/%E4%BC%98%E9%9B%85%E7%BC%96%E7%A8%8B(%E4%B8%89)%E2%80%94%E2%80%94MybatisPageHelper/">
 
 
 <script id="page-configurations">
@@ -203,7 +203,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://jerrymouse1998.github.io/2020/03/15/%E4%BC%98%E9%9B%85%E7%BC%96%E7%A8%8B(%E4%B8%89)%E2%80%94%E2%80%94MybatisPageHelper/">
+    <link itemprop="mainEntityOfPage" href="http://www.m1ng.top/2020/03/15/%E4%BC%98%E9%9B%85%E7%BC%96%E7%A8%8B(%E4%B8%89)%E2%80%94%E2%80%94MybatisPageHelper/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
@@ -303,7 +303,7 @@
 <p>甚至可以不进行任何PageHelper的配置即可使用，粘出演示应用的配置：</p>
 <figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#pageHelper</span></span><br><span class="line"><span class="comment">#pagehelper.helper-dialect=mysql</span></span><br><span class="line"><span class="comment">#pagehelper.reasonable=true</span></span><br><span class="line"><span class="comment">#pagehelper.support-methods-arguments=true</span></span><br><span class="line"><span class="comment">#pagehelper.params=count=countSql</span></span><br><span class="line"><span class="comment">#Mybatis</span></span><br><span class="line"><span class="meta">mybatis.type-aliases-package</span>=<span class="string">com.example.testpagehelper.edu.li.pojo</span></span><br><span class="line"><span class="meta">mybatis.mapper-locations</span>=<span class="string">classpath:mapper/*.xml</span></span><br><span class="line"><span class="meta">spring.datasource.driver-class-name</span>=<span class="string">com.mysql.cj.jdbc.Driver</span></span><br><span class="line"><span class="meta">spring.datasource.url</span>=<span class="string">jdbc:mysql://localhost:3306/test?serverTimezone=Asia/Shanghai</span></span><br><span class="line"><span class="meta">spring.datasource.username</span>=<span class="string">root</span></span><br><span class="line"><span class="meta">spring.datasource.password</span>=<span class="string">123</span></span><br><span class="line"></span><br><span class="line"><span class="meta">logging.level.com.example.testpagehelper.edu.li.dao</span>=<span class="string">debug</span></span><br></pre></td></tr></table></figure>
 
-<p>因为演示应用比较简单，所以直接使用mybatis-generator生成了持久层代码（pojo、mapper、mapper.xml），如果还没用过mybatis-generator这一利器的话，可以看一下上一篇博文——<a href="https://jerrymouse1998.github.io/post/%E4%BC%98%E9%9B%85%E7%BC%96%E7%A8%8B%E4%BA%8Cmybatisgenerator/">优雅编程（二）</a>。</p>
+<p>因为演示应用比较简单，所以直接使用mybatis-generator生成了持久层代码（pojo、mapper、mapper.xml），如果还没用过mybatis-generator这一利器的话，可以看一下上一篇博文——<a href="https://jerrymouse1998.github.io/post/%E4%BC%98%E9%9B%85%E7%BC%96%E7%A8%8B%E4%BA%8Cmybatisgenerator/" target="_blank" rel="noopener">优雅编程（二）</a>。</p>
 <p>完成了上述操作，即可开始使用了：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserServiceImpl</span> <span class="keyword">implements</span> <span class="title">UserService</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    UserMapper userMapper;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;User&gt; <span class="title">selectAllUsers</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//使用静态方法startPage方法即可开启分页操作，自动将后面的查询进行分页操作</span></span><br><span class="line">        PageHelper.startPage(<span class="number">1</span>,<span class="number">7</span>);</span><br><span class="line">        <span class="comment">//直接使用自动生成的mapper接口方法</span></span><br><span class="line">        <span class="keyword">return</span> userMapper.selectByExample(<span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -450,7 +450,7 @@
     </div>
     <ul class="links-of-blogroll-list">
         <li class="links-of-blogroll-item">
-          <a href="https://jerrymouse1998.github.io/" title="https:&#x2F;&#x2F;jerrymouse1998.github.io&#x2F;">M1ng&Q1ng</a>
+          <a href="https://jerrymouse1998.github.io/" title="https:&#x2F;&#x2F;jerrymouse1998.github.io&#x2F;" rel="noopener" target="_blank">M1ng&Q1ng</a>
         </li>
     </ul>
   </div>
