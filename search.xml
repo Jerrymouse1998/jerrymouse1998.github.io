@@ -1,6 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>[LeetCode]——文本左右对齐</title>
+    <url>/2020/03/17/%5BLeetCode%5D%E2%80%94%E2%80%94%E6%96%87%E6%9C%AC%E5%B7%A6%E5%8F%B3%E5%AF%B9%E9%BD%90/</url>
+    <content><![CDATA[<p>又是一道很恶心的题，本身没有什么难以理解的算法或结构，全是细节堆积出来的。<a id="more"></a></p>
+<h2 id="NO-68-文本左右对齐-困难"><a href="#NO-68-文本左右对齐-困难" class="headerlink" title="NO.68 文本左右对齐 困难"></a>NO.68 文本左右对齐 <font color=#ff0099>困难</font></h2><p><img src="https://s1.ax1x.com/2020/03/17/8tq18P.png" alt="8tq18P.png"></p>
+<p><img src="https://s1.ax1x.com/2020/03/17/8tqM4I.png" alt="8tqM4I.png"></p>
+<p><strong><font color=red>思路一：顺着思路模拟</font></strong> 直接贴一个discuss，看一下思路：</p>
+<p>首先要理顺题意，给定一堆单词，让你放在固定长度字符串里</p>
+<ol>
+<li><p>两个单词之间至少有一个空格，如果单词加空格长度超过<code>maxWidth</code>，说明该单词放不下，比如示例1:当我们保证<code>this is an</code>再加入<code>example</code>变成<code>this is an example</code>总长度超过<code>maxWidth</code>，所以这一行只能放下<code>this is an</code> 这三个单词;</p>
+</li>
+<li><p><code>this is an</code>长度小于<code>maxWidth</code>，我们考虑分配空格，并保证左边空格数大于右边的</p>
+</li>
+<li><p>最后一行，要尽量靠左，例如示例2的:”shall be “<br>我们针对上面三个问题，有如下解决方案.</p>
+</li>
+<li><p>先找到一行最多可以容下几个单词;</p>
+</li>
+<li><p>分配空格，例如<code>this is an</code>，对于宽度为<code>maxWidth</code>，我们可以用<code>maxWidth - all_word_len</code>与需要空格数商为 单词间 空格至少的个数，余数是一个一个分配给左边.就能保证左边空格数大于右边的.例如<code>16 - 8 = 8</code>，<code>a = 8 / 2</code>， <code>b = 8 % 2</code>两个单词间要有4个空格，因为余数为零不用分配;</p>
+</li>
+<li><p>针对最后一行单独考虑;</p>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">fullJustify</span><span class="params">(String[] words, <span class="keyword">int</span> maxWidth)</span> </span>&#123;</span><br><span class="line">    List&lt;String&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> n = words.length;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; n) &#123;</span><br><span class="line">        <span class="comment">// 找到一行可以容下单词</span></span><br><span class="line">        <span class="keyword">int</span> left = i;</span><br><span class="line">        <span class="comment">// 至少一行能放下一个单词</span></span><br><span class="line">        <span class="keyword">int</span> cur_row_len = words[i].length();</span><br><span class="line">        i++;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (i &lt; n) &#123;</span><br><span class="line">            <span class="keyword">if</span> (cur_row_len + words[i].length() + <span class="number">1</span> &gt; maxWidth) <span class="keyword">break</span>;</span><br><span class="line">            ;</span><br><span class="line">            cur_row_len += words[i].length() + <span class="number">1</span>;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">        StringBuilder tmp = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        <span class="comment">// 考虑最后一行</span></span><br><span class="line">        <span class="keyword">if</span> (i == n) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = left; j &lt; i; j++) &#123;</span><br><span class="line">                tmp.append(words[j] + <span class="string">" "</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            tmp.deleteCharAt(tmp.length() - <span class="number">1</span>);</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = tmp.length(); j &lt; maxWidth; j++)</span><br><span class="line">                tmp.append(<span class="string">" "</span>);</span><br><span class="line">            res.add(tmp.toString());</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 所有单词长度</span></span><br><span class="line">        <span class="keyword">int</span> all_word_len = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = left; j &lt; i; j++) &#123;</span><br><span class="line">            all_word_len += words[j].length();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//System.out.println(all_word_len);</span></span><br><span class="line">        <span class="comment">// 至少空格个数</span></span><br><span class="line">        <span class="keyword">int</span> space_num = i - left - <span class="number">1</span>;</span><br><span class="line">        <span class="comment">// 可以为空格的位置个数</span></span><br><span class="line">        <span class="keyword">int</span> remain_space = maxWidth - all_word_len;</span><br><span class="line">        <span class="keyword">int</span> a = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> b = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (space_num != <span class="number">0</span>) &#123;</span><br><span class="line">            a = remain_space / space_num;</span><br><span class="line">            b = remain_space % space_num;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = left; j &lt; i; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (tmp.length() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; a; k++) tmp.append(<span class="string">" "</span>);</span><br><span class="line">                <span class="keyword">if</span> (b != <span class="number">0</span>) &#123;</span><br><span class="line">                    tmp.append(<span class="string">" "</span>);</span><br><span class="line">                    b--;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            tmp.append(words[j]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = tmp.length(); j &lt; maxWidth; j++) &#123;</span><br><span class="line">            tmp.append(<span class="string">" "</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        res.add(tmp.toString());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    遍历</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>字符串</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[LeetCode]——拼写单词</title>
+    <url>/2020/03/17/%5BLeetCode%5D%E2%80%94%E2%80%94%E6%8B%BC%E5%86%99%E5%8D%95%E8%AF%8D/</url>
+    <content><![CDATA[<h2 id="NO-1160-拼写单词-简单"><a href="#NO-1160-拼写单词-简单" class="headerlink" title="NO.1160 拼写单词 简单 "></a>NO.1160 拼写单词 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/17/8tIKN6.png" alt="8tIKN6.png"></p>
+<p><strong><font color=red>思路一：哈希表</font></strong> map先统计chars字符以及每个字符的数量。遍历words每个单词，遍历每个单词每个字符如果字符存在map中就加入临时表并统计数量，如果当前字符不存在或者数量超了都将有效标志置为false。最后如果当前单词有效就将长度加入到结果中。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">countCharacters</span><span class="params">(String[] words, String chars)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (chars==<span class="keyword">null</span>||chars.length()&lt;<span class="number">1</span>)<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//统计chars</span></span><br><span class="line">    HashMap&lt;Character,Integer&gt; map=<span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; chars.length(); i++) &#123;</span><br><span class="line">        Integer value = map.getOrDefault(chars.charAt(i), <span class="number">0</span>);</span><br><span class="line">        map.put(chars.charAt(i),value+<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//遍历每个单词</span></span><br><span class="line">    <span class="keyword">int</span> count=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; words.length; i++) &#123;</span><br><span class="line">        <span class="comment">//临时长度遍历，临时表，有效标志</span></span><br><span class="line">        <span class="keyword">int</span> temp=<span class="number">0</span>;</span><br><span class="line">        HashMap&lt;Character,Integer&gt; has=<span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="keyword">boolean</span> ok=<span class="keyword">true</span>;</span><br><span class="line">        <span class="comment">//遍历单词每个字符</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; words[i].length(); j++) &#123;</span><br><span class="line">            <span class="comment">//存在于map</span></span><br><span class="line">            <span class="keyword">if</span> (map.containsKey(words[i].charAt(j)))&#123;</span><br><span class="line">                <span class="keyword">int</span> value=has.getOrDefault(words[i].charAt(j),<span class="number">0</span>);</span><br><span class="line">                has.put(words[i].charAt(j),value+<span class="number">1</span>);</span><br><span class="line">                temp++;</span><br><span class="line">                <span class="comment">//数量超了</span></span><br><span class="line">                <span class="keyword">if</span> (has.get(words[i].charAt(j))&gt;map.get(words[i].charAt(j)))&#123;</span><br><span class="line">                    ok=<span class="keyword">false</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;<span class="comment">//不存在于map</span></span><br><span class="line">                ok=<span class="keyword">false</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//如果有效加入结果</span></span><br><span class="line">        <span class="keyword">if</span> (ok)count+=temp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n+m)  n是words字符数量，m是chars字符数量。</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>HashTable</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>分布式之Redis之为什么</title>
     <url>/2020/03/15/(%E8%BD%AC)%E5%88%86%E5%B8%83%E5%BC%8F%E4%B9%8BRedis/</url>
     <content><![CDATA[<p>作者：孤独烟 </p>
