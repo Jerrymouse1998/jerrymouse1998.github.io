@@ -1,6 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>[LeetCode]——x的平方根</title>
+    <url>/2020/03/18/%5BLeetCode%5D%E2%80%94%E2%80%94x%E7%9A%84%E5%B9%B3%E6%96%B9%E6%A0%B9/</url>
+    <content><![CDATA[<h2 id="NO-69-x的平方根-简单"><a href="#NO-69-x的平方根-简单" class="headerlink" title="NO.69 x的平方根 简单 "></a>NO.69 x的平方根 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/17/8ax9YD.png" alt="8ax9YD.png"></p>
+<h3 id="思路一：二分法"><a href="#思路一：二分法" class="headerlink" title="思路一：二分法"></a><strong><font color=red>思路一：二分法</font></strong></h3><p>一个数的平方根一定不会大于这个数的一半，4的平方根2，8的平方根2.xxx。</p>
+<p>也就是说我们只需要寻找[1,x/2]这个范围里的出就可以了，0单独判断，在确定的区间里二分查找。</p>
+<p>left、right、mid、平方数 都要用long类型防止大整形测试用例。</p>
+<p>mid一定取右中位数，如果取左中位数，可能死循环。例如9，left=3，right=4，一直是9&lt;9不成立进入<code>left=mid</code>这个分支，区间不发生收缩。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">mySqrt</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (x==<span class="number">0</span>)<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">long</span> left=<span class="number">1</span>,right=x/<span class="number">2</span>;</span><br><span class="line">    <span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">        <span class="comment">//取右中位数</span></span><br><span class="line">        <span class="keyword">long</span> mid=(left+right+<span class="number">1</span>)&gt;&gt;&gt;<span class="number">1</span>;<span class="comment">//(right-left+1)/2+left</span></span><br><span class="line">        <span class="keyword">long</span> square=mid*mid;</span><br><span class="line">        <span class="keyword">if</span> (square &gt; x) &#123;<span class="comment">//向左收缩</span></span><br><span class="line">            right=mid-<span class="number">1</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            left=mid;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">int</span>)left;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(logn)</p>
+<h3 id="思路二：牛顿迭代法"><a href="#思路二：牛顿迭代法" class="headerlink" title="思路二：牛顿迭代法"></a><strong><font color=red>思路二：牛顿迭代法</font></strong></h3><p>数学粉末直接搬运<a href="https://liweiwei1419.gitee.io/leetcode-algo/" target="_blank" rel="noopener">liweiwei1419</a>大佬的讲解。</p>
+<p>使用牛顿法可以得到一个正实数的算术平方根，因为题目中说“结果只保留整数部分”，因此，我们把使用牛顿法得到的浮点数转换为整数即可。</p>
+<p>这里给出牛顿法的思想：</p>
+<blockquote>
+<p>在迭代过程中，以直线代替曲线，用一阶泰勒展式（即在当前点的切线）代替原曲线，求直线与 xx 轴的交点，重复这个过程直到收敛。</p>
+</blockquote>
+<p><img src="https://s1.ax1x.com/2020/03/18/8dQD00.gif" alt="8dQD00.gif"></p>
+<p>说明：</p>
+<ol>
+<li>以上图片来自<a href="https://blog.csdn.net/batuwuhanpei/article/details/51979831" target="_blank" rel="noopener">《牛顿法与拟牛顿法》</a>；</li>
+<li>题解<a href="https://leetcode-cn.com/problems/sqrtx/solution/niu-dun-die-dai-fa-by-loafer/" target="_blank" rel="noopener">《牛顿迭代法》</a> 的图和文字说明更好，而知乎问答<a href="https://www.zhihu.com/question/20690553" target="_blank" rel="noopener">《如何通俗易懂地讲解牛顿迭代法求开方？数值分析？》</a>里面干货就更多了，建议大家出门左转观看，我这篇题解只是展示一下迭代公式如何计算。</li>
+</ol>
+<p><img src="https://s1.ax1x.com/2020/03/18/8dl1gJ.png" alt="8dl1gJ.png"></p>
+<p>注意：牛顿法得到的是平方根的浮点型精确值（可能会有一定误差），根据题目中的要求，把最后得到的这个数转换为 int 型，即去掉小数部分即可。</p>
+<p>对“牛顿法”感兴趣的朋友们可以查一下牛顿法的应用：一个是求方程的根，另一个是求解最优化问题，在这里就不展开了。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">mySqrt</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">long</span> a=x;</span><br><span class="line">    <span class="keyword">while</span> (a * a &gt; x) &#123;</span><br><span class="line">        a=(a+x/a)/<span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">int</span>)a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>说明：1e-6 是科学计数法，表示 11 乘以 1010 的负 66 次方，也就是 0.0000010.000001。有的地方使用 epsilon（ϵ）表示 1e-6 ，用来抵消浮点运算中因为误差造成的相等无法判断的情况，它通常是一个非常小的数字，具体多小要根据你的精度需求来设置。</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>二分法</tag>
+        <tag>牛顿迭代法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>[LeetCode]——文本左右对齐</title>
     <url>/2020/03/17/%5BLeetCode%5D%E2%80%94%E2%80%94%E6%96%87%E6%9C%AC%E5%B7%A6%E5%8F%B3%E5%AF%B9%E9%BD%90/</url>
     <content><![CDATA[<p>又是一道很恶心的题，本身没有什么难以理解的算法或结构，全是细节堆积出来的。<a id="more"></a></p>
