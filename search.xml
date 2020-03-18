@@ -1,6 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>[LeetCode]——矩形重叠</title>
+    <url>/2020/03/18/%5BLeetCode%5D%E2%80%94%E2%80%94%E7%9F%A9%E5%BD%A2%E9%87%8D%E5%8F%A0/</url>
+    <content><![CDATA[<h2 id="NO-863-矩形重叠-简单"><a href="#NO-863-矩形重叠-简单" class="headerlink" title="NO.863 矩形重叠 简单 "></a>NO.863 矩形重叠 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/18/8wpQxg.png" alt="8wpQxg.png"></p>
+<p><strong><font color=red>思路一：投影区间</font></strong> 在二维坐标系中将rec1和rec2的坐标分别投影到x轴和y轴上，在x、y轴上分别形成各自的投影区间。</p>
+<p><img src="https://s1.ax1x.com/2020/03/18/8wiYXF.png" alt="8wiYXF.png"></p>
+<p>然后判断区间是否重叠，当且仅当x、y轴区间同时发生重叠，rec1和rec2才发生重叠。</p>
+<p>我们只判断区间不重叠的情况即可，不重叠的非就是重叠。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isRectangleOverlap</span><span class="params">(<span class="keyword">int</span>[] rec1, <span class="keyword">int</span>[] rec2)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//x、y轴投影区间不重叠两种情况，非运算就是重叠</span></span><br><span class="line">    <span class="keyword">boolean</span> xIsOverlap=!(rec1[<span class="number">2</span>]&lt;=rec2[<span class="number">0</span>]||rec2[<span class="number">2</span>]&lt;=rec1[<span class="number">0</span>]);</span><br><span class="line">    <span class="keyword">boolean</span> yIsOverlap=!(rec1[<span class="number">3</span>]&lt;=rec2[<span class="number">1</span>]||rec2[<span class="number">3</span>]&lt;=rec1[<span class="number">1</span>]);</span><br><span class="line">    <span class="comment">//当且仅当x、y轴区间都重叠，矩形才重叠</span></span><br><span class="line">    <span class="keyword">return</span> xIsOverlap&amp;&amp;yIsOverlap;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(1)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[LeetCode]——爬楼梯</title>
+    <url>/2020/03/18/%5BLeetCode%5D%E2%80%94%E2%80%94%E7%88%AC%E6%A5%BC%E6%A2%AF/</url>
+    <content><![CDATA[<h2 id="NO-70-爬楼梯-简单"><a href="#NO-70-爬楼梯-简单" class="headerlink" title="NO.70 爬楼梯 简单 "></a>NO.70 爬楼梯 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/18/8wk1MT.png" alt="8wk1MT.png"></p>
+<h3 id="思路一：深搜-超时"><a href="#思路一：深搜-超时" class="headerlink" title="思路一：深搜 超时"></a><strong><font color=red>思路一：深搜</font></strong> 超时</h3><p>两种情况，走一层和走两层。触底返回。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">climbStairs</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (n)&#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>:<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">2</span>:<span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> climbStairs(n-<span class="number">1</span>)+climbStairs(n-<span class="number">2</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>情况太多没做记忆化递归，就是个暴力。</p>
+<h2 id="思路二：动态规划"><a href="#思路二：动态规划" class="headerlink" title="思路二：动态规划"></a><strong><font color=red>思路二：动态规划</font></strong></h2><p>dp数组含义：dp[i]表示i阶有多少中走法。</p>
+<p>初始化：dp[0]=1、dp[1]=1。</p>
+<p>状态转移：dp[i]=dp[i-1]+dp[i-2]，第i阶是从i-1阶一次走一步上来和i-2阶一次走两步上来这两情况组成的。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">climbStairs</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>[] dp=<span class="keyword">new</span> <span class="keyword">int</span>[n+<span class="number">1</span>];</span><br><span class="line">    dp[<span class="number">0</span>]=dp[<span class="number">1</span>]=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        dp[i]=dp[i-<span class="number">1</span>]+dp[i-<span class="number">2</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[n];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<h3 id="思路三：数学"><a href="#思路三：数学" class="headerlink" title="思路三：数学"></a><strong><font color=red>思路三：数学</font></strong></h3><p>从dp状态转移方程不难看出这是斐波那契数列，公式如下：</p>
+<p><img src="https://s1.ax1x.com/2020/03/18/8wZfAg.png" alt="8wZfAg.png"></p>
+<p>直接公式实现。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">climbStairs</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">double</span> sqrt_5 = Math.sqrt(<span class="number">5</span>);</span><br><span class="line">    <span class="keyword">double</span> fib_n = Math.pow((<span class="number">1</span> + sqrt_5) / <span class="number">2</span>, n + <span class="number">1</span>) - Math.pow((<span class="number">1</span> - sqrt_5) / <span class="number">2</span>,n + <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">int</span>)(fib_n / sqrt_5);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(logn)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>动态规划</tag>
+        <tag>Fibonacci</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>[LeetCode]——x的平方根</title>
     <url>/2020/03/18/%5BLeetCode%5D%E2%80%94%E2%80%94x%E7%9A%84%E5%B9%B3%E6%96%B9%E6%A0%B9/</url>
     <content><![CDATA[<h2 id="NO-69-x的平方根-简单"><a href="#NO-69-x的平方根-简单" class="headerlink" title="NO.69 x的平方根 简单 "></a>NO.69 x的平方根 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/17/8ax9YD.png" alt="8ax9YD.png"></p>
@@ -1039,9 +1095,7 @@
   <entry>
     <title>Java多线程</title>
     <url>/2020/03/15/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1/</url>
-    <content><![CDATA[<a id="more"></a>
-
-<h2 id="进程和线程的概念："><a href="#进程和线程的概念：" class="headerlink" title="进程和线程的概念："></a>进程和线程的概念：</h2><p>这不是一个复杂的概念，网上的解释有很多，引用百度到的一个解释。</p>
+    <content><![CDATA[<h2 id="进程和线程的概念："><a href="#进程和线程的概念：" class="headerlink" title="进程和线程的概念："></a>进程和线程的概念：<a id="more"></a></h2><p>这不是一个复杂的概念，网上的解释有很多，引用百度到的一个解释。</p>
 <p>转载自<a href="https://www.cnblogs.com/Jones-dd/p/8858995.html" target="_blank" rel="noopener">博客园</a>。</p>
 <p><strong>进程：</strong>指在系统中正在运行的一个应用程序；程序一旦运行就是进程；或者更专业化来说：进程是指程序执行时的一个实例，即它是程序已经执行到课中程度的数据结构的汇集。从内核的观点看，进程的目的就是担当分配系统资源（CPU时间、内存等）的基本单位。</p>
 <p><strong>线程：</strong>系统分配处理器时间资源的基本单元，或者说进程之内独立执行的一个单元执行流。进程——资源分配的最小单位，线程——程序执行的最小单位。</p>
@@ -1095,7 +1149,7 @@
 
 <p>运行程序，两个while循环中的字符串不断地交替打印。大概是下图这个样子：</p>
 <p><img src="https://s2.ax1x.com/2019/09/24/uAzL6I.png" alt="uAzL6I.png"></p>
-<p>虽然继承Thread类实现了多线程，但是这种方式有一定的局限性：因为Java只支持单继承(之前写的<a href="https://jerrymouse1998.github.io/post/java%E5%A4%9A%E7%BB%A7%E6%89%BF%E9%97%AE%E9%A2%98/">Java继承策略</a>中聊过)，一个类一旦继承了某个父类就无法再继承Thread类。</p>
+<p>虽然继承Thread类实现了多线程，但是这种方式有一定的局限性：因为Java只支持单继承(之前写的<a href="https://jerrymouse1998.github.io/post/java%E5%A4%9A%E7%BB%A7%E6%89%BF%E9%97%AE%E9%A2%98/" target="_blank" rel="noopener">Java继承策略</a>中聊过)，一个类一旦继承了某个父类就无法再继承Thread类。</p>
 <p>虽然可以通过内部类继承Thread类的方法解决这个问题，但是显然这不会是一个好的方法。于是，Java还提供了<strong>实现Runnable接口</strong>创建多线程的方法，Thread类提供了一个<strong>构造方法Thread(Runnable target)</strong>。其中，Runnable是一个接口，他只有一个run()方法：</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -1107,7 +1161,7 @@
 <p>也可以实现和继承Thread类一样的效果，Runnable再应用时经常用匿名内部类的方式创建实例：</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Thread thread = <span class="keyword">new</span> Thread(()-&gt;&#123;</span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>)&#123;</span><br><span class="line">                System.out.println(<span class="string">"MyThread的run方法在运行"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);<span class="comment">//Lambda表达式创建Runnable的匿名内部类传参</span></span><br><span class="line">        thread.start();</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>)&#123;</span><br><span class="line">            System.out.println(<span class="string">"Main方法的循环"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>还不会流式语法的朋友可以参考之前的文章：<a href="https://jerrymouse1998.github.io/post/java8特性一/">Java8特性(一)</a></p>
+<p>还不会流式语法的朋友可以参考之前的文章：<a href="https://jerrymouse1998.github.io/post/java8特性一/" target="_blank" rel="noopener">Java8特性(一)</a></p>
 <hr>
 <h2 id="继承Thread类和实现Runnable接口的区别："><a href="#继承Thread类和实现Runnable接口的区别：" class="headerlink" title="继承Thread类和实现Runnable接口的区别："></a>继承Thread类和实现Runnable接口的区别：</h2><p>还是先看个例子：假设售票厅有4个窗口可发售某日某次列车的票100张，这时100张车票可以看作是共享资源，四个售票窗口需要创建4个线程。</p>
 <p>先用继承Thread类方式创建多线程：</p>
