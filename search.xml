@@ -1,6 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>[LeetCode]——最长回文串</title>
+    <url>/2020/03/19/%5BLeetCode%5D%E2%80%94%E2%80%94%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E4%B8%B2/</url>
+    <content><![CDATA[<h2 id="NO-409-最长回文串-简单"><a href="#NO-409-最长回文串-简单" class="headerlink" title="NO.409 最长回文串 简单 "></a>NO.409 最长回文串 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/19/8rnh8S.png" alt="8rnh8S.png"></p>
+<p><strong><font color=red>思路一：哈希表</font></strong> 能组成回文串的字符特点应该是偶数个，只能有一个奇数个的字符作为中心。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">longestPalindrome</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s==<span class="keyword">null</span>||s.length()&lt;<span class="number">1</span>)<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> len = s.length(),maxLen=<span class="number">0</span>;</span><br><span class="line">    HashMap&lt;Character,Integer&gt; map=<span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    <span class="comment">//遍历字符串</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; i++) &#123;</span><br><span class="line">        <span class="keyword">char</span> c = s.charAt(i);</span><br><span class="line">        Integer value = map.getOrDefault(c, <span class="number">0</span>);</span><br><span class="line">        <span class="comment">//如果当前字符已经存在一个，可以成对则加入回文子串，并重新计数</span></span><br><span class="line">        <span class="keyword">if</span> (value==<span class="number">1</span>)&#123;</span><br><span class="line">            maxLen+=<span class="number">2</span>;</span><br><span class="line">            map.put(c,<span class="number">0</span>);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            map.put(c,<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//如果有未使用的字符，可以任取一个作为中心</span></span><br><span class="line">    <span class="keyword">return</span> maxLen==len?maxLen:maxLen+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<p>可以改用数组代替hashmap：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">longestPalindrome</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s==<span class="keyword">null</span>||s.length()&lt;<span class="number">1</span>)<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> len = s.length(),maxLen=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span>[] map=<span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">128</span>];</span><br><span class="line">    <span class="comment">//遍历字符串</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; i++) &#123;</span><br><span class="line">        <span class="keyword">char</span> c = s.charAt(i);</span><br><span class="line">        <span class="comment">//如果当前字符已经存在一个，可以成对则加入回文子串，并重新计数</span></span><br><span class="line">        <span class="keyword">if</span> (map[c]==<span class="number">1</span>)&#123;</span><br><span class="line">            maxLen+=<span class="number">2</span>;</span><br><span class="line">            map[c]=<span class="number">0</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            map[c]=<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//如果有未使用的字符，可以任取一个作为中心</span></span><br><span class="line">    <span class="keyword">return</span> maxLen==len?maxLen:maxLen+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>字符串</tag>
+        <tag>HashTable</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[LeetCode]——简化路径</title>
+    <url>/2020/03/19/%5BLeetCode%5D%E2%80%94%E2%80%94%E7%AE%80%E5%8C%96%E8%B7%AF%E5%BE%84/</url>
+    <content><![CDATA[<h2 id="NO-71-简化路径-中等"><a href="#NO-71-简化路径-中等" class="headerlink" title="NO.71 简化路径 中等 "></a>NO.71 简化路径 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/19/8r1i90.png" alt="8r1i90.png"></p>
+<p><img src="https://s1.ax1x.com/2020/03/19/8r1Chq.png" alt="8r1Chq.png"></p>
+<p><strong><font color=red>思路一：栈</font></strong> 现总结一下题目要求的规范路径格式：1.结尾没有/。2.开头必须有/。3每个文件之间只有有且只有一个/。4.’.’直接去掉。5.’..’删去的同时要连带上一个不为空的文件名。</p>
+<p>所以本题的主要点在于处理’..’，删去的同时要连带上一个不为空的文件名。这符合栈的后进先出的特性。</p>
+<p>将字符串以/分割成数组，得到的可能结果有’’、’.’、’文件’、’..’。</p>
+<p>逐一判断，文件名入栈，’..’删去栈顶文件名，最后取出栈内元素拼接。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">simplifyPath</span><span class="params">(String path)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (path==<span class="keyword">null</span>||path.equals(<span class="string">""</span>))<span class="keyword">return</span> <span class="string">"/"</span>;</span><br><span class="line">    <span class="comment">//分割</span></span><br><span class="line">    String[] split = path.split(<span class="string">"/"</span>);</span><br><span class="line">    Stack&lt;String&gt; stack=<span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">    <span class="comment">//遍历数组，分别判断进行出入栈</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; split.length; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (split[i].equals(<span class="string">".."</span>)&amp;&amp;!stack.isEmpty())&#123;</span><br><span class="line">            stack.pop();</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span> (!split[i].equals(<span class="string">".."</span>)&amp;&amp;!split[i].equals(<span class="string">""</span>)&amp;&amp;!split[i].equals(<span class="string">"."</span>))&#123;</span><br><span class="line">            stack.push(split[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//栈空</span></span><br><span class="line">    <span class="keyword">if</span> (stack.isEmpty())<span class="keyword">return</span> <span class="string">"/"</span>;</span><br><span class="line">    <span class="comment">//拼接</span></span><br><span class="line">    StringBuilder ans=<span class="keyword">new</span> StringBuilder();</span><br><span class="line">    <span class="keyword">int</span> size = stack.size();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">        ans.append(<span class="string">"/"</span>).append(stack.get(i));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>栈</tag>
+        <tag>字符串</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>[LeetCode]——矩形重叠</title>
     <url>/2020/03/18/%5BLeetCode%5D%E2%80%94%E2%80%94%E7%9F%A9%E5%BD%A2%E9%87%8D%E5%8F%A0/</url>
     <content><![CDATA[<h2 id="NO-863-矩形重叠-简单"><a href="#NO-863-矩形重叠-简单" class="headerlink" title="NO.863 矩形重叠 简单 "></a>NO.863 矩形重叠 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/18/8wpQxg.png" alt="8wpQxg.png"></p>
