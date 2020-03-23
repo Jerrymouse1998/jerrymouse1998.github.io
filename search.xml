@@ -1,6 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——颜色分类</title>
+    <url>/2020/03/23/LeetCode%E2%80%94%E2%80%94%E9%A2%9C%E8%89%B2%E5%88%86%E7%B1%BB/</url>
+    <content><![CDATA[<h2 id="NO-75-颜色分类-中等"><a href="#NO-75-颜色分类-中等" class="headerlink" title="NO.75 颜色分类 中等 "></a>NO.75 颜色分类 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/23/8TnVmj.png" alt="8TnVmj.png"></p>
+<h3 id="思路一：计数排序"><a href="#思路一：计数排序" class="headerlink" title="思路一：计数排序"></a><font color=red>思路一：计数排序</font></h3><p>看完题感觉就是个排序，题干里也说了直观的方法就是计数排序。。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sortColors</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//计数</span></span><br><span class="line">    <span class="keyword">int</span>[] counter=<span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">3</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> num : nums) &#123;</span><br><span class="line">        counter[num]++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//重写</span></span><br><span class="line">    <span class="keyword">int</span> idx=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;counter.length;i++) &#123;</span><br><span class="line">        <span class="keyword">while</span> (counter[i]-- &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            nums[idx++]=i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<h3 id="思路二：快速排序"><a href="#思路二：快速排序" class="headerlink" title="思路二：快速排序"></a><font color=red>思路二：快速排序</font></h3><p>用类似于简化三路快排的方式进行排序。用curr指向当前遍历元素，left指向左边放0的的位置，right指向右边放2的位置。</p>
+<p>curr去进行遍历，遇到0交换到左边部分，遇到1继续遍历，遇到2交换到右边部分。保持left指向左边放0的部分的后一个位置，right指向右边放2的部分的前一个位置。直至curr&gt;right结束遍历，就将数组按照0、1、2的顺序分成了三部分。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sortColors</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> left=<span class="number">0</span>,right=nums.length-<span class="number">1</span>,curr=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (curr &lt;= right) &#123;</span><br><span class="line">        <span class="keyword">if</span> (nums[curr] == <span class="number">0</span>) &#123;</span><br><span class="line">            swap(nums,left,curr);</span><br><span class="line">            left++;</span><br><span class="line">            curr++;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (nums[curr] == <span class="number">1</span>) &#123;</span><br><span class="line">            curr++;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (nums[curr] == <span class="number">2</span>) &#123;</span><br><span class="line">            swap(nums,curr,right);</span><br><span class="line">            right--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">swap</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> i, <span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> temp=nums[i];</span><br><span class="line">    nums[i]=nums[j];</span><br><span class="line">    nums[j]=temp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>数组</tag>
+        <tag>快速排序</tag>
+        <tag>计数排序</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——链表的中间结点</title>
+    <url>/2020/03/23/LeetCode%E2%80%94%E2%80%94%E9%93%BE%E8%A1%A8%E7%9A%84%E4%B8%AD%E9%97%B4%E7%BB%93%E7%82%B9/</url>
+    <content><![CDATA[<h2 id="NO-876-链表的中间结点-简单"><a href="#NO-876-链表的中间结点-简单" class="headerlink" title="NO.876 链表的中间结点 简单 "></a>NO.876 链表的中间结点 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/23/8o8VEQ.png" alt="8o8VEQ.png"></p>
+<h3 id="思路一：单指针"><a href="#思路一：单指针" class="headerlink" title="思路一：单指针"></a><font color=red>思路一：单指针</font></h3><p>单指针先遍历一遍，统计节点数，然后再从头遍历找到n/2位置的节点。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">middleNode</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//统计节点个数</span></span><br><span class="line">    <span class="keyword">int</span> n=<span class="number">0</span>;</span><br><span class="line">    ListNode curr=head;</span><br><span class="line">    <span class="keyword">while</span> (curr != <span class="keyword">null</span>) &#123;</span><br><span class="line">        n++;</span><br><span class="line">        curr=curr.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//找到中间位置节点</span></span><br><span class="line">    <span class="keyword">int</span> kth=<span class="number">0</span>;</span><br><span class="line">    curr=head;</span><br><span class="line">    <span class="keyword">while</span> (kth &lt; n / <span class="number">2</span>) &#123;</span><br><span class="line">        kth++;</span><br><span class="line">        curr=curr.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> curr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<h3 id="思路二：快慢指针"><a href="#思路二：快慢指针" class="headerlink" title="思路二：快慢指针"></a><font color=red>思路二：快慢指针</font></h3><p>快慢指针从头开始移动，快指针每次移动两个节点，慢指针每次移动一个节点，当快指针到达结尾，慢指针就在中间。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">middleNode</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">    ListNode fast=head,slow=head;</span><br><span class="line">    <span class="keyword">while</span> (fast != <span class="keyword">null</span> &amp;&amp; fast.next != <span class="keyword">null</span>) &#123;</span><br><span class="line">        fast=fast.next.next;</span><br><span class="line">        slow=slow.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> slow;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>链表</tag>
+        <tag>快慢指针</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——使数组唯一的最小增量</title>
     <url>/2020/03/22/LeetCode%E2%80%94%E2%80%94%E4%BD%BF%E6%95%B0%E7%BB%84%E5%94%AF%E4%B8%80%E7%9A%84%E6%9C%80%E5%B0%8F%E5%A2%9E%E9%87%8F/</url>
     <content><![CDATA[<h2 id="NO-945-使数组唯一的最小增量-中等"><a href="#NO-945-使数组唯一的最小增量-中等" class="headerlink" title="NO.945 使数组唯一的最小增量 中等 "></a>NO.945 使数组唯一的最小增量 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/22/84kEqS.png" alt="84kEqS.png"></p>
@@ -5010,7 +5062,7 @@
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">removeNthFromEnd</span><span class="params">(ListNode head, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> len=<span class="number">0</span>;</span><br><span class="line"><span class="comment">//        依然是借助哑节点</span></span><br><span class="line">        ListNode dummy=<span class="keyword">new</span> ListNode(<span class="number">0</span>),q=head;</span><br><span class="line">        dummy.next=head;</span><br><span class="line"><span class="comment">//        第一次遍历获取链表长度</span></span><br><span class="line">        <span class="keyword">while</span> (q!=<span class="keyword">null</span>)&#123;</span><br><span class="line">            len++;</span><br><span class="line">            q=q.next;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="comment">//        第二次遍历找到待删除节点的前一个节点</span></span><br><span class="line">        q=dummy;</span><br><span class="line">        len-=n;</span><br><span class="line">        <span class="keyword">while</span> (len&gt;<span class="number">0</span>)&#123;</span><br><span class="line">            len--;</span><br><span class="line">            q=q.next;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="comment">//        删除目标节点</span></span><br><span class="line">        q.next=q.next.next;</span><br><span class="line">        <span class="keyword">return</span> dummy.next;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
 <p>操作执行了2L-n步，时间复杂度为O(L)。</p>
-<p><font color=red><strong>思路二：双指针一次遍历</strong></font> 1. 用两个指针p、q分别指向链表的开头(哑节点)。2. 先让q指针逐步移动到距离p指针n+1的位置上，也就是上p指针和q指针间隔n个节点。3. 让p指针和q指针同时向后移动，直至q指针为null。4. 此时p指针指向的节点的下一个节点就是待删除节点，p.next=p.next.next删除即可。</p>
+<p><font color=red><strong>思路二：快慢指针一次遍历</strong></font> 1. 用两个指针p、q分别指向链表的开头(哑节点)。2. 先让q指针逐步移动到距离p指针n+1的位置上，也就是上p指针和q指针间隔n个节点。3. 让p指针和q指针同时向后移动，直至q指针为null。4. 此时p指针指向的节点的下一个节点就是待删除节点，p.next=p.next.next删除即可。</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">removeNthFromEnd</span><span class="params">(ListNode head, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        ListNode dummy=<span class="keyword">new</span> ListNode(<span class="number">0</span>);</span><br><span class="line">        dummy.next=head;</span><br><span class="line">        ListNode p=dummy;</span><br><span class="line">        ListNode q=dummy;</span><br><span class="line"><span class="comment">//        首先让q指针移动到和p指针间隔n个元素的位置</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n+<span class="number">1</span>;i++)&#123;</span><br><span class="line">            q=q.next;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="comment">//        此时让p和q保持间距的情况下，同时向后移动，直到q为null</span></span><br><span class="line">        <span class="keyword">while</span> (q!=<span class="keyword">null</span>)&#123;</span><br><span class="line">            q=q.next;</span><br><span class="line">            p=p.next;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="comment">//        删除目标节点</span></span><br><span class="line">        p.next=p.next.next;</span><br><span class="line">        <span class="keyword">return</span> dummy.next;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
 <p>操作执行了L+n+1步，时间复杂度为O(L)。</p>
@@ -5023,7 +5075,8 @@
       </categories>
       <tags>
         <tag>leetcode</tag>
-        <tag>双指针</tag>
+        <tag>链表</tag>
+        <tag>快慢指针</tag>
       </tags>
   </entry>
   <entry>
