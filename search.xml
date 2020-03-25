@@ -1,6 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——子集</title>
+    <url>/2020/03/25/LeetCode%E2%80%94%E2%80%94%E5%AD%90%E9%9B%86/</url>
+    <content><![CDATA[<h2 id="NO-78-子集-中等"><a href="#NO-78-子集-中等" class="headerlink" title="NO.78 子集 中等 "></a>NO.78 子集 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/25/8jYbHH.png" alt="8jYbHH.png"></p>
+<p><strong><font color=red>思路一：回溯法</font></strong> “组合”、”排列”、”子集”这些字眼很容易想到回溯。</p>
+<p>依然是走重复的路即可。不过求所有子集的问题，不仅仅是保存叶子节点，而是每个节点都需要保存。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;List&lt;Integer&gt;&gt; res=<span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; subsets(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">    <span class="keyword">if</span> (nums==<span class="keyword">null</span>||nums.length&lt;<span class="number">0</span>)<span class="keyword">return</span> res;</span><br><span class="line">    dfs(nums,<span class="number">0</span>,<span class="keyword">new</span> LinkedList&lt;Integer&gt;());</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> index, LinkedList&lt;Integer&gt; track)</span> </span>&#123;</span><br><span class="line">    res.add(<span class="keyword">new</span> ArrayList&lt;&gt;(track));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = index; i &lt; nums.length; i++) &#123;</span><br><span class="line">        track.add(nums[i]);</span><br><span class="line">        dfs(nums,i+<span class="number">1</span>,track);</span><br><span class="line">        track.removeLast();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n*2^n)    n数组元素个数。生成每个子集最多需要n的时间，共有2^n个子集。</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>回溯</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——组合</title>
+    <url>/2020/03/25/LeetCode%E2%80%94%E2%80%94%E7%BB%84%E5%90%88/</url>
+    <content><![CDATA[<h2 id="NO-77-组合-中等"><a href="#NO-77-组合-中等" class="headerlink" title="NO.77 组合 中等 "></a>NO.77 组合 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/25/8jY7uD.png" alt="8jY7uD.png"></p>
+<p><strong><font color=red>思路一：回溯法</font></strong> 看到”组合”就不自觉的想到了回溯。</p>
+<p>因为是找不重复的组合，只要不重复使用之前更小的元素进行组合即可。</p>
+<p>直接套用基本的回溯模板。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;List&lt;Integer&gt;&gt; res=<span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; combine(<span class="keyword">int</span> n, <span class="keyword">int</span> k) &#123;</span><br><span class="line">    <span class="keyword">if</span> (n==<span class="number">0</span>||k==<span class="number">0</span>)<span class="keyword">return</span> res;</span><br><span class="line">    dfs(n,k,<span class="keyword">new</span> LinkedList&lt;Integer&gt;(),<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span> k, LinkedList&lt;Integer&gt; track,<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (track.size() == k) &#123;</span><br><span class="line">        res.add(<span class="keyword">new</span> ArrayList&lt;&gt;(track));</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = index; i &lt;= n; i++) &#123;</span><br><span class="line">        track.add(i);</span><br><span class="line">        dfs(n,k,track,i+<span class="number">1</span>);</span><br><span class="line">        track.removeLast();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(k<em>(n!/(n-k)!\</em>k!))    k是生成一个组合的时间，共有n!/(n-k)!*k!种组合。</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>回溯</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——最小覆盖子串</title>
     <url>/2020/03/24/LeetCode%E2%80%94%E2%80%94%E6%9C%80%E5%B0%8F%E8%A6%86%E7%9B%96%E5%AD%90%E4%B8%B2/</url>
     <content><![CDATA[<h2 id="NO-76-最小覆盖子串-困难"><a href="#NO-76-最小覆盖子串-困难" class="headerlink" title="NO.76 最小覆盖子串 困难 "></a>NO.76 最小覆盖子串 <font color=#ff0099>困难</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/24/8HbLFI.png" alt="8HbLFI.png"></p>
