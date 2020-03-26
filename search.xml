@@ -1,6 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——车的可用捕获量</title>
+    <url>/2020/03/26/LeetCode%E2%80%94%E2%80%94%E8%BD%A6%E7%9A%84%E5%8F%AF%E7%94%A8%E6%8D%95%E8%8E%B7%E9%87%8F/</url>
+    <content><![CDATA[<h2 id="NO-999-车的可用捕获量-简单"><a href="#NO-999-车的可用捕获量-简单" class="headerlink" title="NO.999 车的可用捕获量 简单 "></a>NO.999 车的可用捕获量 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/26/8zuggg.png" alt="8zuggg.png"></p>
+<p><img src="https://s1.ax1x.com/2020/03/26/8zu2vQ.png" alt="8zu2vQ.png"></p>
+<p><img src="https://s1.ax1x.com/2020/03/26/8zufDs.png" alt="8zufDs.png"></p>
+<p><img src="https://s1.ax1x.com/2020/03/26/8zuWuj.png" alt="8zuWuj.png"></p>
+<p><strong><font color=red>思路一：遍历模拟</font></strong> 没什么好说的，遍历棋盘找R，然后四个方向去捕获p。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">numRookCaptures</span><span class="params">(<span class="keyword">char</span>[][] board)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ans=<span class="number">0</span>;</span><br><span class="line">    <span class="comment">//找R的位置</span></span><br><span class="line">    <span class="keyword">int</span>[] index=findR(board);</span><br><span class="line">    <span class="comment">//R四个方向上进行捕获</span></span><br><span class="line">    <span class="keyword">int</span> i=index[<span class="number">0</span>],j=index[<span class="number">1</span>];</span><br><span class="line">    <span class="comment">//向下</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> k = i+<span class="number">1</span>; k &lt; <span class="number">8</span>; k++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (board[k][j]==<span class="string">'B'</span>)<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">if</span> (board[k][j]==<span class="string">'p'</span>)&#123;</span><br><span class="line">            ans++;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//向右</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> k = j+<span class="number">1</span>; k &lt; <span class="number">8</span>; k++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (board[i][k]==<span class="string">'B'</span>)<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">if</span> (board[i][k]==<span class="string">'p'</span>)&#123;</span><br><span class="line">            ans++;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//向上</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> k = i-<span class="number">1</span>; k &gt;= <span class="number">0</span>; k--) &#123;</span><br><span class="line">        <span class="keyword">if</span> (board[k][j]==<span class="string">'B'</span>)<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">if</span> (board[k][j]==<span class="string">'p'</span>)&#123;</span><br><span class="line">            ans++;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//向左</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> k = j; k &gt;=<span class="number">0</span>; k--) &#123;</span><br><span class="line">        <span class="keyword">if</span> (board[i][k]==<span class="string">'B'</span>)<span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">if</span> (board[i][k]==<span class="string">'p'</span>)&#123;</span><br><span class="line">            ans++;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">int</span>[] findR(<span class="keyword">char</span>[][] board) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i &lt; <span class="number">8</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;<span class="number">8</span>;j++)&#123;</span><br><span class="line">            <span class="keyword">if</span> (board[i][j] == <span class="string">'R'</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;i,j&#125;;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">8</span>,<span class="number">8</span>&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n^2)    最坏情况遍历一次棋盘加两条边，就是n^2+2n。</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——单词搜索</title>
+    <url>/2020/03/26/LeetCode%E2%80%94%E2%80%94%E5%8D%95%E8%AF%8D%E6%90%9C%E7%B4%A2/</url>
+    <content><![CDATA[<h2 id="NO-79-单词搜索-中等"><a href="#NO-79-单词搜索-中等" class="headerlink" title="NO.79 单词搜索 中等 "></a>NO.79 单词搜索 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/26/8z6Rb9.png" alt="8z6Rb9.png"></p>
+<p><strong><font color=red>思路一：深搜回溯</font></strong> 遍历board找到等于word第一个字符的元素。然后以这个元素为开始，向四个方向上分别进行递归深搜，如果某个方向上成功匹配整个word则返回true，如果某个元素四个方向都不能匹配成功word的对应字符则返回false。</p>
+<p>因为字符不能重复使用，所以需要一个标记数组对每个字符的使用情况进行标记。也可以采用NO.695岛屿最大面积中的”沉岛思想”，将用过的字符直接修改为’.’。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//是否成功搜索word</span></span><br><span class="line"><span class="keyword">boolean</span> finished = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">exist</span><span class="params">(<span class="keyword">char</span>[][] board, String word)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//遍历</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; board.length; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; board[<span class="number">0</span>].length; j++) &#123;</span><br><span class="line">            <span class="comment">//如果等于word第一个字符的元素，以i j 开始进行四个方向深搜</span></span><br><span class="line">            <span class="keyword">if</span> (board[i][j] == word.charAt(<span class="number">0</span>) &amp;&amp; dfs(board, word, i, j, <span class="number">0</span>)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">dfs</span><span class="params">(<span class="keyword">char</span>[][] board, String word, <span class="keyword">int</span> i, <span class="keyword">int</span> j, <span class="keyword">int</span> curr)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//匹配成功的长度等于word长度，成功搜索</span></span><br><span class="line">    <span class="keyword">if</span> (curr == word.length()) &#123;</span><br><span class="line">        finished = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//如果到的边界或者字符不匹配</span></span><br><span class="line">    <span class="keyword">if</span> (i &lt; <span class="number">0</span> || i &gt;= board.length || j &lt; <span class="number">0</span> || j &gt;= board[<span class="number">0</span>].length ||</span><br><span class="line">        board[i][j] != word.charAt(curr)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//当前未完成匹配，继续四个方向深搜</span></span><br><span class="line">    <span class="keyword">if</span> (!finished) &#123;</span><br><span class="line">        <span class="keyword">char</span> c = board[i][j];<span class="comment">//保存当前字符，回溯的时候重新填写回去</span></span><br><span class="line">        board[i][j] = <span class="string">'.'</span>;<span class="comment">//沉岛</span></span><br><span class="line">        <span class="keyword">boolean</span> down = dfs(board, word, i + <span class="number">1</span>, j, curr + <span class="number">1</span>);<span class="comment">//向下搜</span></span><br><span class="line">        <span class="keyword">boolean</span> right = dfs(board, word, i, j + <span class="number">1</span>, curr + <span class="number">1</span>);<span class="comment">//向右搜</span></span><br><span class="line">        <span class="keyword">boolean</span> up = dfs(board, word, i - <span class="number">1</span>, j, curr + <span class="number">1</span>);<span class="comment">//向上搜</span></span><br><span class="line">        <span class="keyword">boolean</span> left = dfs(board, word, i, j - <span class="number">1</span>, curr + <span class="number">1</span>);<span class="comment">//向左搜</span></span><br><span class="line">        board[i][j] = c;<span class="comment">//回溯重新将字符填回去</span></span><br><span class="line">        <span class="keyword">return</span> down || right || up || left;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;<span class="comment">//已完成</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O((mn)^2)   mn分别是行列。主函数遍历是mn。深搜最坏情况是word是Z字形占满board，四个方向调用深搜，全部都要搜一遍board，深搜是4<em>mn。总的就是4\</em>mn*mn。</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>回溯</tag>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——子集</title>
     <url>/2020/03/25/LeetCode%E2%80%94%E2%80%94%E5%AD%90%E9%9B%86/</url>
     <content><![CDATA[<h2 id="NO-78-子集-中等"><a href="#NO-78-子集-中等" class="headerlink" title="NO.78 子集 中等 "></a>NO.78 子集 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/25/8jYbHH.png" alt="8jYbHH.png"></p>
@@ -100,7 +145,7 @@
   <entry>
     <title>秒杀业务项目学习(一)</title>
     <url>/2020/03/23/%E7%A7%92%E6%9D%80%E4%B8%9A%E5%8A%A1%E9%A1%B9%E7%9B%AE%E5%AD%A6%E4%B9%A0(%E4%B8%80)/</url>
-    <content><![CDATA[<p>学习项目旨在调通一个秒杀业务后台的最基本开发构建。</p>
+    <content><![CDATA[<p>学习项目旨在开发一个秒杀业务，以及对业务进行优化分析和实现优化。</p>
 <p>本篇采用SSM+MySQL+Redis。后序会另起新篇从<u>框架方面进行重构</u>和<u>业务性能方面进行优化</u>。</p>
 <p>本文项目源码上传<a href="https://github.com/Jerrymouse1998/seckill" target="_blank" rel="noopener">github</a> <a id="more"></a></p>
 <h2 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h2><p>操作系统：win10</p>
@@ -108,6 +153,7 @@
 <p>IDE：IDEA2019.3.1</p>
 <p>项目构建工具：Maven3.6.3</p>
 <p>数据库：MySQL5.1.49 + Redis3.2.100</p>
+<p>版本控制：git 2.21.0.windows.1</p>
 <h2 id="项目构建"><a href="#项目构建" class="headerlink" title="项目构建"></a>项目构建</h2><p>Maven构建一个webapp模板的项目，要把web.xml修改为servlet3.1版本。(可以去tomcat/webapps/下的实例的web.xml中获取)</p>
 <p>添加文件夹，构成完整的目录框架：</p>
 <p><img src="https://s1.ax1x.com/2020/03/17/8t50X9.png" alt="8t50X9.png"></p>
