@@ -1,6 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——删除排序数组中的重复项</title>
+    <url>/2020/03/27/LeetCode%E2%80%94%E2%80%94%E5%88%A0%E9%99%A4%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E9%A1%B9/</url>
+    <content><![CDATA[<h2 id="NO-80-删除排序数组中的重复项-中等"><a href="#NO-80-删除排序数组中的重复项-中等" class="headerlink" title="NO.80 删除排序数组中的重复项 中等 "></a>NO.80 删除排序数组中的重复项 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/27/GPZuPP.png" alt="GPZuPP.png"></p>
+<p><img src="https://s1.ax1x.com/2020/03/27/GPZm5t.png" alt="GPZm5t.png"></p>
+<p><strong><font color=red>思路一：双指针</font></strong> 和NO.26删除排序数组中的重复项思路一样采用双指针。区别在于，本题允许重复一次。</p>
+<p>所以只要不超过两个的元素都要紧凑到数组靠前的部分，超过两个的部分被覆盖掉。用j指针遍历数组，i指针指向当前符合要求已经被紧凑的部分的结尾。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">removeDuplicates</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (nums == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (nums.length &lt; <span class="number">3</span>) <span class="keyword">return</span> nums.length;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">1</span>, j = <span class="number">1</span>, counter = <span class="number">1</span>;</span><br><span class="line">    <span class="comment">//j遍历数组</span></span><br><span class="line">    <span class="keyword">for</span> (; j &lt; nums.length; j++) &#123;</span><br><span class="line">        <span class="comment">//如果相等计数器加一，否则置为1</span></span><br><span class="line">        <span class="keyword">if</span> (nums[j] == nums[j - <span class="number">1</span>]) &#123;</span><br><span class="line">            counter++;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            counter = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//如果当前计数器不大于2，将j元素覆盖到i元素上，i移动</span></span><br><span class="line">        <span class="keyword">if</span> (counter &lt;= <span class="number">2</span>) &#123;</span><br><span class="line">            nums[i++] = nums[j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>双指针</tag>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——卡牌分组</title>
+    <url>/2020/03/27/LeetCode%E2%80%94%E2%80%94%E5%8D%A1%E7%89%8C%E5%88%86%E7%BB%84/</url>
+    <content><![CDATA[<h2 id="NO-914-卡牌分组-简单"><a href="#NO-914-卡牌分组-简单" class="headerlink" title="NO.914 卡牌分组 简单 "></a>NO.914 卡牌分组 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/27/GPpqj1.png" alt="GPpqj1.png"></p>
+<p><img src="https://s1.ax1x.com/2020/03/27/GPpOnx.png" alt="GPpOnx.png"></p>
+<p><strong><font color=red>思路一：暴力</font></strong> 遍历统计每个数字的个数，然后找到最小的数量min，然后遍历[2,min]是否存在可以整除其他已统计好的数字的数量的整数。</p>
+<p>两个剪枝的点：如果最小数量min&lt;2，则[2,min]区间不存在元素，即不能满足要求。[2,min]区间内被遍历到的整数如果不能整除deck.length则不能成功分组，应跳过。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasGroupsSizeX</span><span class="params">(<span class="keyword">int</span>[] deck)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//统计数字出现的个数</span></span><br><span class="line">    <span class="keyword">int</span>[] counter = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">10000</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> e : deck) &#123;</span><br><span class="line">        counter[e]++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//找到数量最少的卡牌</span></span><br><span class="line">    <span class="keyword">int</span> min = <span class="number">10000</span>;</span><br><span class="line">    List&lt;Integer&gt; values=<span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> e : counter) &#123;</span><br><span class="line">        <span class="keyword">if</span> (e &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            values.add(e);</span><br><span class="line">            min=Math.min(e,min);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//如果最少的数量小于2，返回false</span></span><br><span class="line">    <span class="keyword">if</span> (min&lt;<span class="number">2</span>)<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    <span class="comment">//遍历[2,min]区间</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> x=<span class="number">2</span>;x&lt;=min;x++)&#123;</span><br><span class="line">        <span class="comment">//如果x不能整除length则跳过</span></span><br><span class="line">        <span class="keyword">if</span> (deck.length%x!=<span class="number">0</span>)<span class="keyword">continue</span>;</span><br><span class="line">        <span class="comment">//检查x是否能整除每个数字的数量</span></span><br><span class="line">        <span class="keyword">if</span> (isOK(values,x))<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isOK</span><span class="params">(List&lt;Integer&gt; values, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> value : values) &#123;</span><br><span class="line">        <span class="comment">//如果有不能被x整除的数量就返回false</span></span><br><span class="line">        <span class="keyword">if</span> (value%x!=<span class="number">0</span>)<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n^2)      n是卡牌数量。最多有n种x，每个x检测最多遍历检测n次。</p>
+<p><strong><font color=red>思路二：GCD</font></strong> 观察上述实现思路总结其实就是：找到一个可以整除每个数量的x。这个符合要求的x不就是每个数量的最大公约数么。所以统计每个数字的数量之后，两两一次求GCD即可。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasGroupsSizeX</span><span class="params">(<span class="keyword">int</span>[] deck)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//计数</span></span><br><span class="line">    <span class="keyword">int</span>[] counter = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">10000</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> e : deck) &#123;</span><br><span class="line">        counter[e]++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//求GCD</span></span><br><span class="line">    <span class="keyword">int</span> x = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> value : counter) &#123;</span><br><span class="line">        <span class="keyword">if</span> (value &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (x==<span class="number">0</span>)x=value;</span><br><span class="line">            <span class="keyword">else</span> x=gcd(x,value);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> x&gt;=<span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">gcd</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a==<span class="number">0</span>?b:gcd(b%a,a);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(nlogn)    n是卡牌数量。求GCD时间logn。</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>欧几里得算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——车的可用捕获量</title>
     <url>/2020/03/26/LeetCode%E2%80%94%E2%80%94%E8%BD%A6%E7%9A%84%E5%8F%AF%E7%94%A8%E6%8D%95%E8%8E%B7%E9%87%8F/</url>
     <content><![CDATA[<h2 id="NO-999-车的可用捕获量-简单"><a href="#NO-999-车的可用捕获量-简单" class="headerlink" title="NO.999 车的可用捕获量 简单 "></a>NO.999 车的可用捕获量 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/26/8zuggg.png" alt="8zuggg.png"></p>
