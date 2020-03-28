@@ -1,6 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——单词的压缩编码</title>
+    <url>/2020/03/28/LeetCode%E2%80%94%E2%80%94%E5%8D%95%E8%AF%8D%E7%9A%84%E5%8E%8B%E7%BC%A9%E7%BC%96%E7%A0%81/</url>
+    <content><![CDATA[<h2 id="NO-820-单词的压缩编码-中等"><a href="#NO-820-单词的压缩编码-中等" class="headerlink" title="NO.820 单词的压缩编码 中等 "></a>NO.820 单词的压缩编码 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/28/GFCffS.png" alt="GFCffS.png"></p>
+<p>如果不了解什么是前缀树，可以先去做一下NO.208 实现Trie(前缀树)了解一下这种数据结构。</p>
+<p>如果需要大量的找前缀或者找后缀，一般都可以使用字典树去进行搜索。</p>
+<p><strong><font color=red>思路一：字典树</font></strong> 字典树又名前缀树、Trie树。</p>
+<p>本题的难点在于如何判断一个单词是否为另一个单词的后缀。</p>
+<p>等等！明明前面再说前缀前缀怎么突然变成后缀了？</p>
+<p>道理是一样的，只需要将每个单词都翻转一下或者逆序插入前缀树，就后缀问题换成了前缀的问题。</p>
+<p>有一点需要注意：必须是先插长单词，再插短单词。否则例如先插入了”em”、再插入”emit”依然会都插入成功，如果先插入”emit”再插入”em”则会忽略”em”。所以我们需要对words数组依据单词长度排序。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minimumLengthEncoding</span><span class="params">(String[] words)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> len=<span class="number">0</span>;</span><br><span class="line">    Trie trie=<span class="keyword">new</span> Trie();</span><br><span class="line">    <span class="comment">//按照单词从长到短排序</span></span><br><span class="line">    Arrays.sort(words,(e1,e2)-&gt;e2.length()-e1.length());</span><br><span class="line">    <span class="comment">//单词依次向字典树进行插入，记录新增单词的长度</span></span><br><span class="line">    <span class="keyword">for</span> (String word : words) &#123;</span><br><span class="line">        len+=trie.insertWord(word);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> len;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//定义一个TrieTree</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trie</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Trie[] next;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> SIZE=<span class="number">26</span>;</span><br><span class="line"></span><br><span class="line">    Trie()&#123;</span><br><span class="line">        <span class="keyword">this</span>.next=<span class="keyword">new</span> Trie[SIZE];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">insertWord</span><span class="params">(String word)</span></span>&#123;</span><br><span class="line">        <span class="keyword">boolean</span> isNew=<span class="keyword">false</span>;<span class="comment">//是否为新单词</span></span><br><span class="line">        Trie curr = <span class="keyword">this</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = word.length()-<span class="number">1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">            <span class="keyword">char</span> c = word.charAt(i);</span><br><span class="line">            <span class="keyword">if</span> (curr.next[c - <span class="string">'a'</span>] == <span class="keyword">null</span>) &#123;</span><br><span class="line">                isNew=<span class="keyword">true</span>;</span><br><span class="line">                curr.next[c - <span class="string">'a'</span>]=<span class="keyword">new</span> Trie();</span><br><span class="line">            &#125;</span><br><span class="line">            curr=curr.next[c - <span class="string">'a'</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//如果是新单词就返回单词长度+'#'，否则是旧单词的前缀返回0</span></span><br><span class="line">        <span class="keyword">return</span> isNew?word.length()+<span class="number">1</span>:<span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(∑words[i].length) 所有单词的字符数量和。</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>字符串</tag>
+        <tag>字典树</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——实现Trie(前缀树)</title>
+    <url>/2020/03/28/LeetCode%E2%80%94%E2%80%94%E5%AE%9E%E7%8E%B0Trie-%E5%89%8D%E7%BC%80%E6%A0%91/</url>
+    <content><![CDATA[<h2 id="NO-208-实现Trie-前缀树-中等"><a href="#NO-208-实现Trie-前缀树-中等" class="headerlink" title="NO.208 实现Trie(前缀树) 中等 "></a>NO.208 实现Trie(前缀树) <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/28/GkSsD1.png" alt="GkSsD1.png"></p>
+<p><strong><font color=red>思路一：实现前缀树</font></strong> 前缀树又名Trie树、字典树。举例说明：</p>
+<p>例如有一些单词”A”, “to”, “tea”, “ted”, “ten”, “i”, “in”, “inn” ，要用字典树进行保存：</p>
+<p><img src="https://s1.ax1x.com/2020/03/28/GkpLe1.png" alt="GkpLe1.png"></p>
+<p>从根节点走到叶子节点，尝试走一下所有的路径。每条从根节点到叶子节点的路径都构成了单词（有的不需要走到叶子节点也是单词，比如 “i” 和 “in”）。trie树里的每个节点只需要保存当前的字符就可以了（当然你也可以额外记录别的信息，比如记录一下如果以当前节点结束是否构成单词、当前位置结尾的单词被搜索的次数等等）。</p>
+<p>trie树是一个多叉树，这种特殊的多叉树的孩子节点数组的大小取决于字符集或者说是字符映射表（本题中要求的字符集是a-z，即大小是26）。</p>
+<p>而且这种特殊的多叉树不需要保存每个节点的值，可以保存当前节点是否为一个单词串的结尾即可，还是因为有确定的字符集存在，这样通过父节点的next数组就可以映射出孩子节点的值。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//节点是否为单词串的结尾</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">boolean</span> isEnd;</span><br><span class="line"><span class="comment">//字符集是a-z</span></span><br><span class="line"><span class="keyword">private</span> Trie[] next;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> SIZE = <span class="number">26</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Trie</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.isEnd = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">this</span>.next = <span class="keyword">new</span> Trie[SIZE];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>插入</strong>：从根节点开始寻找和插入单词word第一个字符匹配的映射，如果映射下面有子树就继续寻找第二个字符匹配的映射，一直匹配到前缀链上没有对应的字符，这时开始不断开辟新的结点，直到插入完 word 的最后一个字符，同时还要将最后一个结点isEnd = true，表示它是一个单词的末尾。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//拿到根节点</span></span><br><span class="line">    Trie temp = <span class="keyword">this</span>;</span><br><span class="line">    <span class="comment">//遍历word</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">char</span> c : word.toCharArray()) &#123;</span><br><span class="line">        <span class="comment">//每个字符对应的next映射下没有子树</span></span><br><span class="line">        <span class="keyword">if</span> (temp.next[c - <span class="string">'a'</span>] == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">//当前字符的映射下创建节点</span></span><br><span class="line">            temp.next[c-<span class="string">'a'</span>]=<span class="keyword">new</span> Trie();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//拿到下一个节点</span></span><br><span class="line">        temp=temp.next[c-<span class="string">'a'</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//最后将字符映射到的最后一个节点设置为单词串的结尾</span></span><br><span class="line">    temp.isEnd=<span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    word长度n</p>
+<p><strong>单词匹配</strong>：和插入的方式一样，区别在于当前缀链上没有对应的字符时返回false，找到完全匹配的前缀链后判断最后一个字符映射的节点是否为一个单词串的结尾。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">search</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//拿到根节点</span></span><br><span class="line">    Trie temp=<span class="keyword">this</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">char</span> c : word.toCharArray()) &#123;</span><br><span class="line">        <span class="comment">//没有匹配的前缀链，false</span></span><br><span class="line">        <span class="keyword">if</span> (temp.next[c - <span class="string">'a'</span>] == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        temp=temp.next[c-<span class="string">'a'</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//返回成功匹配的前缀链是否为一个单词串的结尾</span></span><br><span class="line">    <span class="keyword">return</span> temp.isEnd;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    word长度n</p>
+<p><strong>前缀匹配</strong>：和单词匹配一样，区别是最后不需要判断是否为一个单词的结尾。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">startsWith</span><span class="params">(String prefix)</span> </span>&#123;</span><br><span class="line">    Trie temp=<span class="keyword">this</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">char</span> c : prefix.toCharArray()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (temp.next[c - <span class="string">'a'</span>] == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        temp=temp.next[c-<span class="string">'a'</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    前缀长度n</p>
+<p>简单学习了这个数据结构之后，做一下前<strong>缀树特点</strong>总结：</p>
+<ol>
+<li>一次建树，多次查询。</li>
+<li>Trie 的形状和单词的插入或删除顺序无关，也就是说对于任意给定的一组单词，Trie 的形状都是唯一的。</li>
+<li>查找或插入一个长度为n的单词，访问 next 数组的次数最多为n+1，和 Trie 中包含多少个单词无关。 </li>
+<li>Trie 的每个结点中都保留着一个字母表(或者是字符集的表)，这是很耗费空间的。如果 Trie 的高度为 n，字母表的大小为 m，最坏的情况是 Trie 中还不存在前缀相同的单词，那空间复杂度就为 O(m^n)。</li>
+</ol>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>字典树</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——搜索旋转排序数组II</title>
+    <url>/2020/03/28/LeetCode%E2%80%94%E2%80%94%E6%90%9C%E7%B4%A2%E6%97%8B%E8%BD%AC%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84II/</url>
+    <content><![CDATA[<h2 id="NO-81-搜索旋转排序数组II-中等"><a href="#NO-81-搜索旋转排序数组II-中等" class="headerlink" title="NO.81 搜索旋转排序数组II 中等 "></a>NO.81 搜索旋转排序数组II <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/28/GkdxS0.png" alt="GkdxS0.png"></p>
+<p><strong><font color=red>思路一：二分法</font></strong> 本题是NO.33搜索旋转排序数组的姊妹题。区别在于本题的数组可能包含重复项。</p>
+<p>总体思路不变依然是找到有序的一半，然后使用二分法进行查找。</p>
+<p>相较于NO.33来说，重点是如何找到有序的那一半，采用的方式是nums[start]&lt;nums[mid]则前半部分有序，否则后半部分有序。</p>
+<p>本题中需要多考虑一种情况就是nums[start]==nums[mid]，无法判断哪部分有序，例如” 11101 “。当遇到这种情况我么需要做的就是让start++，去掉重复项，缩小搜索区间继续搜索。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">search</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> start=<span class="number">0</span>,end=nums.length-<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (start &lt;= end) &#123;</span><br><span class="line">        <span class="keyword">int</span> mid=start+(end-start)/<span class="number">2</span>;</span><br><span class="line">        <span class="comment">//找到target</span></span><br><span class="line">        <span class="keyword">if</span> (nums[mid]==target)<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        <span class="comment">//无法判断有序的一半，忽略重复项，继续搜索</span></span><br><span class="line">        <span class="keyword">if</span> (nums[mid]==nums[start])&#123;</span><br><span class="line">            start++;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//可以判断有序的一半和NO.33方法一样，二分法缩小搜搜区间</span></span><br><span class="line">        <span class="keyword">if</span> (nums[mid]&gt;nums[start])&#123;</span><br><span class="line">            <span class="keyword">if</span> (target&lt;nums[mid]&amp;&amp;target&gt;nums[start])end=mid-<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">else</span> start=mid+<span class="number">1</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (target&gt;nums[mid]&amp;&amp;target&lt;=nums[end])start=mid+<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">else</span> end=mid-<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>题目最后留下的一个问题：存在重复项的情况下对时间复杂度的影响。</p>
+<p><strong>答</strong>：主要是影响最坏时间复杂度：例如出现了形如[1,1,1,1,1,1,1,1,1]这样的数组，当搜索不到target就会不断的start++，导致时间退化到O(n)的情况。</p>
+<p>除了最坏情况，时间复杂度和二分法应该是一样的。</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>二分法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——删除排序数组中的重复项</title>
     <url>/2020/03/27/LeetCode%E2%80%94%E2%80%94%E5%88%A0%E9%99%A4%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E9%A1%B9/</url>
     <content><![CDATA[<h2 id="NO-80-删除排序数组中的重复项-中等"><a href="#NO-80-删除排序数组中的重复项-中等" class="headerlink" title="NO.80 删除排序数组中的重复项 中等 "></a>NO.80 删除排序数组中的重复项 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/27/GPZuPP.png" alt="GPZuPP.png"></p>
