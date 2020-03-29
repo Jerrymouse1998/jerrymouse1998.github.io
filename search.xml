@@ -1,6 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——删除排序链表中的重复元素II</title>
+    <url>/2020/03/29/LeetCode%E2%80%94%E2%80%94%E5%88%A0%E9%99%A4%E6%8E%92%E5%BA%8F%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0II/</url>
+    <content><![CDATA[<h2 id="NO-82-删除排序链表中的重复元素II-中等"><a href="#NO-82-删除排序链表中的重复元素II-中等" class="headerlink" title="NO.82 删除排序链表中的重复元素II 中等 "></a>NO.82 删除排序链表中的重复元素II <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/29/GVpMh6.png" alt="GVpMh6.png"></p>
+<p><strong><font color=red>思路一：快慢指针</font></strong> 本题是NO.83删除排序链表中的重复元素的姊妹题，区别在于当出现重复的时候将发生重复的节点全部删除。</p>
+<p>慢指针slow指向哑节点，fast指向head并遍历链表。</p>
+<p>如果fast节点的值等于fast下一个节点的值则继续遍历。</p>
+<p>否则值不相等或者fast已到达结尾的时候有两种情况：</p>
+<ol>
+<li><p>fast和slow不相邻，指针之间存在重复的元素，则删除发生重复的节点，即<code>slow.next=fast.next</code>。</p>
+<p><img src="https://s1.ax1x.com/2020/03/29/GVn2yn.png" alt="GVn2yn.png"></p>
+</li>
+<li><p>fast和slow相邻，则移动slow到fast的位置。</p>
+<p><img src="https://s1.ax1x.com/2020/03/29/GVngQs.png" alt="GVngQs.png"></p>
+</li>
+</ol>
+<p>循环直至fast遍历链表完毕。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">deleteDuplicates</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head==<span class="keyword">null</span>||head.next==<span class="keyword">null</span>)<span class="keyword">return</span> head;</span><br><span class="line">    ListNode dummy=<span class="keyword">new</span> ListNode(-<span class="number">1</span>);</span><br><span class="line">    dummy.next=head;</span><br><span class="line">    ListNode fast=head,slow=dummy;</span><br><span class="line">    <span class="keyword">while</span> (fast != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">//如果fast和下一个节点的值不同或者fast到达链尾，有两种情况</span></span><br><span class="line">        <span class="keyword">if</span> (fast.next == <span class="keyword">null</span> || fast.val != fast.next.val) &#123;</span><br><span class="line">            <span class="comment">//指针相邻</span></span><br><span class="line">            <span class="keyword">if</span> (slow.next == fast) &#123;</span><br><span class="line">                slow=fast;</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;<span class="comment">//指针不相邻，删除中间的发生重复的节点</span></span><br><span class="line">                slow.next=fast.next;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        fast=fast.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dummy.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a>     </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>链表</tag>
+        <tag>快慢指针</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——删除排序链表中的重复元素</title>
+    <url>/2020/03/29/LeetCode%E2%80%94%E2%80%94%E5%88%A0%E9%99%A4%E6%8E%92%E5%BA%8F%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0/</url>
+    <content><![CDATA[<h2 id="NO-83-删除排序链表中的重复元素-简单"><a href="#NO-83-删除排序链表中的重复元素-简单" class="headerlink" title="NO.83 删除排序链表中的重复元素 简单 "></a>NO.83 删除排序链表中的重复元素 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/29/GVpuA1.png" alt="GVpuA1.png"></p>
+<p><strong><font color=red>思路一：快慢指针</font></strong> curr指向当前元素，next指针遍历链表。如果curr节点值等于next节点值则从链表中删除next指向的节点<code>curr.next=next.next</code>，否则不相等则向前移动curr指针。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//时间复杂度：O(n)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">deleteDuplicates</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head==<span class="keyword">null</span>||head.next==<span class="keyword">null</span>)<span class="keyword">return</span> head;</span><br><span class="line">    ListNode curr=head,next=head.next;</span><br><span class="line">    <span class="keyword">while</span> (next != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (curr.val != next.val) &#123;</span><br><span class="line">            curr=curr.next;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            curr.next=next.next;</span><br><span class="line">        &#125;</span><br><span class="line">        next=next.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> head;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a>     </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>链表</tag>
+        <tag>快慢指针</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——地图分析</title>
+    <url>/2020/03/29/LeetCode%E2%80%94%E2%80%94%E5%9C%B0%E5%9B%BE%E5%88%86%E6%9E%90/</url>
+    <content><![CDATA[<h2 id="NO-1162-地图分析-中等"><a href="#NO-1162-地图分析-中等" class="headerlink" title="NO.1162 地图分析 中等 "></a>NO.1162 地图分析 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/29/GET3ZD.png" alt="GET3ZD.png"></p>
+<p><img src="https://s1.ax1x.com/2020/03/29/GET8de.png" alt="GET8de.png"></p>
+<p><strong><font color=red>思路一：BFS</font></strong> BFS经常用来解决最短路径问题，但是本题用来求解最长路径问题也是可行的。</p>
+<p>BFS求最短路径问题就是遇到第一个符合要求的节点就返回。</p>
+<p>BFS求最长路径问题则是搜索完全部节点之后再返回。</p>
+<p>对本题而言，先遍历将所有的陆地入队作为第0层，然后第0层出队放入第1层。。。广搜层序遍历。。。搜索结束时的层数就是陆地距离最远的海洋的距离。</p>
+<p>用boolean数组标记网格的每个点是否入队过。或者”沉岛思想”直接在网格上进行标记，入过队的海洋(0)置为1(非0)。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxDistance</span><span class="params">(<span class="keyword">int</span>[][] grid)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n = grid.length;</span><br><span class="line">    Queue&lt;<span class="keyword">int</span>[]&gt; queue=<span class="keyword">new</span> ArrayDeque&lt;&gt;();</span><br><span class="line">    <span class="comment">//遍历将所有陆地的坐标入队</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (grid[i][j] == <span class="number">1</span>) &#123;</span><br><span class="line">                queue.add(<span class="keyword">new</span> <span class="keyword">int</span>[]&#123;i,j&#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//全是陆地或者全是海洋返回-1</span></span><br><span class="line">    <span class="keyword">if</span> (queue.size() == n * n || queue.isEmpty()) &#123;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//BFS记录一下最后是第几层</span></span><br><span class="line">    <span class="keyword">int</span> round=-<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (!queue.isEmpty()) &#123;</span><br><span class="line">        round++;</span><br><span class="line">        <span class="keyword">int</span> size = queue.size();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">            <span class="keyword">int</span>[] temp = queue.poll();</span><br><span class="line">            <span class="comment">//向下</span></span><br><span class="line">            <span class="keyword">if</span> (temp[<span class="number">0</span>] + <span class="number">1</span> &lt; n &amp;&amp; grid[temp[<span class="number">0</span>] + <span class="number">1</span>][temp[<span class="number">1</span>]] == <span class="number">0</span>) &#123;</span><br><span class="line">                grid[temp[<span class="number">0</span>] + <span class="number">1</span>][temp[<span class="number">1</span>]] = <span class="number">1</span>;<span class="comment">//标记已入队</span></span><br><span class="line">                queue.add(<span class="keyword">new</span> <span class="keyword">int</span>[]&#123;temp[<span class="number">0</span>] + <span class="number">1</span>, temp[<span class="number">1</span>]&#125;);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//向右</span></span><br><span class="line">            <span class="keyword">if</span> (temp[<span class="number">1</span>] + <span class="number">1</span> &lt; n &amp;&amp; grid[temp[<span class="number">0</span>]][temp[<span class="number">1</span>]+<span class="number">1</span>] == <span class="number">0</span>) &#123;</span><br><span class="line">                grid[temp[<span class="number">0</span>]][temp[<span class="number">1</span>]+<span class="number">1</span>]=<span class="number">1</span>;</span><br><span class="line">                queue.add(<span class="keyword">new</span> <span class="keyword">int</span>[]&#123;temp[<span class="number">0</span>],temp[<span class="number">1</span>]+<span class="number">1</span>&#125;);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//向上</span></span><br><span class="line">            <span class="keyword">if</span> (temp[<span class="number">0</span>] - <span class="number">1</span> &gt;= <span class="number">0</span> &amp;&amp; grid[temp[<span class="number">0</span>]-<span class="number">1</span>][temp[<span class="number">1</span>]] == <span class="number">0</span>) &#123;</span><br><span class="line">                grid[temp[<span class="number">0</span>]-<span class="number">1</span>][temp[<span class="number">1</span>]] =<span class="number">1</span>;</span><br><span class="line">                queue.add(<span class="keyword">new</span> <span class="keyword">int</span>[]&#123;temp[<span class="number">0</span>]-<span class="number">1</span>,temp[<span class="number">1</span>]&#125;);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//向左</span></span><br><span class="line">            <span class="keyword">if</span> (temp[<span class="number">1</span>] - <span class="number">1</span> &gt;= <span class="number">0</span> &amp;&amp; grid[temp[<span class="number">0</span>]][temp[<span class="number">1</span>]-<span class="number">1</span>] == <span class="number">0</span>) &#123;</span><br><span class="line">                grid[temp[<span class="number">0</span>]][temp[<span class="number">1</span>]-<span class="number">1</span>]=<span class="number">1</span>;</span><br><span class="line">                queue.add(<span class="keyword">new</span> <span class="keyword">int</span>[]&#123;temp[<span class="number">0</span>],temp[<span class="number">1</span>]-<span class="number">1</span>&#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> round;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n^2)    遍历一遍grid。</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a>     </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>BFS</tag>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——单词的压缩编码</title>
     <url>/2020/03/28/LeetCode%E2%80%94%E2%80%94%E5%8D%95%E8%AF%8D%E7%9A%84%E5%8E%8B%E7%BC%A9%E7%BC%96%E7%A0%81/</url>
     <content><![CDATA[<h2 id="NO-820-单词的压缩编码-中等"><a href="#NO-820-单词的压缩编码-中等" class="headerlink" title="NO.820 单词的压缩编码 中等 "></a>NO.820 单词的压缩编码 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/28/GFCffS.png" alt="GFCffS.png"></p>
@@ -5416,7 +5496,7 @@
 <p>时间复杂度：O(amount^n) n是不同面额硬币的种类</p>
 <p><strong><font color=red>思路二：动态规划</font></strong> dp数组的含义：dp[i]=x 表示至少x个硬币组成i元，即i元的最优解。</p>
 <p>dp数组初始化：长度为amount+1，即0元~amount元。dp[0]=0，0元自然是不需要硬币。1~amount初始化为amount+1，因为硬币面额都是整数无论如何amount元也不会需要amount+1个硬币进行组合。</p>
-<p>状态转移：无论当前目标金额是多少，都要从coins列表中取出一个面额，然后目标金额就会较少这个面额。如果dp[当前金额-取出面额]有解，则dp[当前金额]就是在其子问题dp[当前金额-取出面额]的基础上加一个硬币。</p>
+<p>状态转移：无论当前目标金额是多少，都要从coins列表中取出一个面额，然后目标金额就会减少这个面额。如果dp[当前金额-取出面额]有解，则dp[当前金额]就是在其子问题dp[当前金额-取出面额]的基础上加一个硬币。</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">coinChange</span><span class="params">(<span class="keyword">int</span>[] coins, <span class="keyword">int</span> amount)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>[] dp=<span class="keyword">new</span> <span class="keyword">int</span>[amount+<span class="number">1</span>];</span><br><span class="line">    <span class="comment">//初始化</span></span><br><span class="line">    Arrays.fill(dp,amount+<span class="number">1</span>);</span><br><span class="line">    dp[<span class="number">0</span>]=<span class="number">0</span>;</span><br><span class="line">    <span class="comment">//填写dp</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= amount; i++) &#123;</span><br><span class="line">        <span class="comment">//金额i的所有子问题</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> coin : coins) &#123;</span><br><span class="line">            <span class="comment">//不存在这个子问题</span></span><br><span class="line">            <span class="keyword">if</span> (i-coin&lt;<span class="number">0</span>)<span class="keyword">continue</span>;</span><br><span class="line">            <span class="comment">//在子问题的基础上加一个硬币，取最小值</span></span><br><span class="line">            dp[i]=Math.min(dp[i],dp[i-coin]+<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//检查amount是否有解</span></span><br><span class="line">    <span class="keyword">return</span> dp[amount]==amount+<span class="number">1</span>?-<span class="number">1</span>:dp[amount];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>时间复杂度：O(amount*n)    n是不同面额种类</p>
