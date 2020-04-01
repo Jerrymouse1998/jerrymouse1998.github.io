@@ -3,8 +3,7 @@
   <entry>
     <title>LeetCode——有效括号的嵌套深度</title>
     <url>/2020/04/01/LeetCode%E2%80%94%E2%80%94%E6%9C%89%E6%95%88%E6%8B%AC%E5%8F%B7%E7%9A%84%E5%B5%8C%E5%A5%97%E6%B7%B1%E5%BA%A6/</url>
-    <content><![CDATA[<p>##NO.1111 有效括号的嵌套深度 <font color=orange>中等</font> </p>
-<p>阅读理解题。做题五分钟，读题两小时。<a id="more"></a></p>
+    <content><![CDATA[<h2 id="NO-1111-有效括号的嵌套深度-中等"><a href="#NO-1111-有效括号的嵌套深度-中等" class="headerlink" title="NO.1111 有效括号的嵌套深度 中等"></a>NO.1111 有效括号的嵌套深度 <font color=orange>中等</font></h2><p>阅读理解题。做题五分钟，读题两小时。<a id="more"></a></p>
 <p><img src="https://s1.ax1x.com/2020/04/01/Glz6FU.png" alt="Glz6FU.png"></p>
 <p><img src="https://s1.ax1x.com/2020/04/01/GlzsoT.png" alt="GlzsoT.png"></p>
 <p> 看大佬题解一句话概括题意：给你一个合法的括号序列，你需要将其拆分成<strong>两个</strong>合法的子序列（不连续），使得两个子序列的括号嵌套深度较大者尽量的小。 </p>
