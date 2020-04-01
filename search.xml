@@ -1,6 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——有效括号的嵌套深度</title>
+    <url>/2020/04/01/LeetCode%E2%80%94%E2%80%94%E6%9C%89%E6%95%88%E6%8B%AC%E5%8F%B7%E7%9A%84%E5%B5%8C%E5%A5%97%E6%B7%B1%E5%BA%A6/</url>
+    <content><![CDATA[<p>##NO.1111 有效括号的嵌套深度 <font color=orange>中等</font> </p>
+<p>阅读理解题。做题五分钟，读题两小时。<a id="more"></a></p>
+<p><img src="https://s1.ax1x.com/2020/04/01/Glz6FU.png" alt="Glz6FU.png"></p>
+<p><img src="https://s1.ax1x.com/2020/04/01/GlzsoT.png" alt="GlzsoT.png"></p>
+<p> 看大佬题解一句话概括题意：给你一个合法的括号序列，你需要将其拆分成<strong>两个</strong>合法的子序列（不连续），使得两个子序列的括号嵌套深度较大者尽量的小。 </p>
+<p><strong><font color=red>思路一：栈</font></strong> 创建一个栈，遍历seq，遇到’(‘入栈，遇到’)’弹出。在这样的规则下，’(‘入栈时栈的深度就对应着当前括号对的嵌套深度深度。将奇数深度的括号分成一组，将偶数深度的括号分成一组，分别用0和1标记即可。</p>
+<p>例如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">括号序列   ( ( ) ( ( ) ) ( ) )</span><br><span class="line">下标编号   0 1 2 3 4 5 6 7 8 9</span><br><span class="line">嵌套深度   1 2 2 2 3 3 2 2 2 1</span><br><span class="line">将奇数深度的分一组用0标记，将偶数深度的括号分一组用1标记。</span><br><span class="line">标记结果   0 1 1 1 0 0 1 1 1 0</span><br></pre></td></tr></table></figure>
+
+<p>按照上述思路进行实现：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] maxDepthAfterSplit(String seq) &#123;</span><br><span class="line">    <span class="keyword">if</span> (seq == <span class="keyword">null</span> || seq.equals(<span class="string">""</span>)) <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">0</span>];</span><br><span class="line">    Stack&lt;Character&gt; stack = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">    <span class="keyword">int</span>[] res = <span class="keyword">new</span> <span class="keyword">int</span>[seq.length()];</span><br><span class="line">    <span class="comment">//遍历</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; seq.length(); i++) &#123;</span><br><span class="line">        <span class="keyword">char</span> c = seq.charAt(i);</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'('</span>) &#123;<span class="comment">//入栈,记录括号对所在深度,奇数用0标记，偶数用1标记。</span></span><br><span class="line">            res[i] = stack.size() % <span class="number">2</span>;</span><br><span class="line">            stack.push(c);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;<span class="comment">//出栈,记录括号对所在深度,奇数用0标记，偶数用1标记。</span></span><br><span class="line">            stack.pop();</span><br><span class="line">            res[i] = stack.size() % <span class="number">2</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其实我们并不需要真的使用一个栈，因为我们需要的仅仅是记录当前栈的深度depth：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] maxDepthAfterSplit(String seq) &#123;</span><br><span class="line">    <span class="keyword">if</span> (seq == <span class="keyword">null</span> || seq.equals(<span class="string">""</span>)) <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">int</span> depth=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span>[] res = <span class="keyword">new</span> <span class="keyword">int</span>[seq.length()];</span><br><span class="line">    <span class="comment">//遍历</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; seq.length(); i++) &#123;</span><br><span class="line">        <span class="keyword">char</span> c = seq.charAt(i);</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'('</span>) &#123;<span class="comment">//入栈,栈内深度增加</span></span><br><span class="line">            res[i] = ++depth % <span class="number">2</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;<span class="comment">//出栈，栈内深度减少</span></span><br><span class="line">            res[i] = depth-- % <span class="number">2</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>栈</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——子集II</title>
+    <url>/2020/04/01/LeetCode%E2%80%94%E2%80%94%E5%AD%90%E9%9B%86II/</url>
+    <content><![CDATA[<h2 id="NO-90-子集II-中等"><a href="#NO-90-子集II-中等" class="headerlink" title="NO.90 子集II 中等 "></a>NO.90 子集II <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/01/G1Q13j.png" alt="G1Q13j.png"></p>
+<p><strong><font color=red>思路一：回溯</font></strong> 姊妹题NO.79子集，解决思路一样，不同的就是本题存在重复元素，深搜的时候进行重复元素剪枝即可转化成NO.79的样子。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;List&lt;Integer&gt;&gt; res=<span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; subsetsWithDup(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">    <span class="keyword">if</span> (nums==<span class="keyword">null</span>||nums.length==<span class="number">0</span>)<span class="keyword">return</span> res;</span><br><span class="line">    <span class="comment">//把重复的元素紧凑到一起</span></span><br><span class="line">    Arrays.sort(nums);</span><br><span class="line">    dfs(nums,<span class="number">0</span>,<span class="keyword">new</span> LinkedList&lt;Integer&gt;());</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> idx, LinkedList&lt;Integer&gt; track)</span> </span>&#123;</span><br><span class="line">    res.add(<span class="keyword">new</span> ArrayList&lt;&gt;(track));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = idx; i &lt; nums.length; i++) &#123;</span><br><span class="line">        <span class="comment">//重复的剪枝</span></span><br><span class="line">        <span class="keyword">if</span> (i&gt;idx&amp;&amp;nums[i]==nums[i-<span class="number">1</span>])<span class="keyword">continue</span>;</span><br><span class="line">        track.add(nums[i]);</span><br><span class="line">        dfs(nums,i+<span class="number">1</span>,track);</span><br><span class="line">        track.removeLast();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n*2^n)    n数组元素个数。生成每个子集最多需要n的时间，共有2^n个子集。</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>回溯</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——排序数组</title>
     <url>/2020/03/31/LeetCode%E2%80%94%E2%80%94%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84/</url>
     <content><![CDATA[<h2 id="NO-912-排序数组-中等"><a href="#NO-912-排序数组-中等" class="headerlink" title="NO.912 排序数组 中等"></a>NO.912 排序数组 <font color=orange>中等</font></h2><p>趁这个机会整理一下常见的11种排序算法，都是些经典的基础的排序方法。</p>
