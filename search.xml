@@ -1,6 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——解码方法</title>
+    <url>/2020/04/03/LeetCode%E2%80%94%E2%80%94%E8%A7%A3%E7%A0%81%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<h2 id="NO-91-解码方法-中等"><a href="#NO-91-解码方法-中等" class="headerlink" title="NO.91 解码方法 中等 "></a>NO.91 解码方法 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/03/GU3iqS.png" alt="GU3iqS.png"></p>
+<p><strong><font color=red>思路一：动态规划</font></strong> </p>
+<p>dp[i]的含义：s[i]结尾的字符串有多少解法方法。</p>
+<p>初始化：大小s.length+1，包含空串。空串初始化为1，只有一个字符，如果字符是0则无法解码即为0，否则初始化为1。</p>
+<p>状态转移：从i==2开始，存在三种情况：</p>
+<ol>
+<li>i元素和i-1元素都为0，则无法解码(参数是错误编码的字符串)，即<code>return 0</code>；</li>
+<li>i-1元素为0，i无法和i-1进行组合，只能作为个位数字进行解码，即<code>dp[i]=d[i-1]</code>。</li>
+<li>i元素为0，只能和i-1元素组合为两位数字，如果这个组合后的两位数字大于26则无法正确解码，即<code>return 0</code>；如果小于等于26，即<code>dp[i]=dp[i-2]</code>。</li>
+<li>如果i元素和i-1元素都不为0，判断i和i-1元素组合后的两位数是否大于26，如果大于26则只能单独作为个位数进行解码，即<code>dp[i]=dp[i-1]</code>；如果小于等于26则既能作为两个个位数进行解码也可以作为一个两位数进行解码，即<code>dp[i]=dp[i-1]+dp[i-2]</code>。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">numDecodings</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>[] dp=<span class="keyword">new</span> <span class="keyword">int</span>[s.length()+<span class="number">1</span>];</span><br><span class="line">    <span class="comment">//初始化</span></span><br><span class="line">    dp[<span class="number">0</span>]=<span class="number">1</span>;</span><br><span class="line">    dp[<span class="number">1</span>]=s.charAt(<span class="number">0</span>)==<span class="string">'0'</span>?<span class="number">0</span>:<span class="number">1</span>;</span><br><span class="line">    <span class="comment">//状态转移</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= s.length(); i++) &#123;</span><br><span class="line">        <span class="comment">//记录当前字符和前一个字符组成的一个两位数</span></span><br><span class="line">        <span class="keyword">int</span> x = (s.charAt(i - <span class="number">2</span>) - <span class="string">'0'</span>) * <span class="number">10</span> + (s.charAt(i - <span class="number">1</span>) - <span class="string">'0'</span>);</span><br><span class="line">        <span class="keyword">if</span> (s.charAt(i - <span class="number">1</span>) == <span class="string">'0'</span> &amp;&amp; s.charAt(i - <span class="number">2</span>) == <span class="string">'0'</span>) &#123;<span class="comment">//1</span></span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (s.charAt(i - <span class="number">2</span>) == <span class="string">'0'</span>) &#123;<span class="comment">//2</span></span><br><span class="line">            dp[i]=dp[i-<span class="number">1</span>];</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (s.charAt(i - <span class="number">1</span>) == <span class="string">'0'</span>) &#123;<span class="comment">//3</span></span><br><span class="line">            <span class="keyword">if</span> (x&gt;<span class="number">26</span>)<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            dp[i]=dp[i-<span class="number">2</span>];</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (x &gt; <span class="number">26</span>) &#123;<span class="comment">//4</span></span><br><span class="line">            dp[i]=dp[i-<span class="number">1</span>];</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            dp[i]=dp[i-<span class="number">1</span>]+dp[i-<span class="number">2</span>];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[s.length()];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>动态规划</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——有效括号的嵌套深度</title>
     <url>/2020/04/01/LeetCode%E2%80%94%E2%80%94%E6%9C%89%E6%95%88%E6%8B%AC%E5%8F%B7%E7%9A%84%E5%B5%8C%E5%A5%97%E6%B7%B1%E5%BA%A6/</url>
     <content><![CDATA[<h2 id="NO-1111-有效括号的嵌套深度-中等"><a href="#NO-1111-有效括号的嵌套深度-中等" class="headerlink" title="NO.1111 有效括号的嵌套深度 中等"></a>NO.1111 有效括号的嵌套深度 <font color=orange>中等</font></h2><p>阅读理解题。做题五分钟，读题两小时。<a id="more"></a></p>
