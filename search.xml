@@ -1,6 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——不同的二叉搜索树II</title>
+    <url>/2020/04/06/LeetCode%E2%80%94%E2%80%94%E4%B8%8D%E5%90%8C%E7%9A%84%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91II/</url>
+    <content><![CDATA[<h2 id="NO-95-不同的二叉搜索树II-中等"><a href="#NO-95-不同的二叉搜索树II-中等" class="headerlink" title="NO.95 不同的二叉搜索树II 中等 "></a>NO.95 不同的二叉搜索树II <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/06/Gstp80.png" alt="Gstp80.png"></p>
+<p>本题和NO.96不同的二叉搜索树作为姊妹题，唯一的不同就是本题需要生成树的即可。而NO.96题只需要返回种类数量即可。</p>
+<p><strong><font color=red>思路一：递归</font></strong> </p>
+<p>在NO.95中进行过的这么一个例子：</p>
+<p>​            n是4={“1作为根节点=左子树[1,0]*右子树[2,4]”+</p>
+<p>​                        “2作为根节点=左子树[1,1]*右子树[3,4]”+</p>
+<p>​                        “3做为根节点=左子树[1,2]*右子树[4,4]”+</p>
+<p>​                        “4作为根节点=左子树[1,3]*右子树[5,4]” }</p>
+<p>这个形式就很”递归”！毕竟递归和动态规划之间一直都是藕断丝连的！</p>
+<p>递归的过程：</p>
+<ol>
+<li><p>我们需要生成每个数字作为根节点时候的左右子树，得到左右子树的所有形式就可以轻松地组合得到整棵树。</p>
+</li>
+<li><p>每个子树所包含的区间内的数字分别作为子树的根节点，得到子树根节点的左右子树的所有形式。。。</p>
+</li>
+</ol>
+<p>由此过程可知：这个生成bst的递归函数的参数需要的是<strong>数字区间</strong>，返回值是区间内数字所能组成的所有BST的集合List&lt;TreeNode&gt;。</p>
+<p>递归的出口：当区间内只有一个数字，那么只有一种情况，该数字作为一棵树。当区间为空，就返回null。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;TreeNode&gt; <span class="title">generateTrees</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n==<span class="number">0</span>)<span class="keyword">return</span> <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="keyword">return</span> buildBST(<span class="number">1</span>,n);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> List&lt;TreeNode&gt; <span class="title">buildBST</span><span class="params">(<span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">    List&lt;TreeNode&gt; res=<span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="comment">//区间为空</span></span><br><span class="line">    <span class="keyword">if</span> (start &gt; end) &#123;</span><br><span class="line">        res.add(<span class="keyword">null</span>);</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//区间内只有一个数字</span></span><br><span class="line">    <span class="keyword">if</span> (start == end) &#123;</span><br><span class="line">        res.add(<span class="keyword">new</span> TreeNode(start));</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//区间里有多个数字，每个数字分别作为根节点</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=start;i&lt;=end;i++)&#123;</span><br><span class="line">        <span class="comment">//i作为根节点时所有的左子树</span></span><br><span class="line">        List&lt;TreeNode&gt; leftList=buildBST(start,i-<span class="number">1</span>);</span><br><span class="line">        <span class="comment">//i作为根节点时所有的右子树</span></span><br><span class="line">        List&lt;TreeNode&gt; rightList=buildBST(i+<span class="number">1</span>,end);</span><br><span class="line">        <span class="comment">//左右子树两两组合得到树</span></span><br><span class="line">        <span class="keyword">for</span> (TreeNode leftTree : leftList) &#123;</span><br><span class="line">            <span class="keyword">for</span> (TreeNode rightTree : rightList) &#123;</span><br><span class="line">                <span class="comment">//i作为根</span></span><br><span class="line">                TreeNode root=<span class="keyword">new</span> TreeNode(i);</span><br><span class="line">                root.left=leftTree;</span><br><span class="line">                root.right=rightTree;</span><br><span class="line">                <span class="comment">//保存</span></span><br><span class="line">                res.add(root);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>递归的复杂度好难算，要是简单的排列组合还在可控范围之内，直接套用排列组合公式。</p>
+<p>关于本题时间复杂度的计算暂时搁浅了。</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>递归</tag>
+        <tag>二叉搜索树</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——不同的二叉搜索树</title>
+    <url>/2020/04/06/LeetCode%E2%80%94%E2%80%94%E4%B8%8D%E5%90%8C%E7%9A%84%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91/</url>
+    <content><![CDATA[<h2 id="NO-96-不同的二叉搜索树-中等"><a href="#NO-96-不同的二叉搜索树-中等" class="headerlink" title="NO.96 不同的二叉搜索树 中等 "></a>NO.96 不同的二叉搜索树 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/06/GstSCq.png" alt="GstSCq.png"></p>
+<p><strong><font color=red>思路一：动态规划</font></strong> </p>
+<p>dp[i]的含义：n为i的时候搜索树有多少种。</p>
+<p>初始化：大小为n+1，包含空树。dp[0]、dp[1]空树和只有1种。</p>
+<p>状态转移：[1,n]区间中每个数字分别作为根节点，对于每个数字x作为根节点之后，它都是由左子树[1,x-1]和右子树[x+1,n]组成的，因此当x作为根节点的时候形成的不同的二叉搜索树有<code>左子树*右子树</code>种。</p>
+<p>例如，n是4={“1作为根节点=左子树[1,0]*右子树[2,4]”+</p>
+<p>​                        “2作为根节点=左子树[1,1]*右子树[3,4]”+</p>
+<p>​                        “3做为根节点=左子树[1,2]*右子树[4,4]”+</p>
+<p>​                        “4作为根节点=左子树[1,3]*右子树[5,4]” }</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">numTrees</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>[] dp=<span class="keyword">new</span> <span class="keyword">int</span>[n+<span class="number">1</span>];</span><br><span class="line">    dp[<span class="number">0</span>]=dp[<span class="number">1</span>]=<span class="number">1</span>;</span><br><span class="line">    <span class="comment">//状态转移</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt; n + <span class="number">1</span>; i++) &#123;</span><br><span class="line">        <span class="comment">//[1,i]中的i个数字分别做为根节点</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt; i+<span class="number">1</span>; j++) &#123;</span><br><span class="line">            <span class="comment">//左子树*右子树</span></span><br><span class="line">            dp[i]+=dp[j-<span class="number">1</span>]*dp[i-j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[n];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n^2)</p>
+<p><strong><font color=red>思路二：卡塔兰数</font></strong> </p>
+<p> 事实上dp[n]的值被称为 <a href="https://baike.baidu.com/item/catalan/7605685?fr=aladdin" target="_blank" rel="noopener">卡塔兰数</a> Cn。</p>
+<blockquote>
+<p>卡塔兰数列的前几项为：</p>
+<p>1, 1, 2, 5, 14, 42, 132, 429, 1430, 4862, 16796, 58786, 208012, 742900, 2674440, 9694845, 35357670, 129644790, 477638700, 1767263190, 6564120420, 24466267020, 91482563640, 343059613650, 1289904147324, 4861946401452, …[注： n = 0, 1, 2, 3, … n]</p>
+<p> <strong>递推式：h(n)= h(0)*h(n-1) + h(1)*h(n-2) + … + h(n-1)*h(0) (其中n&gt;=2)</strong></p>
+<p>——百度百科</p>
+</blockquote>
+<p>卡塔兰数更便于计算的定义如下: </p>
+<p><img src="https://s1.ax1x.com/2020/04/06/GsTmFJ.png" alt="GsTmFJ.png"></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">numTrees</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">long</span> C=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        C=<span class="number">2</span>*C*(<span class="number">2</span>*i+<span class="number">1</span>)/(i+<span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">int</span>)C;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>动态规划</tag>
+        <tag>二叉搜索树</tag>
+        <tag>卡塔兰数</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——二叉树的前中后三种遍历</title>
     <url>/2020/04/05/LeetCode%E2%80%94%E2%80%94%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%89%8D%E4%B8%AD%E5%90%8E%E4%B8%89%E7%A7%8D%E9%81%8D%E5%8E%86/</url>
     <content><![CDATA[<p>记录一下二叉树的前序遍历、中序遍历、后序遍历。 <a id="more"></a></p>
