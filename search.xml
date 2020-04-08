@@ -1,6 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——交错字符串</title>
+    <url>/2020/04/08/LeetCode%E2%80%94%E2%80%94%E4%BA%A4%E9%94%99%E5%AD%97%E7%AC%A6%E4%B8%B2/</url>
+    <content><![CDATA[<h2 id="NO-97-交错字符串-困难"><a href="#NO-97-交错字符串-困难" class="headerlink" title="NO.97 交错字符串 困难 "></a>NO.97 交错字符串 <font color=#ff0099>困难</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/07/Gcjs3T.png" alt="Gcjs3T.png"></p>
+<p><strong><font color=red>思路一：动态规划</font></strong> 还是常规的分析步骤</p>
+<p>dp[i][j]的含义：s1的前i个元素和s2的前j个元素，是否可以交叉组成s3的前i+j个元素。</p>
+<p>初始化：大小是[s1.length+1][s2.length+1]包含两个空串；dp[0][0]=true，即两个空串可以组成空串；第一行和第一列需要进行初始化，分别表示一个s1或s2为空串的情况下，是否可以只用另一个串即可组成s3。</p>
+<p>状态转移：<code>dp[i - 1][j] &amp;&amp; s1.charAt(i - 1) == s3.charAt(i + j - 1)</code> || <code>dp[i][j - 1] &amp;&amp; s2.charAt(j - 1) == s3.charAt(i + j - 1)</code>，这个式子看着长其实很好理解，主要是在s3的当前元素之前都可以成功交叉组合的基础上，判断s1的i元素或者s2的j元素可以匹配s3的当前元素即为true。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isInterleave</span><span class="params">(String s1, String s2, String s3)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> m = s1.length(), n = s2.length();</span><br><span class="line">    <span class="keyword">if</span> (m + n != s3.length()) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    <span class="comment">//初始化</span></span><br><span class="line">    <span class="keyword">boolean</span>[][] dp = <span class="keyword">new</span> <span class="keyword">boolean</span>[m + <span class="number">1</span>][n + <span class="number">1</span>];</span><br><span class="line">    dp[<span class="number">0</span>][<span class="number">0</span>] = <span class="keyword">true</span>;</span><br><span class="line">    <span class="comment">//s2为空串</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; m + <span class="number">1</span>; i++) &#123;</span><br><span class="line">        dp[i][<span class="number">0</span>] = dp[i - <span class="number">1</span>][<span class="number">0</span>] &amp;&amp; s1.charAt(i - <span class="number">1</span>) == s3.charAt(i - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//s1为空串</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt; n + <span class="number">1</span>; j++) &#123;</span><br><span class="line">        dp[<span class="number">0</span>][j] = dp[<span class="number">0</span>][j - <span class="number">1</span>] &amp;&amp; s2.charAt(j - <span class="number">1</span>) == s3.charAt(j - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//状态转移</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; m + <span class="number">1</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt; n + <span class="number">1</span>; j++) &#123;</span><br><span class="line">            dp[i][j] = (dp[i - <span class="number">1</span>][j] &amp;&amp; s1.charAt(i - <span class="number">1</span>) == s3.charAt(i + j - <span class="number">1</span>))</span><br><span class="line">                || (dp[i][j - <span class="number">1</span>] &amp;&amp; s2.charAt(j - <span class="number">1</span>) == s3.charAt(i + j - <span class="number">1</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[m][n];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(mn)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>动态规划</tag>
+        <tag>字符串</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>剑指Offer——机器人的运动范围</title>
+    <url>/2020/04/08/%E5%89%91%E6%8C%87Offer%E2%80%94%E2%80%94%E6%9C%BA%E5%99%A8%E4%BA%BA%E7%9A%84%E8%BF%90%E5%8A%A8%E8%8C%83%E5%9B%B4/</url>
+    <content><![CDATA[<h2 id="剑指Offer-13-机器人的运动范围-中等"><a href="#剑指Offer-13-机器人的运动范围-中等" class="headerlink" title="剑指Offer.13 机器人的运动范围 中等 "></a>剑指Offer.13 机器人的运动范围 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/08/G24enP.png" alt="G24enP.png"></p>
+<p>题目中有一个计算横纵坐标数位之和的操作，这不是题目的关键点，将这个计算数位之和的方法封装起来不要干扰主要的解题逻辑。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">sums</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ans=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (x != <span class="number">0</span>) &#123;</span><br><span class="line">        ans+=x%<span class="number">10</span>;</span><br><span class="line">        x/=<span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (y != <span class="number">0</span>) &#123;</span><br><span class="line">        ans+=y%<span class="number">10</span>;</span><br><span class="line">        y/=<span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="思路一：深搜"><a href="#思路一：深搜" class="headerlink" title="思路一：深搜"></a><strong><font color=red>思路一：深搜</font></strong></h3><p>想法比较直接，就是从起点开始用深搜的方式遍历矩阵，控制深搜边界的同时判断当前访问的位置数位和是否小于等于k，并且需要一个标记数组记录每个位置的访问情况，防止重复计算。</p>
+<p>虽然题目说是上下左右都可以移动，但是我们从左上角作为起点开始只能向右或者向下移动，如果发生向左或者向上那一定是重复的搜索。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> m,n,k;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">movingCount</span><span class="params">(<span class="keyword">int</span> m, <span class="keyword">int</span> n, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.m=m;</span><br><span class="line">    <span class="keyword">this</span>.n=n;</span><br><span class="line">    <span class="keyword">this</span>.k=k;</span><br><span class="line">    <span class="comment">//标记访问过的位置</span></span><br><span class="line">    <span class="keyword">boolean</span>[][] visited=<span class="keyword">new</span> <span class="keyword">boolean</span>[m][n];</span><br><span class="line">    <span class="keyword">return</span> dfs(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,visited);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 深搜</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> i 横坐标</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> j 纵坐标</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> sum   坐标数位和</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> visited   标记数组</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j, <span class="keyword">int</span> sum, <span class="keyword">boolean</span>[][] visited)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//如果 坐标越界 或者 数位和大于k 或者 已经访问过，则停止当前方向的深搜</span></span><br><span class="line">    <span class="keyword">if</span> (i==m||j==n||sum&gt;k||visited[i][j])<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//标记为已访问</span></span><br><span class="line">    visited[i][j]=<span class="keyword">true</span>;</span><br><span class="line">    <span class="comment">//向下或者向右深搜</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>+dfs(i+<span class="number">1</span>,j,sums(i+<span class="number">1</span>,j),visited)+dfs(i,j+<span class="number">1</span>,sums(i,j+<span class="number">1</span>),visited);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//计算数位和</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">sums</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ans=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (x != <span class="number">0</span>) &#123;</span><br><span class="line">        ans+=x%<span class="number">10</span>;</span><br><span class="line">        x/=<span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (y != <span class="number">0</span>) &#123;</span><br><span class="line">        ans+=y%<span class="number">10</span>;</span><br><span class="line">        y/=<span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(mn)    最坏情况，遍历矩阵。<strong>复杂度不敢确定，不知道需不需要乘上计算位数和的时间。</strong></p>
+<h3 id="思路二：广搜"><a href="#思路二：广搜" class="headerlink" title="思路二：广搜"></a><strong><font color=red>思路二：广搜</font></strong></h3><p>其实和深搜的思路一样，只是换了一个搜索的方式，采用广搜的方式寻找符合要求的位置。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//时间复杂度：O(mn)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">movingCount</span><span class="params">(<span class="keyword">int</span> m, <span class="keyword">int</span> n, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//队列保存坐标</span></span><br><span class="line">    Queue&lt;<span class="keyword">int</span>[]&gt; queue=<span class="keyword">new</span> ArrayDeque&lt;&gt;();</span><br><span class="line">    <span class="comment">//标记数组</span></span><br><span class="line">    <span class="keyword">boolean</span>[][] visited=<span class="keyword">new</span> <span class="keyword">boolean</span>[m][n];</span><br><span class="line">    <span class="comment">//广搜</span></span><br><span class="line">    queue.add(<span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">0</span>,<span class="number">0</span>&#125;);</span><br><span class="line">    <span class="keyword">int</span> count=<span class="number">0</span>;</span><br><span class="line">    visited[<span class="number">0</span>][<span class="number">0</span>]=<span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">while</span> (!queue.isEmpty()) &#123;</span><br><span class="line">        <span class="keyword">int</span>[] poll = queue.poll();</span><br><span class="line">        count++;</span><br><span class="line">        <span class="comment">//向下、向右寻找符合要求的位置入队并标记访问状态</span></span><br><span class="line">        <span class="comment">//不越界 并且 数位和小于等于k 并且 未访问过</span></span><br><span class="line">        <span class="keyword">if</span> (poll[<span class="number">0</span>] + <span class="number">1</span> &lt; m</span><br><span class="line">            &amp;&amp; sums(poll[<span class="number">0</span>] + <span class="number">1</span>, poll[<span class="number">1</span>]) &lt;= k</span><br><span class="line">            &amp;&amp;!visited[poll[<span class="number">0</span>]+<span class="number">1</span>][poll[<span class="number">1</span>]])&#123;</span><br><span class="line">            queue.add(<span class="keyword">new</span> <span class="keyword">int</span>[]&#123;poll[<span class="number">0</span>]+<span class="number">1</span>,poll[<span class="number">1</span>]&#125;);</span><br><span class="line">            visited[poll[<span class="number">0</span>]+<span class="number">1</span>][poll[<span class="number">1</span>]]=<span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (poll[<span class="number">1</span>] + <span class="number">1</span> &lt; n</span><br><span class="line">            &amp;&amp; sums(poll[<span class="number">0</span>], poll[<span class="number">1</span>] + <span class="number">1</span>) &lt;= k</span><br><span class="line">            &amp;&amp;!visited[poll[<span class="number">0</span>]][poll[<span class="number">1</span>] + <span class="number">1</span>])&#123;</span><br><span class="line">            queue.add(<span class="keyword">new</span> <span class="keyword">int</span>[]&#123;poll[<span class="number">0</span>],poll[<span class="number">1</span>]+<span class="number">1</span>&#125;);</span><br><span class="line">            visited[poll[<span class="number">0</span>]][poll[<span class="number">1</span>]+<span class="number">1</span>]=<span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//计算数位和</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">sums</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ans=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (x != <span class="number">0</span>) &#123;</span><br><span class="line">        ans+=x%<span class="number">10</span>;</span><br><span class="line">        x/=<span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (y != <span class="number">0</span>) &#123;</span><br><span class="line">        ans+=y%<span class="number">10</span>;</span><br><span class="line">        y/=<span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(mn)    最坏情况，遍历矩阵。<strong>复杂度不敢确定，不知道需不需要乘上计算位数和的时间。</strong></p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>DFS</tag>
+        <tag>BFS</tag>
+        <tag>剑指Offer</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——相同的树</title>
+    <url>/2020/04/08/LeetCode%E2%80%94%E2%80%94%E7%9B%B8%E5%90%8C%E7%9A%84%E6%A0%91/</url>
+    <content><![CDATA[<h2 id="NO-100-相同的树-简单"><a href="#NO-100-相同的树-简单" class="headerlink" title="NO.100 相同的树 简单 "></a>NO.100 相同的树 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/07/Gcjgu4.png" alt="Gcjgu4.png"></p>
+<p><strong><font color=red>思路一：递归逐个节点比较</font></strong> </p>
+<p>做题的时候看到了labuladong大神的一篇关于二叉树的文章，真的是太通透了！文章<a href="https://leetcode-cn.com/problems/same-tree/solution/xie-shu-suan-fa-de-tao-lu-kuang-jia-by-wei-lai-bu-/" target="_blank" rel="noopener">传送门</a>。</p>
+<p>开始说本题的题解：先有二叉树的框架：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> 框架(TreeNode root) &#123;</span><br><span class="line">	<span class="comment">//处理root</span></span><br><span class="line">    框架(root.left);</span><br><span class="line">    框架(root.right);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>就本题让而言，分别判断两棵树的左子树和右子树是否相等，从两个树的根节点出发同步比较，结构上的判断如果节点都为空则true、如果只有一个为空另一个不为空则false；数值上的判断就是比较相同结构位置上的值。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isSameTree</span><span class="params">(TreeNode p, TreeNode q)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//结构上</span></span><br><span class="line">    <span class="keyword">if</span> (p==<span class="keyword">null</span>&amp;&amp;q==<span class="keyword">null</span>)<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">if</span> (p==<span class="keyword">null</span>||q==<span class="keyword">null</span>)<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    <span class="comment">//数值上不等则false，相等则继续判断其他节点的数值</span></span><br><span class="line">    <span class="keyword">if</span> (p.val!=q.val)<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">return</span> isSameTree(p.left,q.left)&amp;&amp;</span><br><span class="line">        isSameTree(p.right,q.right);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>递归</tag>
+        <tag>二叉树</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——不同的二叉搜索树II</title>
     <url>/2020/04/06/LeetCode%E2%80%94%E2%80%94%E4%B8%8D%E5%90%8C%E7%9A%84%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91II/</url>
     <content><![CDATA[<h2 id="NO-95-不同的二叉搜索树II-中等"><a href="#NO-95-不同的二叉搜索树II-中等" class="headerlink" title="NO.95 不同的二叉搜索树II 中等 "></a>NO.95 不同的二叉搜索树II <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/06/Gstp80.png" alt="Gstp80.png"></p>
@@ -6839,33 +6918,6 @@
       </tags>
   </entry>
   <entry>
-    <title>LeetCode——最大子序和</title>
-    <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%E6%9C%80%E5%A4%A7%E5%AD%90%E5%BA%8F%E5%92%8C%20/</url>
-    <content><![CDATA[<h2 id="NO-53-最大子序和-简单"><a href="#NO-53-最大子序和-简单" class="headerlink" title="NO.53 最大子序和 简单 "></a>NO.53 最大子序和 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2020/03/01/3g44rF.png" alt="3g44rF.png"></p>
-<p><strong><font color=red>思路一：动态规划法</font></strong> 分析dp那就要先分析dp[i]的含义：以第i元素结尾的最大序列和。</p>
-<p>初始化：dp[0]以第0号元素结尾的序列只有nums[0]本身，所以<code>dp[0]=nums[0]</code>。</p>
-<p>转移方程：<code>dp[i]=Max(dp[i-1]+nums[i],nums[i])</code>，因为dp[i-1]是以i-1为结尾的序列和中的最大值，所以我们想找nums[i]结尾的最大序列和只需要比较”前一个最大序列和+nums[i]”和”nums[i]”。举个例子：</p>
-<p><img src="https://s2.ax1x.com/2020/03/01/3g4oVJ.md.png" alt="3g4oVJ.md.png"></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxSubArray</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (nums==<span class="keyword">null</span>||nums.length==<span class="number">0</span>)<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span>[] dp=<span class="keyword">new</span> <span class="keyword">int</span>[nums.length];</span><br><span class="line">    <span class="comment">//初始化</span></span><br><span class="line">    dp[<span class="number">0</span>]=nums[<span class="number">0</span>];</span><br><span class="line">    <span class="comment">//填写dp数组同时用max记录当前最大的序列和</span></span><br><span class="line">    <span class="keyword">int</span> max=dp[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">        dp[i]=Math.max(nums[i],dp[i-<span class="number">1</span>]+nums[i]);</span><br><span class="line">        max=Math.max(max,dp[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> max;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>经过思考不难发现，并不需要开辟一个数组来保存每一个子序和。每次填写只需要关心上一次状态值即可，且每个状态值只需要使用一次。所以我们可以用一个int变量代替dp数组即可：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxSubArray</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (nums==<span class="keyword">null</span>||nums.length==<span class="number">0</span>)<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//初始化</span></span><br><span class="line">    <span class="keyword">int</span> dp=nums[<span class="number">0</span>];</span><br><span class="line">    <span class="comment">//更新当前i结尾的最大序列和同时用max记录最大的序列和</span></span><br><span class="line">    <span class="keyword">int</span> max=dp;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">        dp=Math.max(nums[i],dp+nums[i]);</span><br><span class="line">        max=Math.max(max,dp);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> max;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>时间复杂度：O(n)</p>
-<hr>
-<p>本人菜鸟，有错误请告知，感激不尽！</p>
-<p>更多题解和学习记录博客:<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">博客</a>、<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
-]]></content>
-      <categories>
-        <category>题解笔记</category>
-      </categories>
-      <tags>
-        <tag>leetcode</tag>
-        <tag>动态规划</tag>
-        <tag>数组</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>LeetCode——最小路径和</title>
     <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%E6%9C%80%E5%B0%8F%E8%B7%AF%E5%BE%84%E5%92%8C/</url>
     <content><![CDATA[<h2 id="NO-64-最小路径和-中等"><a href="#NO-64-最小路径和-中等" class="headerlink" title="NO.64 最小路径和 中等 "></a>NO.64 最小路径和 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/03/12/8Z4gQs.png" alt="8Z4gQs.png"></p>
@@ -7171,6 +7223,33 @@
       <tags>
         <tag>字符串</tag>
         <tag>程序员面试金典</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——最大子序和</title>
+    <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%E6%9C%80%E5%A4%A7%E5%AD%90%E5%BA%8F%E5%92%8C/</url>
+    <content><![CDATA[<h2 id="NO-53-最大子序和-简单"><a href="#NO-53-最大子序和-简单" class="headerlink" title="NO.53 最大子序和 简单 "></a>NO.53 最大子序和 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2020/03/01/3g44rF.png" alt="3g44rF.png"></p>
+<p><strong><font color=red>思路一：动态规划法</font></strong> 分析dp那就要先分析dp[i]的含义：以第i元素结尾的最大序列和。</p>
+<p>初始化：dp[0]以第0号元素结尾的序列只有nums[0]本身，所以<code>dp[0]=nums[0]</code>。</p>
+<p>转移方程：<code>dp[i]=Max(dp[i-1]+nums[i],nums[i])</code>，因为dp[i-1]是以i-1为结尾的序列和中的最大值，所以我们想找nums[i]结尾的最大序列和只需要比较”前一个最大序列和+nums[i]”和”nums[i]”。举个例子：</p>
+<p><img src="https://s2.ax1x.com/2020/03/01/3g4oVJ.md.png" alt="3g4oVJ.md.png"></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxSubArray</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (nums==<span class="keyword">null</span>||nums.length==<span class="number">0</span>)<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span>[] dp=<span class="keyword">new</span> <span class="keyword">int</span>[nums.length];</span><br><span class="line">    <span class="comment">//初始化</span></span><br><span class="line">    dp[<span class="number">0</span>]=nums[<span class="number">0</span>];</span><br><span class="line">    <span class="comment">//填写dp数组同时用max记录当前最大的序列和</span></span><br><span class="line">    <span class="keyword">int</span> max=dp[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">        dp[i]=Math.max(nums[i],dp[i-<span class="number">1</span>]+nums[i]);</span><br><span class="line">        max=Math.max(max,dp[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> max;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>经过思考不难发现，并不需要开辟一个数组来保存每一个子序和。每次填写只需要关心上一次状态值即可，且每个状态值只需要使用一次。所以我们可以用一个int变量代替dp数组即可：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxSubArray</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (nums==<span class="keyword">null</span>||nums.length==<span class="number">0</span>)<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//初始化</span></span><br><span class="line">    <span class="keyword">int</span> dp=nums[<span class="number">0</span>];</span><br><span class="line">    <span class="comment">//更新当前i结尾的最大序列和同时用max记录最大的序列和</span></span><br><span class="line">    <span class="keyword">int</span> max=dp;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">        dp=Math.max(nums[i],dp+nums[i]);</span><br><span class="line">        max=Math.max(max,dp);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> max;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和学习记录博客:<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">博客</a>、<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>动态规划</tag>
+        <tag>数组</tag>
       </tags>
   </entry>
   <entry>
