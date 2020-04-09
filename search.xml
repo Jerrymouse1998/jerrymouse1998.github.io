@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——验证二叉搜索树</title>
+    <url>/2020/04/09/LeetCode%E2%80%94%E2%80%94%E9%AA%8C%E8%AF%81%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91/</url>
+    <content><![CDATA[<h2 id="NO-98-验证二叉搜索树-中等"><a href="#NO-98-验证二叉搜索树-中等" class="headerlink" title="NO.98 验证二叉搜索树 中等 "></a>NO.98 验证二叉搜索树 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/09/G4KBb8.png" alt="G4KBb8.png"></p>
+<p><strong><font color=red>思路一：中序遍历</font></strong> 中序遍历有效的BST可以得到升序序列，如果得到的不是严格升序的序列则BST无效。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isValidBST</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    List&lt;Integer&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="comment">//得到中序遍历序列</span></span><br><span class="line">    inorderTraversal(root,res);</span><br><span class="line">    <span class="comment">//检查序列是否严格升序</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; res.size()-<span class="number">1</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (res.get(i)&gt;=res.get(i+<span class="number">1</span>))<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">inorderTraversal</span><span class="params">(TreeNode root, List&lt;Integer&gt; res)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root==<span class="keyword">null</span>)<span class="keyword">return</span>;</span><br><span class="line">    inorderTraversal(root.left,res);</span><br><span class="line">    res.add(root.val);</span><br><span class="line">    inorderTraversal(root.right,res);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    两次遍历，中序遍历一次，检查序列一次</p>
+<p><strong><font color=red>思路二：中序遍历，一次遍历</font></strong> 其实没必要得到中序序列，在中序遍历的过程中直接进行大小比较即可。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">TreeNode next = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isValidBST</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">if</span> (!isValidBST(root.left)) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (next != <span class="keyword">null</span> &amp;&amp; next.val &gt;= root.val) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    next = root;</span><br><span class="line">    <span class="keyword">return</span> isValidBST(root.right);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    一次遍历</p>
+<p><strong>迭代实现：</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isValidBST</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root==<span class="keyword">null</span>)<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    Stack&lt;TreeNode&gt; stack=<span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">    TreeNode next=<span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">while</span> (root != <span class="keyword">null</span> || !stack.isEmpty()) &#123;</span><br><span class="line">        <span class="keyword">while</span> (root != <span class="keyword">null</span>) &#123;</span><br><span class="line">            stack.push(root);</span><br><span class="line">            root=root.left;</span><br><span class="line">        &#125;</span><br><span class="line">        root=stack.pop();</span><br><span class="line">        <span class="keyword">if</span> (next!=<span class="keyword">null</span>&amp;&amp;next.val&gt;=root.val)<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        next=root;</span><br><span class="line">        root=root.right;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>就是一道考察中序遍历的题目。</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>栈</tag>
+        <tag>递归</tag>
+        <tag>二叉搜索树</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——交错字符串</title>
     <url>/2020/04/08/LeetCode%E2%80%94%E2%80%94%E4%BA%A4%E9%94%99%E5%AD%97%E7%AC%A6%E4%B8%B2/</url>
     <content><![CDATA[<h2 id="NO-97-交错字符串-困难"><a href="#NO-97-交错字符串-困难" class="headerlink" title="NO.97 交错字符串 困难 "></a>NO.97 交错字符串 <font color=#ff0099>困难</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/07/Gcjs3T.png" alt="Gcjs3T.png"></p>
@@ -52,6 +82,11 @@
         <tag>BFS</tag>
         <tag>剑指Offer</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>Lee剑指Offer——机器人的运动范围</title>
+    <url>/2020/04/08/Lee%E5%89%91%E6%8C%87Offer%E2%80%94%E2%80%94%E6%9C%BA%E5%99%A8%E4%BA%BA%E7%9A%84%E8%BF%90%E5%8A%A8%E8%8C%83%E5%9B%B4/</url>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>LeetCode——相同的树</title>
