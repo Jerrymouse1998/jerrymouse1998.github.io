@@ -1,130 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>头条项目练习笔记</title>
-    <url>/2020/04/09/%E5%A4%B4%E6%9D%A1%E9%A1%B9%E7%9B%AE%E7%BB%83%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[<p>项目旨在设计开发一个类头条咨询网站集成评论，点赞，站内通知信等功能。采用SpringBoot + MyBatis + Redis + 消息队列 的大体框架完成。</p>
-<p>笔记重点是较复杂的业务开发记录和性能优化分析。CRUD的部分简单略过。</p>
-<p>项目已上传github    <a id="more"></a></p>
-<h1 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h1><p>操作系统：win10</p>
-<p>JDK：1.8</p>
-<p>IDE：IDEA 2019.3.1</p>
-<p>项目构建工具：Maven 3.6.3</p>
-<p>数据库：MySQL 5.1.49 + Redis 3.2.100</p>
-<p>消息队列：RabbitMQ 3.8.0</p>
-<p>版本控制：git 2.21.0.windows.1</p>
-<h1 id="数据库设计"><a href="#数据库设计" class="headerlink" title="数据库设计"></a>数据库设计</h1><p><strong><font color=#ff6633>用户(User)</font></strong>：id、name、password、salt、head_url</p>
-<table>
-    <tr>
-        <td bgcolor=#ccffff>用户实体属性：用户名、密码、头像的连接、数据库中存放的密码采用md5加盐值的方式进行加密，并且每个用户有一个随机的盐值序列。</td></tr></table>
-
-<hr>
-<p><strong><font color=#ff6633>站内信(Message)</font></strong>：id、fromid、toid、content、conversation_id、created_date</p>
-<table>
-    <tr>
-        <td bgcolor=#ccffff>站内信实体属性：发送方id，接受方id，内容，发出时间。</td></tr></table>
-
-<hr>
-<p><strong><font color=#ff6633>资讯(News)</font></strong>：id、title、link、image、like_count、comment_count、user_id、created_date</p>
-<table>
-    <tr>
-        <td bgcolor=#ccffff>资讯实体属性：标题，资讯的连接，首图链接，赞的数量，评论的数量，发资讯的用户id，资讯创建时间。其中的comment_count是做了冗余，在资讯检索展示的页面上不需要再去检索统计评论表中每条资讯相关联的评论数，只需要检索资讯表就可以得到资讯对应的评论数。</td></tr></table>
-
-<hr>
-<p><strong><font color=#ff6633>评论(Comment)</font></strong>：id、content、user_id、created_date、news_id、</p>
-<table>
-    <tr>
-        <td bgcolor=#ccffff>评论实体属性：内容，评论方id，评论创建时间，被评论的资讯的id。</td></tr></table>
-
-<hr>
-<p><strong><font color=#ff6633>登陆凭证(login_ticker)</font></strong>：id、user_id、ticket、expi#ff6633、status</p>
-<table>
-    <tr>
-        <td bgcolor=#ccffff>登陆凭证实体属性：凭证关联的用户id、下发给客户端的随机字符串作为ticket、凭证过期时间、ticket的状态0有效 1无效。</td></tr></table>
-
-<h1 id="功能模块"><a href="#功能模块" class="headerlink" title="功能模块"></a>功能模块</h1><h2 id="首页展示"><a href="#首页展示" class="headerlink" title="首页展示"></a>首页展示</h2><h3 id="接口设计"><a href="#接口设计" class="headerlink" title="接口设计"></a>接口设计</h3><p><strong><font color=#ff6633>查所有资讯接口</font></strong>：作为进入主页默认调用的接口，分页查询所有资讯，每页十条按照时间排序。</p>
-<p><strong><font color=#ff6633>根据userId查资讯接口</font></strong>：根据资讯作者id展示资讯。</p>
-<h3 id="增强体验设计"><a href="#增强体验设计" class="headerlink" title="增强体验设计"></a>增强体验设计</h3><p>AJAX异步：</p>
+    <title>LeetCode——恢复二叉搜索树</title>
+    <url>/2020/04/10/LeetCode%E2%80%94%E2%80%94%E6%81%A2%E5%A4%8D%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91/</url>
+    <content><![CDATA[<h2 id="NO-99-恢复二叉搜索树-困难"><a href="#NO-99-恢复二叉搜索树-困难" class="headerlink" title="NO.99 恢复二叉搜索树 困难 "></a>NO.99 恢复二叉搜索树 <font color=#ff0099>困难</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/09/G4KGUe.png" alt="G4KGUe.png"></p>
+<p><img src="https://s1.ax1x.com/2020/04/09/G4KlDK.png" alt="G4KlDK.png"></p>
+<p><strong><font color=red>思路一：中序遍历</font></strong> 本题只需要交换节点的值就可以了，不需要真的交换两个节点。</p>
+<p>难点就是如何找到需要交换的两个值。例如示例2中的树，中序遍历得到1324，需要交换2和3的位置。</p>
+<p>看别人的题解中总结的，发现需要交换的两个节点的规律如下：</p>
 <ol>
-<li>页面不刷新，体验更好。</li>
-<li>传输数据更少。</li>
-<li>APP/网页通用。</li>
+<li>第一个需要交换的节点是：中序遍历中第一个<code>大于下一个节点的节点</code>即第一个违背递增的节点，在上例中就是3。</li>
+<li>第二个需要交换的节点是：从第一个被找到的节点之后开始，中序遍历中第一个<code>小于前一个节点的节点</code>即第二个违背递增的节点，在上例中就是2。</li>
 </ol>
-<p>在咨询下面得评论区翻看评论时，不刷新整个页面。而是异步请求获得另一组分页下的评论条目，将获得的评论条目替换旧的评论。</p>
-<p>需要设计好数据的规范格式，例如{code:状态码，msg:数据}等等，这样接口的适用范围也会增加。</p>
-<h2 id="注册登录"><a href="#注册登录" class="headerlink" title="注册登录"></a>注册登录</h2><h3 id="接口设计-1"><a href="#接口设计-1" class="headerlink" title="接口设计"></a>接口设计</h3><p><strong><font color=#ff6633>注册接口</font></strong>：账号和密码格式采用前后端双校验，接口会生成UUID剪切拼接处理之后座位盐值，和加密后的密码一起存入数据库。</p>
-<p><strong><font color=#ff6633>登录接口</font></strong>：发给通过校验的用户一个<u>凭证(ticket)</u>，这个ticket中包含了用户的一些基本信息(userId)和登录状态，保存在客户端cookie中。</p>
-<p><strong><font color=#ff6633>登出接口</font></strong>：将用户对应的ticket的状态置为1，客户端重定向到首页。</p>
-<h3 id="拦截器设计"><a href="#拦截器设计" class="headerlink" title="拦截器设计"></a>拦截器设计</h3><table>
-    <tr>
-        <td bgcolor=#99ffcc>在登录的部分，引入了ticket或者说是token这一概念。有了这一概念之后的页面访问：</td>
-    </tr>
-    <tr>
-        <td bgcolor=#ccffff>1.客户端的HTTP请求可以携带上Ticket。</td>
-    </tr>
-    <tr>
-        <td bgcolor=#ccffff>2.服务端根据请求携带的ticket去数据库中查找到userId，通过userId得到用户的具体信息，从而进行页面跳转和用户权限管理。</td>
-    <tr>
-    <tr>
-        <td bgcolor=#99ffcc>正因如此，在此时引入拦截器再适合不过了！</td>
-    </tr>
-</table>
+<p>中序遍历两种实现：</p>
+<ol>
+<li><p><strong>递归实现</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">TreeNode first;<span class="comment">//记录第一个需要交换的节点</span></span><br><span class="line">TreeNode second;<span class="comment">//记录第二个需要交换的节点</span></span><br><span class="line">TreeNode pre = <span class="keyword">new</span> TreeNode(Integer.MIN_VALUE);<span class="comment">//当前遍历节点的前一个节点</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">recoverTree</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//中序遍历找到两个节点</span></span><br><span class="line">    inorderTraversal(root);</span><br><span class="line">    <span class="comment">//交换两个节点的值</span></span><br><span class="line">    <span class="keyword">int</span> temp = first.val;</span><br><span class="line">    first.val = second.val;</span><br><span class="line">    second.val = temp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">inorderTraversal</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span>;</span><br><span class="line">    inorderTraversal(root.left);</span><br><span class="line">    <span class="comment">//第一个节点是，大于后一个节点的节点</span></span><br><span class="line">    <span class="keyword">if</span> (first == <span class="keyword">null</span> &amp;&amp; pre.val &gt;= root.val) first = pre;</span><br><span class="line">    <span class="comment">//第二个节点是在第一个节点之后，小于前一个节点的节点</span></span><br><span class="line">    <span class="keyword">if</span> (first != <span class="keyword">null</span> &amp;&amp; pre.val &gt;= root.val) second = root;</span><br><span class="line">    pre = root;</span><br><span class="line">    inorderTraversal(root.right);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://s1.ax1x.com/2020/04/05/Grn7kD.md.png" alt="Grn7kD.md.png"></p>
-<p><strong><font color=#ff6633>通用拦截器</font></strong>：实现一个<strong>HandlerInterceptor</strong>。所有的请求都经过这个拦截器，主要任务就是检查请求中是否携带ticket(是否登录)。</p>
-<p>在<strong>preHandler</strong>中检查请求中是否携带ticket这个cookie，如果存ticket就去数据库中检查这个ticket是否存在并且有效，如果存在且有效就用一个<strong>HostHolder</strong>将User信息保存在线程本地。HostHolder以注解的方式生成bean，方便后续service等方法中去使用。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span><span class="comment">//HostHolder以注解的方式生成bean，方便后续service等方法中去使用。</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HostHolder</span> </span>&#123;</span><br><span class="line">    <span class="comment">//因为系统不是一个人访问的，所以将user信息存放到请求的线程本地变量中</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> ThreadLocal&lt;User&gt; users = <span class="keyword">new</span> ThreadLocal&lt;User&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> User <span class="title">getUser</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> users.get();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUser</span><span class="params">(User user)</span> </span>&#123;</span><br><span class="line">        users.set(user);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        users.remove();;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>时间复杂度：O(n) </p>
+<p>空间复杂度：O(n)</p>
+</li>
+<li><p><strong>迭代实现</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">recoverTree</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    Stack&lt;TreeNode&gt; stack = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">    TreeNode first = <span class="keyword">null</span>;<span class="comment">//记录第一个需要交换的节点</span></span><br><span class="line">    TreeNode second = <span class="keyword">null</span>;<span class="comment">//记录第二个需要交换的节点</span></span><br><span class="line">    TreeNode pre = <span class="keyword">new</span> TreeNode(Integer.MIN_VALUE);<span class="comment">//当前遍历节点的前一个节点</span></span><br><span class="line">    <span class="comment">//中序遍历找到两个节点</span></span><br><span class="line">    <span class="keyword">while</span> (!stack.isEmpty() || root != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">while</span> (root != <span class="keyword">null</span>) &#123;</span><br><span class="line">            stack.push(root);</span><br><span class="line">            root = root.left;</span><br><span class="line">        &#125;</span><br><span class="line">        root = stack.pop();</span><br><span class="line">        <span class="keyword">if</span> (first == <span class="keyword">null</span> &amp;&amp; pre.val &gt; root.val) first = pre;</span><br><span class="line">        <span class="keyword">if</span> (first != <span class="keyword">null</span> &amp;&amp; pre.val &gt; root.val) second = root;</span><br><span class="line">        pre = root;</span><br><span class="line">        root = root.right;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//交换节点值</span></span><br><span class="line">    <span class="keyword">int</span> temp = first.val;</span><br><span class="line">    first.val = second.val;</span><br><span class="line">    second.val = temp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>在<strong>postHandler</strong>中每次渲染前都将HostHolder中的User信息放ModelAndView中方便页面去使用。</p>
-<p>在<strong>afterCompletion</strong>中每次一个完整请求结束后回调该方法时，需要将HostHolder中的User信息清除。</p>
-<p><strong><font color=#ff6633>登录拦截器</font></strong>：实现一个<strong>HandlerInterceptor</strong>。指定的请求路径会经过这个拦截器，主要任务就是检查HostHolder中是否有user信息(是否登录)。如果未登录则进行跳转或其他处理。</p>
-<p><strong><font color=red>最后，完成两个拦截器的之后，需要实现一个WebMvcConfigurerAdapter的配置类，自动将我们实现的拦截器注册进去。需要注意拦截器的优先级，先注册的拦截器优先处理。</font></strong></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ToutiaoWebConfiguration</span> <span class="keyword">extends</span> <span class="title">WebMvcConfigurerAdapter</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    PassportInterceptor passportInterceptor;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    LoginRequiredInterceptor loginRequiredInterceptor;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="comment">//先注册的拦截器优先处理</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addInterceptors</span><span class="params">(InterceptorRegistry registry)</span> </span>&#123;</span><br><span class="line">      <span class="comment">//拦截所有请求，检查是否有合法的ticket，如有，查出user信息放入HostHolder</span></span><br><span class="line">      registry.addInterceptor(passportInterceptor);</span><br><span class="line">      <span class="comment">//拦截形如"/setting*"路径的请求，检查HostHolder是否有user信息</span></span><br><span class="line">      registry.addInterceptor(loginRequiredInterceptor).addPathPatterns(<span class="string">"/setting*"</span>);</span><br><span class="line">      <span class="keyword">super</span>.addInterceptors(registry);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="安全性设计"><a href="#安全性设计" class="headerlink" title="安全性设计"></a>安全性设计</h3><ol>
-<li>采用HTTPS。</li>
-<li>公钥加密私钥解密，只有服务器拥有这个秘钥。</li>
-<li>前端后端都对账户密码的长度、重复、敏感词进行校验，密码采用随机盐值加密后存入数据库。</li>
-<li>token有效期。</li>
-<li>单一平台的单点登录，登录IP异常检验。</li>
-<li>用户状态的权限判断。</li>
-<li>添加验证码机制，防爆破和批量注册。</li>
+<p>时间复杂度：O(n) </p>
+<p>空间复杂度：O(n)</p>
+</li>
 </ol>
-<h2 id="资讯模块"><a href="#资讯模块" class="headerlink" title="资讯模块"></a>资讯模块</h2><h3 id="接口设计-2"><a href="#接口设计-2" class="headerlink" title="接口设计"></a>接口设计</h3><p><strong><font color=#ff6633>资讯发布接口</font></strong>：将用户发布的资讯的首图连接、用户id、资讯标题、资讯连接等信息存入数据库。</p>
-<p><strong><font color=#ff6633>资讯图片上传接口</font></strong>：post请求到来之后，校验参数中的文件名是否合法，保存到服务器本地。</p>
-<p><strong><font color=#ff6633>资讯图片下载接口</font></strong>：设置响应头，将本地图片作为输入流放到响应中返回给用户。</p>
-<h3 id="使用第三方云服务实现上传-下载接口"><a href="#使用第三方云服务实现上传-下载接口" class="headerlink" title="使用第三方云服务实现上传/下载接口"></a>使用第三方云服务实现上传/下载接口</h3><table>
-    <tr>
-        <td bgcolor=#99ffcc><b>在图片上传的部分，会涉及到大量的图片请求。和图片类似的css、js、或者静态化的页面等等很多静态资源不涉及数据库等服务器的处理，只是进行简单的读取。</b></td>
-    </tr>
-    <tr>
-        <td bgcolor=#ccffff>正因如此，这些个静态资源最适合部署到CDN节点。</td>
-    </tr>
-    <tr>
-        <td bgcolor=#ccffff>当静态资源部署到CDN服务器之后，当用户请求这些资源的时候，就可以从就近的CDN服务器上去获取需要的资源。</td>
-    <tr>
-    <tr>
-        <td bgcolor=#ccffff>CDN不仅可以非常有效的加速用户的请求，同时可以将这些静态文件和后端的存储分离，还能降低服务器的压力，让服务器"专注"于其他业务逻辑。</td>
-    </tr>
-    <tr>
-        <td bgcolor=#99ffcc><b>当上传图片到一台服务器之后，需要将这张图片同步到其他一些服务节点或者CDN节点上，如果仅仅依靠开发者编码去完成这个事情，是很麻烦且低效的，这时候就可以借助云存储来完成！</b></td>
-    </tr>
-    <tr>
-        <td bgcolor=#ccffff>将很多静态文件的冗余备份，CDN缓存同步，统一访问等等问题都抛给第三方的云存储服务去完成。</td>
-    </tr>
-</table>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>栈</tag>
+        <tag>递归</tag>
+        <tag>二叉搜索树</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——翻转字符串中的单词</title>
+    <url>/2020/04/10/LeetCode%E2%80%94%E2%80%94%E7%BF%BB%E8%BD%AC%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E7%9A%84%E5%8D%95%E8%AF%8D/</url>
+    <content><![CDATA[<h2 id="NO-151-翻转字符串里的单词-中等"><a href="#NO-151-翻转字符串里的单词-中等" class="headerlink" title="NO.151 翻转字符串里的单词 中等 "></a>NO.151 翻转字符串里的单词 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/10/GoQ5z4.png" alt="GoQ5z4.png"></p>
+<p><strong><font color=red>思路一：API</font></strong> 第一感觉直接API，按空格分割一下，然后重新生成字符串。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">reverseWords</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s==<span class="keyword">null</span>)<span class="keyword">return</span> s;</span><br><span class="line">    <span class="comment">//分割s</span></span><br><span class="line">    String[] strs = s.split(<span class="string">" "</span>);</span><br><span class="line">    StringBuilder sb=<span class="keyword">new</span> StringBuilder();</span><br><span class="line">    <span class="comment">//逆序遍历</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = strs.length-<span class="number">1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">        <span class="comment">//跳过空串</span></span><br><span class="line">        <span class="keyword">if</span> (strs[i].equals(<span class="string">""</span>))<span class="keyword">continue</span>;</span><br><span class="line">        sb.append(strs[i]).append(<span class="string">" "</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//去除最后一个多余的空格</span></span><br><span class="line">    <span class="keyword">return</span> sb.toString().trim();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><strong><font color=#ff6633>采用七牛云上传文件服务</font></strong>：引入七牛的依赖，注册<a href="https://portal.qiniu.com/signup" target="_blank" rel="noopener">七牛云</a>，获得ACCESS_KEY、SECRET_KEY，创建bucket。最后就是对照着<a href="https://developer.qiniu.com/kodo/sdk/1239/java#install-by-maven" target="_blank" rel="noopener">官方文档</a>进行编码，感觉和上传到本地的步骤差不多。编写过程中，将七牛的业务代码单独封装为一个QiniuService接口，方便之后更换第三方。</p>
-<p><strong><font color=#ff6633>使用七牛云的下载文件服务</font></strong>：和使用上传服务的步骤一样。</p>
-<p>编写完成，替换掉之前的图片上传和下载的接口即可。</p>
-<table>
-    <tr>
-        <td bgcolor=#99ffcc><b>第三方云存储服务除了上传下载文件之外还有很多功能，例如可以使用实时缩图的功能下载到同一张图片的不同大小及质量的图、使用实时鉴图功能过滤敏感违法图片，这些都可以有效提升用户的访问速度和观感。</b></td>
-    </tr>
-    <tr>
-        <td bgcolor=#ccffff>还有很多的第三方服务可以逐步了解使用进行优化。</td>
-    </tr>
-</table>]]></content>
+<p>时间复杂度：O(n)</p>
+<p>空间复杂度：O(n)</p>
+<p><strong><font color=red>思路二：栈</font></strong> 第二感觉就是用栈，因为题目意思是翻转单词的顺序，就想到了先进后出。先将单词全部入栈，然后全部出栈得到结果。又觉得本质上和直接用API没啥区别。。班门弄斧了</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">reverseWords</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s==<span class="keyword">null</span>)<span class="keyword">return</span> s;</span><br><span class="line">    Stack&lt;String&gt; stack=<span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">    <span class="comment">//将单词都入栈</span></span><br><span class="line">    StringBuilder sb=<span class="keyword">new</span> StringBuilder();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">char</span> c : s.toCharArray()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (c != <span class="string">' '</span>) &#123;</span><br><span class="line">            sb.append(c);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            stack.push(sb.toString());</span><br><span class="line">            sb=<span class="keyword">new</span> StringBuilder();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    stack.push(sb.toString());</span><br><span class="line">    <span class="comment">//都出栈</span></span><br><span class="line">    StringBuilder ans=<span class="keyword">new</span> StringBuilder();</span><br><span class="line">    <span class="keyword">while</span> (!stack.isEmpty()) &#123;</span><br><span class="line">        <span class="comment">//空串跳过</span></span><br><span class="line">        <span class="keyword">if</span> (!stack.peek().equals(<span class="string">""</span>))ans.append(stack.peek()).append(<span class="string">' '</span>);</span><br><span class="line">        stack.pop();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans.toString().trim();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<p>空间复杂度：O(n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>栈</tag>
+        <tag>字符串</tag>
+      </tags>
   </entry>
   <entry>
     <title>LeetCode——验证二叉搜索树</title>
