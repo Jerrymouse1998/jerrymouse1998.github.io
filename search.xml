@@ -1,6 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——二叉树的层序遍历</title>
+    <url>/2020/04/11/LeetCode%E2%80%94%E2%80%94%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%B1%82%E5%BA%8F%E9%81%8D%E5%8E%86/</url>
+    <content><![CDATA[<h2 id="NO-102-二叉树的层序遍历-中等"><a href="#NO-102-二叉树的层序遍历-中等" class="headerlink" title="NO.102 二叉树的层序遍历 中等 "></a>NO.102 二叉树的层序遍历 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/11/GH7zl9.png" alt="GH7zl9.png"></p>
+<p><strong><font color=red>思路一：BFS</font></strong> 看到层序遍历，就想到了广搜。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; levelOrder(TreeNode root) &#123;</span><br><span class="line">    List&lt;List&lt;Integer&gt;&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> res;</span><br><span class="line">    Queue&lt;TreeNode&gt; queue = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">    queue.add(root);</span><br><span class="line">    <span class="comment">//层序遍历</span></span><br><span class="line">    <span class="keyword">while</span> (!queue.isEmpty()) &#123;</span><br><span class="line">        <span class="comment">//记录一层的数值</span></span><br><span class="line">        List&lt;Integer&gt; round = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">int</span> size = queue.size();</span><br><span class="line">        <span class="comment">//弹出一层节点</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">            TreeNode p = queue.poll();</span><br><span class="line">            round.add(p.val);</span><br><span class="line">            <span class="keyword">if</span> (p.left != <span class="keyword">null</span>) queue.add(p.left);</span><br><span class="line">            <span class="keyword">if</span> (p.right != <span class="keyword">null</span>) queue.add(p.right);</span><br><span class="line">        &#125;</span><br><span class="line">        res.add(round);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>BFS</tag>
+        <tag>二叉树</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——对称二叉树</title>
+    <url>/2020/04/11/LeetCode%E2%80%94%E2%80%94%E5%AF%B9%E7%A7%B0%E4%BA%8C%E5%8F%89%E6%A0%91/</url>
+    <content><![CDATA[<h2 id="NO-101-对称二叉树-简单"><a href="#NO-101-对称二叉树-简单" class="headerlink" title="NO.101 对称二叉树 简单 "></a>NO.101 对称二叉树 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/11/GH2RgK.png" alt="GH2RgK.png"></p>
+<p><strong><font color=red>思路一：递归实现</font></strong> 判断二叉树是否对称，就是判断结构是否对称和对称节点值是否相等。就是判断根的左右子树是否对称，子树继续递归判断子树根的左右子树是否对称。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isSymmetric</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> isMirror(root, root);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isMirror</span><span class="params">(TreeNode root, TreeNode root1)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//判断结构是否对称</span></span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span> &amp;&amp; root1 == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span> || root1 == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">return</span> root.val == root1.val<span class="comment">//结构对称，对称节点的值是否相等。</span></span><br><span class="line">        &amp;&amp; isMirror(root.left, root1.right)<span class="comment">//左子树和右子树</span></span><br><span class="line">        &amp;&amp; isMirror(root.right, root1.left);<span class="comment">//右子树和左子树</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    遍历树的节点。</p>
+<p><strong><font color=red>思路二：迭代实现</font></strong> 很容易理解，但是第一次实现的时候依然很棘手。</p>
+<p>借助一个队列，初始化入队根节点两次。判断的过程中每次出队两个节点r1、r2，这两个节点是镜像节点，所以应该是相等的，否则树不对称；过程像是层序遍历一样，但是每次入队<code>r1的left和r2的right</code>以及<code>r1的right和r2的left</code>。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isSymmetric</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    Queue&lt;TreeNode&gt; queue = <span class="keyword">new</span> ArrayDeque&lt;&gt;();</span><br><span class="line">    queue.add(root);</span><br><span class="line">    queue.add(root);</span><br><span class="line">    <span class="keyword">while</span> (!queue.isEmpty()) &#123;</span><br><span class="line">        TreeNode r1 = queue.poll();</span><br><span class="line">        TreeNode r2 = queue.poll();</span><br><span class="line">        <span class="keyword">if</span> (r1 == <span class="keyword">null</span> &amp;&amp; r2 == <span class="keyword">null</span>) <span class="keyword">continue</span>;<span class="comment">//结构一样</span></span><br><span class="line">        <span class="keyword">if</span> (r1 == <span class="keyword">null</span> || r2 == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">false</span>;<span class="comment">//结构不同</span></span><br><span class="line">        <span class="keyword">if</span> (r1.val != r2.val) <span class="keyword">return</span> <span class="keyword">false</span>;<span class="comment">//对称节点值不同</span></span><br><span class="line">        <span class="comment">//将镜像节点入队</span></span><br><span class="line">        queue.add(r1.left);</span><br><span class="line">        queue.add(r2.right);</span><br><span class="line">        queue.add(r1.right);</span><br><span class="line">        queue.add(r2.left);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    遍历节点</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>递归</tag>
+        <tag>二叉树</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——恢复二叉搜索树</title>
     <url>/2020/04/10/LeetCode%E2%80%94%E2%80%94%E6%81%A2%E5%A4%8D%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91/</url>
     <content><![CDATA[<h2 id="NO-99-恢复二叉搜索树-困难"><a href="#NO-99-恢复二叉搜索树-困难" class="headerlink" title="NO.99 恢复二叉搜索树 困难 "></a>NO.99 恢复二叉搜索树 <font color=#ff0099>困难</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/09/G4KGUe.png" alt="G4KGUe.png"></p>
