@@ -1,6 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——二叉树的层序遍历II</title>
+    <url>/2020/04/14/LeetCode%E2%80%94%E2%80%94%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%B1%82%E5%BA%8F%E9%81%8D%E5%8E%86II/</url>
+    <content><![CDATA[<h2 id="NO-107-二叉树的层序遍历II-简单"><a href="#NO-107-二叉树的层序遍历II-简单" class="headerlink" title="NO.107 二叉树的层序遍历II 简单 "></a>NO.107 二叉树的层序遍历II <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/14/GxWE01.png" alt="GxWE01.png"></p>
+<p><strong><font color=red>思路一：层序遍历，头插法保存每一层</font></strong> 还是普通的层序遍历，区别就是保存每一层遍历结果的时候，头插法放入结果集。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; levelOrderBottom(TreeNode root) &#123;</span><br><span class="line">    List&lt;List&lt;Integer&gt;&gt; res = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> res;</span><br><span class="line">    Queue&lt;TreeNode&gt; queue = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">    queue.add(root);</span><br><span class="line">    <span class="comment">//层序遍历</span></span><br><span class="line">    <span class="keyword">while</span> (!queue.isEmpty()) &#123;</span><br><span class="line">        List&lt;Integer&gt; list = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">        <span class="keyword">int</span> size = queue.size();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">            TreeNode poll = queue.poll();</span><br><span class="line">            list.add(poll.val);</span><br><span class="line">            <span class="keyword">if</span> (poll.left != <span class="keyword">null</span>) queue.add(poll.left);</span><br><span class="line">            <span class="keyword">if</span> (poll.right != <span class="keyword">null</span>) queue.add(poll.right);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//头插法保存每一层的遍历结果到结果集中</span></span><br><span class="line">        res.add(<span class="number">0</span>, list);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    层序遍历。</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>二叉树</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——二叉树的最大深度</title>
+    <url>/2020/04/14/LeetCode%E2%80%94%E2%80%94%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%9C%80%E5%A4%A7%E6%B7%B1%E5%BA%A6/</url>
+    <content><![CDATA[<h2 id="NO-104-二叉树的最大深度-简单"><a href="#NO-104-二叉树的最大深度-简单" class="headerlink" title="NO.104 二叉树的最大深度 简单 "></a>NO.104 二叉树的最大深度 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/14/GxdqsO.png" alt="GxdqsO.png"></p>
+<p><strong><font color=red>思路一：深搜</font></strong> 最直接的想法深搜。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxDepth</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> dfs(root);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">dfs</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> max1 = <span class="number">0</span>, max2 = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//求左子树最深，右子树最深</span></span><br><span class="line">    max1 += dfs(root.left);</span><br><span class="line">    max2 += dfs(root.right);</span><br><span class="line">    <span class="comment">//左右子树最深的加上根的一层深度</span></span><br><span class="line">    <span class="keyword">return</span> Math.max(max1, max2) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    像是前序遍历。</p>
+<p><strong><font color=red>思路二：广搜</font></strong> 广搜也是可以的，层序遍历，每遍历一层深度+1。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxDepth</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> depth = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> depth;</span><br><span class="line">    Queue&lt;TreeNode&gt; queue = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">    queue.add(root);</span><br><span class="line">    <span class="comment">//层序遍历</span></span><br><span class="line">    <span class="keyword">while</span> (!queue.isEmpty()) &#123;</span><br><span class="line">        depth++;</span><br><span class="line">        <span class="keyword">int</span> size = queue.size();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">            TreeNode poll = queue.poll();</span><br><span class="line">            <span class="keyword">if</span> (poll.left != <span class="keyword">null</span>) queue.add(poll.left);</span><br><span class="line">            <span class="keyword">if</span> (poll.right != <span class="keyword">null</span>) queue.add(poll.right);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> depth;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    层序遍历。</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>二叉树</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——两数相加II</title>
+    <url>/2020/04/14/LeetCode%E2%80%94%E2%80%94%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0II/</url>
+    <content><![CDATA[<h2 id="NO-445-两数相加II-中等"><a href="#NO-445-两数相加II-中等" class="headerlink" title="NO.445 两数相加II 中等 "></a>NO.445 两数相加II <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/14/Gxt9kq.png" alt="Gxt9kq.png"></p>
+<p>本题和姊妹题NO.2两数相加的区别在于，本题的参数是”正序”的链表，不能像NO.2直接从表头到表尾依次相加。本题的关键点在于如何将链表进行翻转。</p>
+<p><strong><font color=red>思路一：翻转链表</font></strong> </p>
+<p> NO.206题一样翻转两个链表，本题就转换为NO.2。</p>
+<p>时间复杂度：O(n)    两次遍历。</p>
+<p><strong><font color=red>思路二：栈</font></strong> </p>
+<p>“翻转”、”逆序”一般都可以利用栈的特性，将两个参数链表，分别压栈，然后依次出栈相加。</p>
+<p>相加的结果利用头插法生成结果链表。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">addTwoNumbers</span><span class="params">(ListNode l1, ListNode l2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (l1==<span class="keyword">null</span>)<span class="keyword">return</span> l2;</span><br><span class="line">    <span class="keyword">if</span> (l2==<span class="keyword">null</span>)<span class="keyword">return</span> l1;</span><br><span class="line">    <span class="comment">//参数链表入栈</span></span><br><span class="line">    Stack&lt;Integer&gt; stack1=<span class="keyword">new</span> Stack&lt;&gt;(),stack2=<span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">    <span class="keyword">while</span> (l1 != <span class="keyword">null</span>) &#123;</span><br><span class="line">        stack1.add(l1.val);</span><br><span class="line">        l1=l1.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (l2 != <span class="keyword">null</span>) &#123;</span><br><span class="line">        stack2.add(l2.val);</span><br><span class="line">        l2=l2.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//依次出栈相加</span></span><br><span class="line">    <span class="keyword">int</span> carry=<span class="number">0</span>;</span><br><span class="line">    ListNode dummy=<span class="keyword">new</span> ListNode(-<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">while</span> (!stack1.isEmpty() || !stack2.isEmpty()) &#123;</span><br><span class="line">        <span class="keyword">int</span> x=stack1.isEmpty()?<span class="number">0</span>:stack1.pop();</span><br><span class="line">        <span class="keyword">int</span> y=stack2.isEmpty()?<span class="number">0</span>:stack2.pop();</span><br><span class="line">        <span class="keyword">int</span> sum=x+y+carry;</span><br><span class="line">        carry=sum/<span class="number">10</span>;</span><br><span class="line">        <span class="comment">//头插法</span></span><br><span class="line">        ListNode node=<span class="keyword">new</span> ListNode(sum%<span class="number">10</span>);</span><br><span class="line">        node.next=dummy.next;</span><br><span class="line">        dummy.next=node;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (carry != <span class="number">0</span>) &#123;</span><br><span class="line">        ListNode node=<span class="keyword">new</span> ListNode(carry);</span><br><span class="line">        node.next=dummy.next;</span><br><span class="line">        dummy.next=node;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dummy.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    两次遍历。</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>栈</tag>
+        <tag>链表</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——设计推特</title>
     <url>/2020/04/13/LeetCode%E2%80%94%E2%80%94%E8%AE%BE%E8%AE%A1%E6%8E%A8%E7%89%B9/</url>
     <content><![CDATA[<h2 id="NO-355-设计推特-中等"><a href="#NO-355-设计推特-中等" class="headerlink" title="NO.355 设计推特 中等 "></a>NO.355 设计推特 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/13/GX1XoF.png" alt="GX1XoF.png"></p>
@@ -58,7 +129,6 @@
       </categories>
       <tags>
         <tag>leetcode</tag>
-        <tag>链表</tag>
         <tag>二叉树</tag>
       </tags>
   </entry>
@@ -79,7 +149,6 @@
       </categories>
       <tags>
         <tag>leetcode</tag>
-        <tag>BFS</tag>
         <tag>二叉树</tag>
       </tags>
   </entry>
@@ -105,7 +174,6 @@
       </categories>
       <tags>
         <tag>leetcode</tag>
-        <tag>递归</tag>
         <tag>二叉树</tag>
       </tags>
   </entry>
@@ -145,8 +213,6 @@
       </categories>
       <tags>
         <tag>leetcode</tag>
-        <tag>栈</tag>
-        <tag>递归</tag>
         <tag>二叉搜索树</tag>
       </tags>
   </entry>
@@ -202,8 +268,6 @@
       </categories>
       <tags>
         <tag>leetcode</tag>
-        <tag>栈</tag>
-        <tag>递归</tag>
         <tag>二叉搜索树</tag>
       </tags>
   </entry>
