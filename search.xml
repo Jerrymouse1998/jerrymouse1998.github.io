@@ -1,6 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——将有序链表转换为二叉搜索树</title>
+    <url>/2020/04/16/LeetCode%E2%80%94%E2%80%94%E5%B0%86%E6%9C%89%E5%BA%8F%E9%93%BE%E8%A1%A8%E8%BD%AC%E6%8D%A2%E4%B8%BA%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91/</url>
+    <content><![CDATA[<h2 id="NO-109-将有序链表转换为二叉搜索树-中等"><a href="#NO-109-将有序链表转换为二叉搜索树-中等" class="headerlink" title="NO.109 将有序链表转换为二叉搜索树 中等 "></a>NO.109 将有序链表转换为二叉搜索树 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/16/JFkb0P.png" alt="JFkb0P.png"></p>
+<p><strong><font color=red>思路一：中序遍历还原</font></strong> 这道题和NO.108属于姊妹题，同样是通过明确的遍历序列还原二叉树。</p>
+<p>所以说可以使用相同的思路，中点确定根，从而确定左右子树，递归出口也是区间内没有元素。</p>
+<p>本题的难点在于参数是一个链表，不能像数组一样随机访问。</p>
+<p>找链表最笨的方法就是两次遍历，第一次算节点个数，第二次找到中点。</p>
+<p>通常这样的问题都可以使用快慢指针来解决，快指针一次走两步，慢指针一次走一步，当快指针走完区间，慢指针就刚好到达区间的1/2处。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//快慢指针找中点</span></span><br><span class="line">ListNode fast = head, slow = head;</span><br><span class="line"><span class="keyword">while</span> (fast != tail &amp;&amp; fast.next != tail) &#123;</span><br><span class="line">    fast = fast.next.next;</span><br><span class="line">    slow = slow.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>PS</strong>：本题递归函数传参形成的区间是<u>前闭后开</u>的，所以左右端点相等就表示区间内没有元素。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">sortedListToBST</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">return</span> buildBST(head, <span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> TreeNode <span class="title">buildBST</span><span class="params">(ListNode head, ListNode tail)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//出口</span></span><br><span class="line">    <span class="keyword">if</span> (head == tail) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    <span class="comment">//快慢指针找中点</span></span><br><span class="line">    ListNode fast = head, slow = head;</span><br><span class="line">    <span class="keyword">while</span> (fast != tail &amp;&amp; fast.next != tail) &#123;</span><br><span class="line">        fast = fast.next.next;</span><br><span class="line">        slow = slow.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//slow指向链表中点，生成根节点</span></span><br><span class="line">    TreeNode root = <span class="keyword">new</span> TreeNode(slow.val);</span><br><span class="line">    <span class="comment">//生成左右子树</span></span><br><span class="line">    root.left = buildBST(head, slow);</span><br><span class="line">    root.right = buildBST(slow.next, tail);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(nlogn)     每个元素需要访问一次生成树节点，每次生成树节点的时候都需要快慢指针找中点是个O(logn)。</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>链表</tag>
+        <tag>快慢指针</tag>
+        <tag>二叉搜索树</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——将有序数组转换为二叉搜索树</title>
+    <url>/2020/04/16/LeetCode%E2%80%94%E2%80%94%E5%B0%86%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84%E8%BD%AC%E6%8D%A2%E4%B8%BA%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91/</url>
+    <content><![CDATA[<h2 id="NO-108-将有序数组转换为二叉搜索树-简单"><a href="#NO-108-将有序数组转换为二叉搜索树-简单" class="headerlink" title="NO.108 将有序数组转换为二叉搜索树 简单 "></a>NO.108 将有序数组转换为二叉搜索树 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/16/JFkqTf.png" alt="JFkqTf.png"></p>
+<p><strong><font color=red>思路一：中序遍历还原</font></strong> 这道题和NO.105和No.106异曲同工，都是通过明确的遍历序列还原二叉树。</p>
+<p>例如NO.105，给了前序和中序遍历序列去还原二叉树，前序的作用就是找到根，中序的左右就是找到根的左右子树部分。</p>
+<p>本题为什么可以只用一个中序遍历进行还原？其实思路和前两题一样的，根据题目要求(高度平衡二叉树)，中序序列的中间元素作为根，从而也就知道了根的左右子树部分。递归的出口依然是区间没有元素。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">sortedArrayToBST</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (nums == <span class="keyword">null</span> || nums.length == <span class="number">0</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">return</span> buildBST(nums, <span class="number">0</span>, nums.length - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> TreeNode <span class="title">buildBST</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//出口</span></span><br><span class="line">    <span class="keyword">if</span> (end &lt; start) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> mid = (start + end) &gt;&gt;&gt; <span class="number">1</span>;</span><br><span class="line">    <span class="comment">//中间元素作为根</span></span><br><span class="line">    TreeNode root = <span class="keyword">new</span> TreeNode(nums[mid]);</span><br><span class="line">    <span class="comment">//生成左右子树</span></span><br><span class="line">    root.left = buildBST(nums, start, mid - <span class="number">1</span>);</span><br><span class="line">    root.right = buildBST(nums, mid + <span class="number">1</span>, end);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)     每个元素访问一次。</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>二叉搜索树</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——从中序与后序遍历序列构造二叉树</title>
     <url>/2020/04/15/LeetCode%E2%80%94%E2%80%94%E4%BB%8E%E4%B8%AD%E5%BA%8F%E4%B8%8E%E5%90%8E%E5%BA%8F%E9%81%8D%E5%8E%86%E5%BA%8F%E5%88%97%E6%9E%84%E9%80%A0%E4%BA%8C%E5%8F%89%E6%A0%91/</url>
     <content><![CDATA[<h2 id="NO-106-从中序与后序遍历序列构造二叉树-中等"><a href="#NO-106-从中序与后序遍历序列构造二叉树-中等" class="headerlink" title="NO.106 从中序与后序遍历序列构造二叉树 中等 "></a>NO.106 从中序与后序遍历序列构造二叉树 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/15/J91a38.png" alt="J91a38.png"></p>
