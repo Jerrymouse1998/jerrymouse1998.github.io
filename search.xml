@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——平衡二叉树</title>
+    <url>/2020/04/16/LeetCode%E2%80%94%E2%80%94%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/</url>
+    <content><![CDATA[<h2 id="NO-110-平衡二叉树-简单"><a href="#NO-110-平衡二叉树-简单" class="headerlink" title="NO.110 平衡二叉树 简单 "></a>NO.110 平衡二叉树 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/16/JFdJdx.png" alt="JFdJdx.png"></p>
+<p><strong><font color=red>思路一：递归实现</font></strong> 只需要判断是否是高度平衡二叉树即可。</p>
+<p>NO.104 二叉树的最大深度的升级版，分别计算根节点的左右子树的最大深度。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">boolean</span> isBBT = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isBalanced</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    dfs(root);</span><br><span class="line">    <span class="keyword">return</span> isBBT;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">dfs</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//左右子树深度</span></span><br><span class="line">    <span class="keyword">int</span> left = dfs(root.left) + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> right = dfs(root.right) + <span class="number">1</span>;</span><br><span class="line">    <span class="comment">//高度不平衡，false</span></span><br><span class="line">    <span class="keyword">if</span> (Math.abs(left - right) &gt; <span class="number">1</span>) isBBT = <span class="keyword">false</span>;</span><br><span class="line">    <span class="comment">//左右子树最大深度</span></span><br><span class="line">    <span class="keyword">return</span> Math.max(left, right);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> 时间复杂度：O(n)     深度优先遍历一次</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>二叉树</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——将有序链表转换为二叉搜索树</title>
     <url>/2020/04/16/LeetCode%E2%80%94%E2%80%94%E5%B0%86%E6%9C%89%E5%BA%8F%E9%93%BE%E8%A1%A8%E8%BD%AC%E6%8D%A2%E4%B8%BA%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91/</url>
     <content><![CDATA[<h2 id="NO-109-将有序链表转换为二叉搜索树-中等"><a href="#NO-109-将有序链表转换为二叉搜索树-中等" class="headerlink" title="NO.109 将有序链表转换为二叉搜索树 中等 "></a>NO.109 将有序链表转换为二叉搜索树 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/16/JFkb0P.png" alt="JFkb0P.png"></p>
