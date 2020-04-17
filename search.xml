@@ -1,6 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——路径总和II</title>
+    <url>/2020/04/17/LeetCode%E2%80%94%E2%80%94%E8%B7%AF%E5%BE%84%E6%80%BB%E5%92%8CII/</url>
+    <content><![CDATA[<h2 id="NO-113-路径总和II-中等"><a href="#NO-113-路径总和II-中等" class="headerlink" title="NO.113 路径总和II 中等 "></a>NO.113 路径总和II <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/17/JE4x1g.png" alt="JE4x1g.png"></p>
+<p><strong><font color=red>思路一：深搜回溯</font></strong> NO.112路径总和的姊妹题，区别在于本题要求拿到路径集合，这样本题就更像NO.39组合总和、NO.40组合总和II了。思路也差不多：回溯。</p>
+<p>每次减去节点值，并将节点加入路径集合。</p>
+<p><strong>需要注意的是</strong>：路径集合放入结果集之后，要remove当前节点之后再返回。不然会出现路径带有分支的情况，例如下图：</p>
+<p><img src="https://s1.ax1x.com/2020/04/17/JE4v9S.png" alt="JE4v9S.png"></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;List&lt;Integer&gt;&gt; res = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; pathSum(TreeNode root, <span class="keyword">int</span> sum) &#123;</span><br><span class="line">    dfs(root, sum, <span class="keyword">new</span> LinkedList&lt;Integer&gt;());</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(TreeNode root, <span class="keyword">int</span> sum, LinkedList&lt;Integer&gt; track)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">//减去当前节点值，节点加入路径</span></span><br><span class="line">    sum -= root.val;</span><br><span class="line">    track.add(root.val);</span><br><span class="line">    <span class="comment">//如果到达叶子节点并且路径和等于sum</span></span><br><span class="line">    <span class="keyword">if</span> (root.left == <span class="keyword">null</span> &amp;&amp; root.right == <span class="keyword">null</span> &amp;&amp; sum == <span class="number">0</span>) &#123;</span><br><span class="line">        res.add(<span class="keyword">new</span> LinkedList&lt;&gt;(track));</span><br><span class="line">        track.removeLast();<span class="comment">//注意，返回前要removeLast</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//左右子树</span></span><br><span class="line">    dfs(root.left, sum, track);</span><br><span class="line">    dfs(root.right, sum, track);</span><br><span class="line">    <span class="comment">//回溯</span></span><br><span class="line">    track.removeLast();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> 时间复杂度：O(n)     <strong>不能确定：虽然是回溯思路，每个节点只访问了一次。</strong></p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>回溯</tag>
+        <tag>二叉树</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——路径总和</title>
+    <url>/2020/04/17/LeetCode%E2%80%94%E2%80%94%E8%B7%AF%E5%BE%84%E6%80%BB%E5%92%8C/</url>
+    <content><![CDATA[<h2 id="NO-112-路径总和-简单"><a href="#NO-112-路径总和-简单" class="headerlink" title="NO.112 路径总和 简单 "></a>NO.112 路径总和 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/17/JE4Xh8.png" alt="JE4Xh8.png"></p>
+<p><strong><font color=red>思路一：深搜</font></strong> 和NO.39组合总和、NO.40组合总和II有点像，不过本题已经是树形结构找路径了。采用相同的思路，深搜sum每次减掉已经走过的节点值，sum表示还需要多少才能符合要求。sum==0表示路径和符合要求。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasPathSum</span><span class="params">(TreeNode root, <span class="keyword">int</span> sum)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> dfs(root, sum);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">dfs</span><span class="params">(TreeNode root, <span class="keyword">int</span> sum)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    sum -= root.val;</span><br><span class="line">    <span class="comment">//到达叶子节点，返回路径和是否等于0</span></span><br><span class="line">    <span class="keyword">if</span> (root.left == <span class="keyword">null</span> &amp;&amp; root.right == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> sum == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//左右子树是否存在符合要求的路径</span></span><br><span class="line">    <span class="keyword">boolean</span> left = dfs(root.left, sum);</span><br><span class="line">    <span class="keyword">boolean</span> right = dfs(root.right, sum);</span><br><span class="line">    <span class="keyword">return</span> left || right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> 时间复杂度：O(n)     深度优先遍历一次，前序遍历</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>二叉树</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——二叉树的最小深度</title>
+    <url>/2020/04/17/LeetCode%E2%80%94%E2%80%94%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%B7%B1%E5%BA%A6/</url>
+    <content><![CDATA[<h2 id="NO-111-二叉树的最小深度-简单"><a href="#NO-111-二叉树的最小深度-简单" class="headerlink" title="NO.111 二叉树的最小深度 简单 "></a>NO.111 二叉树的最小深度 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/17/JE4zcQ.png" alt="JE4zcQ.png"></p>
+<p><strong><font color=red>思路一：深搜</font></strong> 又是求树深度的问题，求最小深度，左右子树都为空的节点是叶子节点。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minDepth</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//左右子树的深度</span></span><br><span class="line">    <span class="keyword">int</span> left = minDepth(root.left);</span><br><span class="line">    <span class="keyword">int</span> right = minDepth(root.right);</span><br><span class="line">    <span class="comment">//左右子树都为空，找到叶子节点，返回根节点1</span></span><br><span class="line">    <span class="comment">//如果有一边为空，则返回非空一侧的深度+根节点</span></span><br><span class="line">    <span class="keyword">if</span> (left == <span class="number">0</span> || right == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> left + right + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//最后计算深度最小的一侧+根节点</span></span><br><span class="line">    <span class="keyword">return</span> Math.min(left, right) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> 时间复杂度：O(n)     深度优先遍历一次</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>二叉树</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——平衡二叉树</title>
     <url>/2020/04/16/LeetCode%E2%80%94%E2%80%94%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/</url>
     <content><![CDATA[<h2 id="NO-110-平衡二叉树-简单"><a href="#NO-110-平衡二叉树-简单" class="headerlink" title="NO.110 平衡二叉树 简单 "></a>NO.110 平衡二叉树 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/16/JFdJdx.png" alt="JFdJdx.png"></p>
