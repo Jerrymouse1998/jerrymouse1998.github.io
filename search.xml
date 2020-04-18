@@ -1,6 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——二叉树展开为链表</title>
+    <url>/2020/04/18/LeetCode%E2%80%94%E2%80%94%E4%BA%8C%E5%8F%89%E6%A0%91%E5%B1%95%E5%BC%80%E4%B8%BA%E9%93%BE%E8%A1%A8/</url>
+    <content><![CDATA[<h2 id="NO-114-二叉树展开为链表-中等"><a href="#NO-114-二叉树展开为链表-中等" class="headerlink" title="NO.114 二叉树展开为链表 中等 "></a>NO.114 二叉树展开为链表 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/18/Jmiuiq.png" alt="Jmiuiq.png"></p>
+<p><strong><font color=red>思路一：前序遍历</font></strong> 观察示例，发现展开后的链表是二叉树的前序遍历序列。</p>
+<p>可以先前序遍历获得遍历序列，然后将序列依次连接到根的右节点上。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">flatten</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root==<span class="keyword">null</span>)<span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">//前序遍历序列</span></span><br><span class="line">    LinkedList&lt;TreeNode&gt; list=<span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">    preorder(list,root);</span><br><span class="line">    <span class="comment">//开始展开为链表</span></span><br><span class="line">    TreeNode p = list.removeFirst();</span><br><span class="line">    p.left=<span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">while</span> (list.size() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        TreeNode temp = list.removeFirst();</span><br><span class="line">        temp.left=<span class="keyword">null</span>;</span><br><span class="line">        p.right=temp;</span><br><span class="line">        p=p.right;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">preorder</span><span class="params">(LinkedList&lt;TreeNode&gt; list, TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root==<span class="keyword">null</span>)<span class="keyword">return</span>;</span><br><span class="line">    list.add(root);</span><br><span class="line">    preorder(list,root.left);</span><br><span class="line">    preorder(list,root.right);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    空间复杂度：O(n)不符合要求</p>
+<p><strong><font color=red>思路二：原地修改指向</font></strong> 依然是观察示例，得到一个大概的思路把靠右的元素先连接到左子树的最右节点上，然后把整个左子树覆盖到之前靠右的元素位置。这样多次进行，从而把一个二叉树”捋顺”，即所有的节点都移到最右边。看下面例子，结合代码很好理解。</p>
+<p><img src="https://s1.ax1x.com/2020/04/18/JnwGUe.png" alt="JnwGUe.png"></p>
+<p>如果curr的左子树不为空，找到左子树的最右节点p，将p的右指针指向curr的左子树，如下图：</p>
+<p><img src="https://s1.ax1x.com/2020/04/18/Jnw8ED.png" alt="Jnw8ED.png"></p>
+<p>(这是是个示意图，实际结构中curr右指针依然指向3节点)，然后将curr的右指针指向curr的左子树，并将curr的左指针置空。</p>
+<p><img src="https://s1.ax1x.com/2020/04/18/Jnw1HO.png" alt="Jnw1HO.png"></p>
+<p>移动curr指针，然后像之前一样curr的左子树不为空，curr左子树的最右节点为p，p的右指针指向curr的右子树。</p>
+<p><img src="https://s1.ax1x.com/2020/04/18/JnwlDK.png" alt="JnwlDK.png"></p>
+<p>重复第二步，curr的右指针指向curr的左子树，curr的左指针置空。</p>
+<p><img src="https://s1.ax1x.com/2020/04/18/JnwKjx.png" alt="JnwKjx.png"></p>
+<p>继续向右深搜移动curr，找到下一个左指针不为空的节点。</p>
+<p><img src="https://s1.ax1x.com/2020/04/18/JnwQu6.png" alt="JnwQu6.png"></p>
+<p>curr的左子树的最右节点为p，p的右指针指向curr的右子树。</p>
+<p><img src="https://s1.ax1x.com/2020/04/18/JnwJ4H.png" alt="JnwJ4H.png"></p>
+<p>curr的右指针指向curr的左子树，curr的左指针置空。</p>
+<p>继续向右深搜移动curr寻找左指针不为空的节点，curr为空，展开完成。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">flatten</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    TreeNode curr=root;</span><br><span class="line">    <span class="keyword">while</span> (curr != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">//找到左子树不为空的节点</span></span><br><span class="line">        <span class="keyword">if</span> (curr.left != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">//p指向左子树的最右节点</span></span><br><span class="line">            TreeNode p = curr.left;</span><br><span class="line">            <span class="keyword">while</span>(p.right!=<span class="keyword">null</span>)p=p.right;</span><br><span class="line">            <span class="comment">//把curr的左子树移动到curr的右子树</span></span><br><span class="line">            p.right=curr.right;</span><br><span class="line">            curr.right=curr.left;</span><br><span class="line">            curr.left=<span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//移动curr</span></span><br><span class="line">        curr=curr.right;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    最坏情况二叉树初始就是链表形式，但是全部都是靠左，curr需要遍历每个节点。</p>
+<p>空间复杂度：O(1)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>二叉树</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——路径总和II</title>
     <url>/2020/04/17/LeetCode%E2%80%94%E2%80%94%E8%B7%AF%E5%BE%84%E6%80%BB%E5%92%8CII/</url>
     <content><![CDATA[<h2 id="NO-113-路径总和II-中等"><a href="#NO-113-路径总和II-中等" class="headerlink" title="NO.113 路径总和II 中等 "></a>NO.113 路径总和II <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/17/JE4x1g.png" alt="JE4x1g.png"></p>
