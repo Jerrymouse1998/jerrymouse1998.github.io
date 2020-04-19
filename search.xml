@@ -1,6 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——填充每个节点的下一个右侧节点指针</title>
+    <url>/2020/04/19/LeetCode%E2%80%94%E2%80%94%E5%A1%AB%E5%85%85%E6%AF%8F%E4%B8%AA%E8%8A%82%E7%82%B9%E7%9A%84%E4%B8%8B%E4%B8%80%E4%B8%AA%E5%8F%B3%E4%BE%A7%E8%8A%82%E7%82%B9%E6%8C%87%E9%92%88/</url>
+    <content><![CDATA[<h2 id="NO-116-填充每个节点的下一个右侧节点指针-中等"><a href="#NO-116-填充每个节点的下一个右侧节点指针-中等" class="headerlink" title="NO.116 填充每个节点的下一个右侧节点指针 中等 "></a>NO.116 填充每个节点的下一个右侧节点指针 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/19/Ju8FZd.png" alt="Ju8FZd.png"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">输入：&#123;&quot;$id&quot;:&quot;1&quot;,&quot;left&quot;:&#123;&quot;$id&quot;:&quot;2&quot;,&quot;left&quot;:&#123;&quot;$id&quot;:&quot;3&quot;,&quot;left&quot;:null,&quot;next&quot;:null,&quot;right&quot;:null,&quot;val&quot;:4&#125;,&quot;next&quot;:null,&quot;right&quot;:&#123;&quot;$id&quot;:&quot;4&quot;,&quot;left&quot;:null,&quot;next&quot;:null,&quot;right&quot;:null,&quot;val&quot;:5&#125;,&quot;val&quot;:2&#125;,&quot;next&quot;:null,&quot;right&quot;:&#123;&quot;$id&quot;:&quot;5&quot;,&quot;left&quot;:&#123;&quot;$id&quot;:&quot;6&quot;,&quot;left&quot;:null,&quot;next&quot;:null,&quot;right&quot;:null,&quot;val&quot;:6&#125;,&quot;next&quot;:null,&quot;right&quot;:&#123;&quot;$id&quot;:&quot;7&quot;,&quot;left&quot;:null,&quot;next&quot;:null,&quot;right&quot;:null,&quot;val&quot;:7&#125;,&quot;val&quot;:3&#125;,&quot;val&quot;:1&#125;</span><br><span class="line"></span><br><span class="line">输出：&#123;&quot;$id&quot;:&quot;1&quot;,&quot;left&quot;:&#123;&quot;$id&quot;:&quot;2&quot;,&quot;left&quot;:&#123;&quot;$id&quot;:&quot;3&quot;,&quot;left&quot;:null,&quot;next&quot;:&#123;&quot;$id&quot;:&quot;4&quot;,&quot;left&quot;:null,&quot;next&quot;:&#123;&quot;$id&quot;:&quot;5&quot;,&quot;left&quot;:null,&quot;next&quot;:&#123;&quot;$id&quot;:&quot;6&quot;,&quot;left&quot;:null,&quot;next&quot;:null,&quot;right&quot;:null,&quot;val&quot;:7&#125;,&quot;right&quot;:null,&quot;val&quot;:6&#125;,&quot;right&quot;:null,&quot;val&quot;:5&#125;,&quot;right&quot;:null,&quot;val&quot;:4&#125;,&quot;next&quot;:&#123;&quot;$id&quot;:&quot;7&quot;,&quot;left&quot;:&#123;&quot;$ref&quot;:&quot;5&quot;&#125;,&quot;next&quot;:null,&quot;right&quot;:&#123;&quot;$ref&quot;:&quot;6&quot;&#125;,&quot;val&quot;:3&#125;,&quot;right&quot;:&#123;&quot;$ref&quot;:&quot;4&quot;&#125;,&quot;val&quot;:2&#125;,&quot;next&quot;:null,&quot;right&quot;:&#123;&quot;$ref&quot;:&quot;7&quot;&#125;,&quot;val&quot;:1&#125;</span><br><span class="line"></span><br><span class="line">解释：给定二叉树如图 A 所示，你的函数应该填充它的每个 next 指针，以指向其下一个右侧节点，如图 B 所示。</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s1.ax1x.com/2020/04/19/Ju8PqH.png" alt="Ju8PqH.png"></p>
+<p><strong><font color=red>思路一：层序遍历</font></strong> 将每一层的元素串起来。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Node <span class="title">connect</span><span class="params">(Node root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> root;</span><br><span class="line">    LinkedList&lt;Node&gt; queue = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">    queue.add(root);</span><br><span class="line">    <span class="comment">//层序遍历</span></span><br><span class="line">    <span class="keyword">while</span> (!queue.isEmpty()) &#123;</span><br><span class="line">        <span class="keyword">int</span> size = queue.size();</span><br><span class="line">        <span class="comment">//next指向一层的下一个元素</span></span><br><span class="line">        Node curr = queue.get(<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; size; i++) &#123;</span><br><span class="line">            curr.next = queue.get(i);</span><br><span class="line">            curr = queue.get(i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//更新下一层</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">            Node temp = queue.remove();</span><br><span class="line">            <span class="keyword">if</span> (temp.left != <span class="keyword">null</span>) queue.add(temp.left);</span><br><span class="line">            <span class="keyword">if</span> (temp.right != <span class="keyword">null</span>) queue.add(temp.right);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<p>空间复杂度：O(n)    不符合要求</p>
+<p><strong><font color=red>思路二：借助next指针，进行层序遍历</font></strong> 依然是用next依次串连一层的元素。但是不需要借助队列，因为题目说参数是一个完美二叉树，那么我们需要用next连接两种情况的节点：</p>
+<p><img src="https://s1.ax1x.com/2020/04/19/JKPOBD.png" alt="JKPOBD.png"></p>
+<ol>
+<li>如图红色next，左孩子连接同一个父节点的右孩子，<code>root.left.next=root.right</code>。</li>
+<li>如图蓝色next，右孩子连接父节点next指向的父节点的左孩子，<code>root.right.next=root.next.left</code>。</li>
+</ol>
+<p>连接的过程依然是类似于层序遍历的结构，先连接完毕一层，再进行下一层。用一个指针p指向待连接层的前一层的最左边节点，当没有下一层的时候完成连接。</p>
+<p>每层依然是从左向右连接，用一个指针temp指向每一层的元素，通过next进行移动，遍历一层的节点。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Node <span class="title">connect</span><span class="params">(Node root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> root;</span><br><span class="line">    Node p = root;</span><br><span class="line">    <span class="comment">//p指向每一层的最左节点</span></span><br><span class="line">    <span class="keyword">while</span> (p.left != <span class="keyword">null</span>) &#123;</span><br><span class="line">        Node temp = p;</span><br><span class="line">        <span class="keyword">while</span> (temp != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">//第一种情况</span></span><br><span class="line">            temp.left.next = temp.right;</span><br><span class="line">            <span class="comment">//第二种情况</span></span><br><span class="line">            <span class="keyword">if</span> (temp.next != <span class="keyword">null</span>) &#123;</span><br><span class="line">                temp.right.next = temp.next.left;</span><br><span class="line">            &#125;</span><br><span class="line">            temp = temp.next;</span><br><span class="line">        &#125;</span><br><span class="line">        p = p.left;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<p>空间复杂度：O(1)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>二叉树</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——不同的子序列</title>
+    <url>/2020/04/19/LeetCode%E2%80%94%E2%80%94%E4%B8%8D%E5%90%8C%E7%9A%84%E5%AD%90%E5%BA%8F%E5%88%97/</url>
+    <content><![CDATA[<h2 id="NO-115-不同的子序列-困难"><a href="#NO-115-不同的子序列-困难" class="headerlink" title="NO.115 不同的子序列 困难 "></a>NO.115 不同的子序列 <font color=#ff0099>困难</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/19/JuuWUf.png" alt="JuuWUf.png"></p>
+<p><img src="https://s1.ax1x.com/2020/04/19/Juuf58.png" alt="Juuf58.png"></p>
+<p><strong><font color=red>思路一：动态规划</font></strong> </p>
+<p>dp[i][j]含义：S的前i个字符中出现T的前j个字符序列的个数。</p>
+<p>初始化：[S.length+1][T.length+1]包含各自的空串；<code>dp[i][0]=1</code>，即T是空集所以S的任何序列都包含这个子集；<code>dp[0][j]=j!=0?0:1</code>，即S为空集且T为空集则S包含一个T，S为空集而T不为空集则S不包含T。</p>
+<p>状态转移：如果S的第i个字符不等于T的第j个字符，<code>dp[i][j]=dp[i-1][j]</code>表示第i个字符不需要参与组成T，例如<code>[3][2]:(abc,ab)=[2][2]:(ab,ab)</code>；</p>
+<p>如果相等，<code>dp[i][j]=dp[i-1][j-1]+dp[i-1][j]</code>表示S的第i个字符可以参与(i-1,j-1)组成T也可以不参与(i-1,j)，例如<code>[4][3]:(abcc,abc)=[3][2]:(abc,ab)+[3][3]:(abc,abc)</code>。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">numDistinct</span><span class="params">(String s, String t)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//初始化</span></span><br><span class="line">    <span class="keyword">int</span>[][] dp = <span class="keyword">new</span> <span class="keyword">int</span>[s.length() + <span class="number">1</span>][t.length() + <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length() + <span class="number">1</span>; i++) &#123;</span><br><span class="line">        dp[i][<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//状态转移</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; s.length() + <span class="number">1</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt; t.length() + <span class="number">1</span>; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (s.charAt(i - <span class="number">1</span>) == t.charAt(j - <span class="number">1</span>)) dp[i][j] = dp[i - <span class="number">1</span>][j - <span class="number">1</span>] + dp[i - <span class="number">1</span>][j];</span><br><span class="line">            <span class="keyword">else</span> dp[i][j] = dp[i - <span class="number">1</span>][j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[s.length()][t.length()];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(m*n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>动态规划</tag>
+        <tag>字符串</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——二叉树展开为链表</title>
     <url>/2020/04/18/LeetCode%E2%80%94%E2%80%94%E4%BA%8C%E5%8F%89%E6%A0%91%E5%B1%95%E5%BC%80%E4%B8%BA%E9%93%BE%E8%A1%A8/</url>
     <content><![CDATA[<h2 id="NO-114-二叉树展开为链表-中等"><a href="#NO-114-二叉树展开为链表-中等" class="headerlink" title="NO.114 二叉树展开为链表 中等 "></a>NO.114 二叉树展开为链表 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/18/Jmiuiq.png" alt="Jmiuiq.png"></p>
