@@ -1,6 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——统计[优美子数组]</title>
+    <url>/2020/04/21/LeetCode%E2%80%94%E2%80%94%E7%BB%9F%E8%AE%A1-%E4%BC%98%E7%BE%8E%E5%AD%90%E6%95%B0%E7%BB%84/</url>
+    <content><![CDATA[<h2 id="NO-1248-统计-优美子数组-中等"><a href="#NO-1248-统计-优美子数组-中等" class="headerlink" title="NO.1248 统计[优美子数组] 中等 "></a>NO.1248 统计[优美子数组] <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/21/J3rY80.png" alt="J3rY80.png"></p>
+<p><strong><font color=red>思路一：和为K的子数组</font></strong> NO.560和为K的子数组是统计子数组中的元素和，本题是统计子数组中的奇数个数。那么就将本题的数组进行转换，偶数不需要统计记为0，奇数需要统计记为1。然后就可以进行NO.560和为K的子数组一样的处理。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">numberOfSubarrays</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//奇数为1，偶数为0</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">        nums[i] = (nums[i] &amp; <span class="number">1</span>) == <span class="number">1</span> ? <span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//和为K的子数组</span></span><br><span class="line">    HashMap&lt;Integer, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    map.put(<span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">0</span>, count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">        sum += nums[i];</span><br><span class="line">        <span class="keyword">if</span> (map.containsKey(sum - k)) &#123;</span><br><span class="line">            count += map.get(sum - k);</span><br><span class="line">        &#125;</span><br><span class="line">        map.put(sum, map.getOrDefault(sum, <span class="number">0</span>) + <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    两次遍历。</p>
+<p>空间：O(n)</p>
+<p><strong><font color=red>思路二：滑动窗口</font></strong> </p>
+<ol>
+<li>先找到包含K个奇数的最小子数组(窗口)，这个子数组的左右边界一定都是奇数元素。</li>
+<li>然后分别向左、向右扩展窗口，直至走到边界或下一个元素是奇数为止。</li>
+<li>(向左扩展次数+不扩展算1次)*(向右扩展次数+不扩展算1次)=包含当前K个奇数的子数组的个数</li>
+</ol>
+<p>所以重点就是关注奇数元素的位置，顺便需要考虑上边界值的问题。</p>
+<p>综上所述，可以将奇数的下标保存至一个数组，这个数组的首尾记为参数数组的边界即-1、length。</p>
+<p>有了奇数元素的索引数组之后就可以轻而易举的按照上述思路计算出子数组的个数了。</p>
+<p>例如，输入[0,1,1,0,1,0,0,1,0]且K=3，遍历得到所有奇数的索引数组odds[-1,1,2,4,7,9]包含边界值。</p>
+<p>按照上述三步，找到包含K个奇数的窗口区间[1,4]，然后根据向左扩展<em>向右扩展=(odds[1]-odds[0])\</em>(odds[4]-odds[3])=6；</p>
+<p>另一个包含K个奇数的窗口期间区间[2,7]，然后还是那个公式(odds[2]-odds[1])*(odds[5]-odds[4])=2；</p>
+<p>相加得到8。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">numberOfSubarrays</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> oddsNum = <span class="number">0</span>, count = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//记录奇数元素索引</span></span><br><span class="line">    <span class="keyword">int</span>[] odds = <span class="keyword">new</span> <span class="keyword">int</span>[nums.length + <span class="number">2</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((nums[i] &amp; <span class="number">1</span>) == <span class="number">1</span>) &#123;</span><br><span class="line">            odds[++oddsNum] = i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//左右边界</span></span><br><span class="line">    odds[<span class="number">0</span>] = -<span class="number">1</span>;</span><br><span class="line">    odds[oddsNum + <span class="number">1</span>] = nums.length;</span><br><span class="line">    <span class="comment">//包含K个奇数的窗口区间[odds[i],odds[i+k]]</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i + k &lt; oddsNum + <span class="number">2</span>; i++) &#123;</span><br><span class="line">        count += (odds[i] - odds[i - <span class="number">1</span>]) * (odds[i + k] - odds[i + k - <span class="number">1</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    最坏情况也是两次遍历。</p>
+<p>空间：O(n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>滑动窗口</tag>
+        <tag>HashTable</tag>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——和为K的子数组</title>
+    <url>/2020/04/21/LeetCode%E2%80%94%E2%80%94%E5%92%8C%E4%B8%BAK%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84/</url>
+    <content><![CDATA[<h2 id="NO-560-和为K的子数组-中等"><a href="#NO-560-和为K的子数组-中等" class="headerlink" title="NO.560 和为K的子数组 中等 "></a>NO.560 和为K的子数组 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/21/J3ybDS.png" alt="J3ybDS.png"></p>
+<p><strong><font color=red>思路一：哈希表</font></strong> 假设一个数组子区间(l,r]和为K符合要求，则前r项元素-前l项元素=K，即前r项元素-K=前l项元素。</p>
+<p>例如，[1,2,1,2,1]且k=3，区间(1,3]和为3，则索引3之前的元素和6-索引1之前的元素和3=3，即索引3之前的元素和6-3=索引1之前的元素和3。</p>
+<p>所以可以遍历一遍数组，记录下前i项的和sum，用Map的健存储sum，Map的值存储sum出现的次数。初始化放入map:[0,1]，防止遗漏子数组，例如[3,-3]且k=0，如果没有初始化则遗漏。</p>
+<p>假设当前扫到第i位，记录它的前i项和sum，用该和减去k，即sum-k，判断sum-k是否为某个位置的前n项和，若是，更新统计量。</p>
+<p>如[1,2,1,2,1]且k=3，前0项和1入表，map不存在1-3；前1项和3入表，map存在3-3，计数器+map.get(0)；前2项和4入表，map存在4-3，计数器+map.get(1)；前3项和6入表，map存在6-3，计数器+map.get(3)；前4项和7入表，map存在7-3，计数器+map.get(4)；遍历结束，计数器为4。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">subarraySum</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//初始化</span></span><br><span class="line">    HashMap&lt;Integer, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    map.put(<span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">    <span class="comment">//前i项和sum，计数器count</span></span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">0</span>, count = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//遍历</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">        <span class="comment">//前i项和</span></span><br><span class="line">        sum += nums[i];</span><br><span class="line">        <span class="comment">//存在</span></span><br><span class="line">        <span class="keyword">if</span> (map.containsKey(sum - k)) &#123;</span><br><span class="line">            count += map.get(sum - k);</span><br><span class="line">        &#125;</span><br><span class="line">        map.put(sum, map.getOrDefault(sum, <span class="number">0</span>) + <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    空间：O(n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>HashTable</tag>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——填充每个节点的下一个右侧节点指针II</title>
     <url>/2020/04/20/LeetCode%E2%80%94%E2%80%94%E5%A1%AB%E5%85%85%E6%AF%8F%E4%B8%AA%E8%8A%82%E7%82%B9%E7%9A%84%E4%B8%8B%E4%B8%80%E4%B8%AA%E5%8F%B3%E4%BE%A7%E8%8A%82%E7%82%B9%E6%8C%87%E9%92%88II/</url>
     <content><![CDATA[<h2 id="NO-117-填充每个节点的下一个右侧节点指针II-中等"><a href="#NO-117-填充每个节点的下一个右侧节点指针II-中等" class="headerlink" title="NO.117 填充每个节点的下一个右侧节点指针II 中等 "></a>NO.117 填充每个节点的下一个右侧节点指针II <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/20/JQPa7D.png" alt="JQPa7D.png"></p>
