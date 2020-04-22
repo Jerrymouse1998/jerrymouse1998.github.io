@@ -1,6 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——杨辉三角I&amp;II</title>
+    <url>/2020/04/22/LeetCode%E2%80%94%E2%80%94%E6%9D%A8%E8%BE%89%E4%B8%89%E8%A7%92I-II/</url>
+    <content><![CDATA[<h2 id="NO-118-杨辉三角-简单"><a href="#NO-118-杨辉三角-简单" class="headerlink" title="NO.118 杨辉三角 简单 "></a>NO.118 杨辉三角 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/22/JNnh8J.png" alt="JNnh8J.png"></p>
+<p><strong><font color=red>思路一：模拟</font></strong> 第一行是1，每一行的首尾都是1，中间的数字是上一行左右”肩膀”上的两个数字。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; generate(<span class="keyword">int</span> numRows) &#123;</span><br><span class="line">    List&lt;List&lt;Integer&gt;&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="keyword">if</span> (numRows == <span class="number">0</span>) <span class="keyword">return</span> res;</span><br><span class="line">    <span class="comment">//第一行是1</span></span><br><span class="line">    res.add(<span class="keyword">new</span> ArrayList&lt;&gt;());</span><br><span class="line">    res.get(<span class="number">0</span>).add(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; numRows; i++) &#123;</span><br><span class="line">        <span class="comment">//上一行</span></span><br><span class="line">        List&lt;Integer&gt; pre = res.get(i - <span class="number">1</span>);</span><br><span class="line">        <span class="comment">//当前行</span></span><br><span class="line">        List&lt;Integer&gt; curr = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="comment">//行首是1</span></span><br><span class="line">        curr.add(<span class="number">1</span>);</span><br><span class="line">        <span class="comment">//填充当前行中间元素</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt; i; j++) &#123;</span><br><span class="line">            curr.add(pre.get(j - <span class="number">1</span>) + pre.get(j));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//行尾是1</span></span><br><span class="line">        curr.add(<span class="number">1</span>);</span><br><span class="line">        res.add(curr);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(numRows^2)</p>
+<h2 id="NO-119-杨辉三角II-简单"><a href="#NO-119-杨辉三角II-简单" class="headerlink" title="NO.119 杨辉三角II 简单"></a>NO.119 杨辉三角II <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/04/22/JNK4n1.png" alt="JNK4n1.png"></p>
+<p><strong><font color=red>思路一：模拟</font></strong> 和NO.118一样，不过本题只需要返回第K行，而且要求空间复杂度O(k)。</p>
+<p>去掉之前代码中的res和pre两个集合，只保留curr用于保存当前行，当计算下一行时curr还要充当pre，就可以实现O(k)空间要求。</p>
+<p>用这种方式我们需要逆序计算每一行的值，不然会覆盖掉(j-1)的值。</p>
+<p>PS：踩了一个坑，本题输出的行K是从0开始的。。。0、1、2、3。。。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">getRow</span><span class="params">(<span class="keyword">int</span> rowIndex)</span> </span>&#123;</span><br><span class="line">    List&lt;Integer&gt; curr = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    curr.add(<span class="number">1</span>);</span><br><span class="line">    <span class="comment">//一行一行计算</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= rowIndex; i++) &#123;</span><br><span class="line">        <span class="comment">//逆序计算每个值</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i - <span class="number">1</span>; j &gt; <span class="number">0</span>; j--) &#123;</span><br><span class="line">            curr.set(j, curr.get(j - <span class="number">1</span>) + curr.get(j));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//行尾的1</span></span><br><span class="line">        curr.add(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> curr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(numIndex^2)    本题可以有更好时间实现，就是使用数学的方法直接公式计算。</p>
+<p>空间：O(k)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——二叉树的右视图</title>
+    <url>/2020/04/22/LeetCode%E2%80%94%E2%80%94%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%8F%B3%E8%A7%86%E5%9B%BE/</url>
+    <content><![CDATA[<h2 id="NO-199-二叉树的右视图-中等"><a href="#NO-199-二叉树的右视图-中等" class="headerlink" title="NO.199 二叉树的右视图 中等 "></a>NO.199 二叉树的右视图 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/22/JtSLnA.png" alt="JtSLnA.png"></p>
+<p><strong><font color=red>思路一：层序遍历</font></strong> 看示例最直观的解法，层序遍历，只保存每一层的最后一个元素。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">rightSideView</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    List&lt;Integer&gt; res = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> res;</span><br><span class="line">    <span class="comment">//层序遍历</span></span><br><span class="line">    Queue&lt;TreeNode&gt; queue = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">    queue.add(root);</span><br><span class="line">    <span class="keyword">while</span> (!queue.isEmpty()) &#123;</span><br><span class="line">        <span class="keyword">int</span> size = queue.size();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">            TreeNode poll = queue.poll();</span><br><span class="line">            <span class="comment">//只保存每层最后一个元素</span></span><br><span class="line">            <span class="keyword">if</span> (i == size - <span class="number">1</span>) res.add(poll.val);</span><br><span class="line">            <span class="keyword">if</span> (poll.left != <span class="keyword">null</span>) queue.add(poll.left);</span><br><span class="line">            <span class="keyword">if</span> (poll.right != <span class="keyword">null</span>) queue.add(poll.right);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<p><strong><font color=red>思路一：深度优先遍历</font></strong> 根据观察，每一层都保存最右边的元素，可以根据”根-&gt;右-&gt;左”的方式去进行遍历，保证优先访问到右边的节点。</p>
+<p>记录访问节点所在的当前层的深度，如果当前层没有节点被保存，说明访问节点是本层第一次被访问到的节点，因为右边的节点优先访问，所以保存当前访问节点即可。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;Integer&gt; res = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">rightSideView</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    dfs(root, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(TreeNode root, <span class="keyword">int</span> depth)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">//因为每层只会保存第一个访问到的节点。</span></span><br><span class="line">    <span class="comment">//所以size=depth，说明当前层第一次访问。root一定是本层最右节点。</span></span><br><span class="line">    <span class="keyword">if</span> (res.size() == depth) res.add(root.val);</span><br><span class="line">    <span class="comment">//右&gt;左</span></span><br><span class="line">    dfs(root.right, depth + <span class="number">1</span>);</span><br><span class="line">    dfs(root.left, depth + <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<p>空间：最好O(logn)    最坏退化而为链表O(n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>二叉树</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——统计[优美子数组]</title>
     <url>/2020/04/21/LeetCode%E2%80%94%E2%80%94%E7%BB%9F%E8%AE%A1-%E4%BC%98%E7%BE%8E%E5%AD%90%E6%95%B0%E7%BB%84/</url>
     <content><![CDATA[<h2 id="NO-1248-统计-优美子数组-中等"><a href="#NO-1248-统计-优美子数组-中等" class="headerlink" title="NO.1248 统计[优美子数组] 中等 "></a>NO.1248 统计[优美子数组] <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/21/J3rY80.png" alt="J3rY80.png"></p>
