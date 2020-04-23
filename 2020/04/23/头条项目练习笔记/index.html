@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<script type="text/javascript" src="//libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="mask-icon" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/blue/pace-theme-minimal.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.m1ng.top","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="项目旨在设计开发一个类头条资讯网站集成评论，点赞，站内通知信等功能。采用SpringBoot + MyBatis + Redis的大体框架完成。 并不是完善的项目，总体流程调通，主要业务功能实现。还存在很多细节可以再打磨、实现。 项目已上传github">
+<meta property="og:type" content="article">
+<meta property="og:title" content="头条项目练习笔记">
+<meta property="og:url" content="http://www.m1ng.top/2020/04/23/%E5%A4%B4%E6%9D%A1%E9%A1%B9%E7%9B%AE%E7%BB%83%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="M1ng&amp;Q1ng">
+<meta property="og:description" content="项目旨在设计开发一个类头条资讯网站集成评论，点赞，站内通知信等功能。采用SpringBoot + MyBatis + Redis的大体框架完成。 并不是完善的项目，总体流程调通，主要业务功能实现。还存在很多细节可以再打磨、实现。 项目已上传github">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s1.ax1x.com/2020/04/05/Grn7kD.md.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/04/10/G7nsUK.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/04/16/JkDeqH.png">
+<meta property="article:published_time" content="2020-04-23T08:03:25.000Z">
+<meta property="article:modified_time" content="2020-04-23T08:04:32.379Z">
+<meta property="article:author" content="M1ng">
+<meta property="article:tag" content="Spring">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s1.ax1x.com/2020/04/05/Grn7kD.md.png">
+
+<link rel="canonical" href="http://www.m1ng.top/2020/04/23/%E5%A4%B4%E6%9D%A1%E9%A1%B9%E7%9B%AE%E7%BB%83%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>头条项目练习笔记 | M1ng&Q1ng</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	<a href="https://github.com/Jerrymouse1998" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">M1ng&Q1ng</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">回忆有时是一种消极逃避的表现。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.m1ng.top/2020/04/23/%E5%A4%B4%E6%9D%A1%E9%A1%B9%E7%9B%AE%E7%BB%83%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
+      <meta itemprop="name" content="M1ng">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M1ng&Q1ng">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          头条项目练习笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-04-23 16:03:25 / 修改时间：16:04:32" itemprop="dateCreated datePublished" datetime="2020-04-23T16:03:25+08:00">2020-04-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%A1%B9%E7%9B%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">项目学习笔记</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/04/23/%E5%A4%B4%E6%9D%A1%E9%A1%B9%E7%9B%AE%E7%BB%83%E4%B9%A0%E7%AC%94%E8%AE%B0/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/04/23/%E5%A4%B4%E6%9D%A1%E9%A1%B9%E7%9B%AE%E7%BB%83%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7.1k</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>项目旨在设计开发一个类头条资讯网站集成评论，点赞，站内通知信等功能。采用SpringBoot + MyBatis + Redis的大体框架完成。</p>
+<p>并不是完善的项目，总体流程调通，主要业务功能实现。还存在很多细节可以再打磨、实现。</p>
+<p>项目已上传<a href="https://github.com/Jerrymouse1998/toutiao" target="_blank" rel="noopener">github</a>    <a id="more"></a></p>
+<h1 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h1><p>操作系统：win10</p>
+<p>JDK：1.8</p>
+<p>IDE：IDEA 2019.3.1</p>
+<p>项目构建工具：Maven 3.6.3</p>
+<p>数据库：MySQL 5.1.49 + Redis 3.2.100</p>
+<p>版本控制：git 2.21.0.windows.1</p>
+<h1 id="数据库设计"><a href="#数据库设计" class="headerlink" title="数据库设计"></a>数据库设计</h1><p><strong><font color=#ff6633>用户(User)</font></strong>：id、name、password、salt、head_url</p>
+<table>
+    <tr>
+        <td bgcolor=#ccffff>用户实体属性：用户名、密码、头像的连接、数据库中存放的密码采用md5加盐值的方式进行加密，并且每个用户有一个随机的盐值序列。</td></tr></table>
+
+<hr>
+<p><strong><font color=#ff6633>站内信(Message)</font></strong>：id、fromid、toid、content、has_read、created_date、conversation_id</p>
+<table>
+    <tr>
+        <td bgcolor=#ccffff>站内信实体属性：发送方id，接受方id，内容，是否已读，发出时间，对话(会话)的id。</td></tr></table>
+
+<hr>
+<p><strong><font color=#ff6633>资讯(News)</font></strong>：id、title、link、image、like_count、comment_count、user_id、created_date</p>
+<table>
+    <tr>
+        <td bgcolor=#ccffff>资讯实体属性：标题，资讯的连接，首图链接，赞的数量，评论的数量，发资讯的用户id，资讯创建时间。其中的comment_count是做了冗余，在资讯检索展示的页面上不需要再去检索统计评论表中每条资讯相关联的评论数，只需要检索资讯表就可以得到资讯对应的评论数。</td></tr></table>
+
+<hr>
+<p><strong><font color=#ff6633>评论(Comment)</font></strong>：id、content、user_id、created_date、entity_type、entity_id、status</p>
+<table>
+    <tr>
+        <td bgcolor=#ccffff>评论实体属性：内容，评论方id，评论创建时间，评论所属实体的类型(1表示资讯)，评论所属实体的id，评论的状态(默认是0可见的，1被删除了)。</td></tr></table>
+
+<hr>
+<p><strong><font color=#ff6633>登陆凭证(login_ticker)</font></strong>：id、user_id、ticket、expired、status</p>
+<table>
+    <tr>
+        <td bgcolor=#ccffff>登陆凭证实体属性：凭证关联的用户id、下发给客户端的随机字符串作为ticket、凭证过期时间、ticket的状态0有效 1无效。</td></tr></table>
+
+<h1 id="功能模块"><a href="#功能模块" class="headerlink" title="功能模块"></a>功能模块</h1><h2 id="首页展示"><a href="#首页展示" class="headerlink" title="首页展示"></a>首页展示</h2><h3 id="业务分析"><a href="#业务分析" class="headerlink" title="业务分析"></a>业务分析</h3><p>主要就是展示资讯列表。</p>
+<h3 id="接口实现"><a href="#接口实现" class="headerlink" title="接口实现"></a>接口实现</h3><p><strong><font color=#ff6633>查所有资讯接口</font></strong>：作为进入主页默认调用的接口，分页查询所有资讯，每页十条按照时间排序。</p>
+<p><strong><font color=#ff6633>根据userId查资讯接口</font></strong>：根据资讯作者id展示资讯。</p>
+<h2 id="注册登录"><a href="#注册登录" class="headerlink" title="注册登录"></a>注册登录</h2><h3 id="接口实现-1"><a href="#接口实现-1" class="headerlink" title="接口实现"></a>接口实现</h3><p><strong><font color=#ff6633>注册接口</font></strong>：账号和密码格式采用前后端双校验，接口会生成UUID剪切拼接处理之后座位盐值，和加密后的密码一起存入数据库。</p>
+<p><strong><font color=#ff6633>登录接口</font></strong>：发给通过校验的用户一个<u>凭证(ticket)</u>，这个ticket中包含了用户的一些基本信息(userId)和登录状态，保存在客户端cookie中。</p>
+<p><strong><font color=#ff6633>登出接口</font></strong>：将用户对应的ticket的状态置为1，客户端重定向到首页。</p>
+<h3 id="拦截器实现"><a href="#拦截器实现" class="headerlink" title="拦截器实现"></a>拦截器实现</h3><table>
+    <tr>
+        <td bgcolor=#99ffcc>在登录的部分，引入了ticket或者说是token这一概念。有了这一概念之后的页面访问：</td>
+    </tr>
+    <tr>
+        <td bgcolor=#ccffff>1.客户端的HTTP请求可以携带上Ticket。</td>
+    </tr>
+    <tr>
+        <td bgcolor=#ccffff>2.服务端根据请求携带的ticket去数据库中查找到userId，通过userId得到用户的具体信息，从而进行页面跳转和用户权限管理。</td>
+    <tr>
+    <tr>
+        <td bgcolor=#99ffcc>正因如此，在此时引入拦截器再适合不过了！</td>
+    </tr>
+</table>
+
+<p><img src="https://s1.ax1x.com/2020/04/05/Grn7kD.md.png" alt="Grn7kD.md.png"></p>
+<p><strong><font color=#ff6633>通用拦截器</font></strong>：实现一个<strong>HandlerInterceptor</strong>。所有的请求都经过这个拦截器，主要任务就是检查请求中是否携带ticket(是否登录)。</p>
+<p>在<strong>preHandler</strong>中检查请求中是否携带ticket这个cookie，如果存ticket就去数据库中检查这个ticket是否存在并且有效，如果存在且有效就用一个<strong>HostHolder</strong>将User信息保存在线程本地。HostHolder以注解的方式生成bean，方便后续service等方法中去使用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span><span class="comment">//HostHolder以注解的方式生成bean，方便后续service等方法中去使用。</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HostHolder</span> </span>&#123;</span><br><span class="line">    <span class="comment">//因为系统不是一个人访问的，所以将user信息存放到请求的线程本地变量中</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> ThreadLocal&lt;User&gt; users = <span class="keyword">new</span> ThreadLocal&lt;User&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> User <span class="title">getUser</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> users.get();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUser</span><span class="params">(User user)</span> </span>&#123;</span><br><span class="line">        users.set(user);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        users.remove();;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在<strong>postHandler</strong>中每次渲染前都将HostHolder中的User信息放ModelAndView中方便页面去使用。</p>
+<p>在<strong>afterCompletion</strong>中每次一个完整请求结束后回调该方法时，需要将HostHolder中的User信息清除。</p>
+<p><strong><font color=#ff6633>登录拦截器</font></strong>：实现一个<strong>HandlerInterceptor</strong>。指定的请求路径会经过这个拦截器，主要任务就是检查HostHolder中是否有user信息(是否登录)。如果未登录则进行跳转或其他处理。</p>
+<p><strong><font color=red>最后，完成两个拦截器的之后，需要实现一个WebMvcConfigurerAdapter的配置类，自动将我们实现的拦截器注册进去。需要注意拦截器的优先级，先注册的拦截器优先处理。</font></strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ToutiaoWebConfiguration</span> <span class="keyword">extends</span> <span class="title">WebMvcConfigurerAdapter</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    PassportInterceptor passportInterceptor;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    LoginRequiredInterceptor loginRequiredInterceptor;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="comment">//先注册的拦截器优先处理</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addInterceptors</span><span class="params">(InterceptorRegistry registry)</span> </span>&#123;</span><br><span class="line">      <span class="comment">//拦截所有请求，检查是否有合法的ticket，如有，查出user信息放入HostHolder</span></span><br><span class="line">      registry.addInterceptor(passportInterceptor);</span><br><span class="line">      <span class="comment">//拦截形如"/setting*"路径的请求，检查HostHolder是否有user信息</span></span><br><span class="line">      registry.addInterceptor(loginRequiredInterceptor).addPathPatterns(<span class="string">"/setting*"</span>);</span><br><span class="line">      <span class="keyword">super</span>.addInterceptors(registry);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="安全性设计"><a href="#安全性设计" class="headerlink" title="安全性设计"></a>安全性设计</h3><p>只是一个分析记录：</p>
+<ol>
+<li>采用HTTPS。</li>
+<li>公钥加密私钥解密，只有服务器拥有这个秘钥。</li>
+<li>前端后端都对账户密码的长度、重复、敏感词进行校验，密码采用随机盐值加密后存入数据库。</li>
+<li>token有效期。</li>
+<li>单一平台的单点登录，登录IP异常检验。</li>
+<li>用户状态的权限判断。</li>
+<li>添加验证码机制，防爆破和批量注册。</li>
+</ol>
+<h2 id="资讯模块"><a href="#资讯模块" class="headerlink" title="资讯模块"></a>资讯模块</h2><h3 id="业务分析-1"><a href="#业务分析-1" class="headerlink" title="业务分析"></a>业务分析</h3><p>主要是给用户看资讯和发布资讯。</p>
+<h3 id="接口实现-2"><a href="#接口实现-2" class="headerlink" title="接口实现"></a>接口实现</h3><p><strong><font color=#ff6633>根据资讯id获得资讯详情接口</font></strong>：根据咨询的id到数据库中查出<strong>资讯</strong>的信息，根据资讯id查出咨询下对应的所有<strong>评论</strong>信息。</p>
+<p><strong><font color=#ff6633>更新资讯评论数字段接口</font></strong>：获得资讯的评论的总数。</p>
+<p><strong><font color=#ff6633>资讯发布接口</font></strong>：将用户发布的资讯的首图连接、用户id、资讯标题、资讯连接等信息存入数据库。</p>
+<p><strong><font color=#ff6633>资讯图片上传接口</font></strong>：post请求到来之后，校验参数中的文件名是否合法，保存到服务器本地。</p>
+<p><strong><font color=#ff6633>资讯图片下载接口</font></strong>：设置响应头，将本地图片作为输入流放到响应中返回给用户。</p>
+<h3 id="使用第三方云服务实现上传-下载接口"><a href="#使用第三方云服务实现上传-下载接口" class="headerlink" title="使用第三方云服务实现上传/下载接口"></a>使用第三方云服务实现上传/下载接口</h3><table>
+    <tr>
+        <td bgcolor=#99ffcc><b>在图片上传的部分，会涉及到大量的图片请求。和图片类似的css、js、或者静态化的页面等等很多静态资源不涉及数据库等服务器的处理，只是进行简单的读取。</b></td>
+    </tr>
+    <tr>
+        <td bgcolor=#ccffff>正因如此，这些个静态资源最适合部署到CDN节点。</td>
+    </tr>
+    <tr>
+        <td bgcolor=#ccffff>当静态资源部署到CDN服务器之后，当用户请求这些资源的时候，就可以从就近的CDN服务器上去获取需要的资源。</td>
+    <tr>
+    <tr>
+        <td bgcolor=#ccffff>CDN不仅可以非常有效的加速用户的请求，同时可以将这些静态文件和后端的存储分离，还能降低服务器的压力，让服务器"专注"于其他业务逻辑。</td>
+    </tr>
+    <tr>
+        <td bgcolor=#99ffcc><b>当上传图片到一台服务器之后，需要将这张图片同步到其他一些服务节点或者CDN节点上，如果仅仅依靠开发者编码去完成这个事情，是很麻烦且低效的，这时候就可以借助云存储来完成！</b></td>
+    </tr>
+    <tr>
+        <td bgcolor=#ccffff>将很多静态文件的冗余备份，CDN缓存同步，统一访问等等问题都抛给第三方的云存储服务去完成。</td>
+    </tr>
+</table>
+
+<p><strong><font color=#ff6633>采用七牛云上传文件服务</font></strong>：引入七牛的依赖，注册<a href="https://portal.qiniu.com/signup" target="_blank" rel="noopener">七牛云</a>，获得ACCESS_KEY、SECRET_KEY，创建bucket。最后就是对照着<a href="https://developer.qiniu.com/kodo/sdk/1239/java#install-by-maven" target="_blank" rel="noopener">官方文档</a>进行编码，感觉和上传到本地的步骤差不多。编写过程中，将七牛的业务代码单独封装为一个QiniuService接口，方便之后更换第三方。</p>
+<p><strong><font color=#ff6633>使用七牛云的下载文件服务</font></strong>：和使用上传服务的步骤一样。</p>
+<p>编写完成，替换掉之前的图片上传和下载的接口即可。</p>
+<table>
+    <tr>
+        <td bgcolor=#99ffcc><b>第三方云存储服务除了上传下载文件之外还有很多功能，例如可以使用实时缩图的功能下载到同一张图片的不同大小及质量的图、使用实时鉴图功能过滤敏感违法图片，这些都可以有效提升用户的访问速度和观感。</b></td>
+    </tr>
+    <tr>
+        <td bgcolor=#ccffff>还有很多的第三方服务可以逐步了解使用进行优化。</td>
+    </tr>
+</table>
+
+<h2 id="评论中心"><a href="#评论中心" class="headerlink" title="评论中心"></a>评论中心</h2><h3 id="业务分析-2"><a href="#业务分析-2" class="headerlink" title="业务分析"></a>业务分析</h3><table>
+    <tr>
+        <td bgcolor=#99ffcc><b>之所以叫做评论中心而不是评论，是因为评论集中式管理、集中式对外提供接口。看下面这个例子：</b></td>
+    </tr>
+    <tr>
+        <td bgcolor=#ccffff>例如：现在有资讯模块，每条资讯有对应的评论；假如现在又加入了论坛广场模块，论坛里每个人的发帖也有对应的评论；后来又加入了个人主页，个人主页下面也有他人的评论留言；甚至是评论别人的评论；等等。。。如果采用评论中心来管理，就可以更好地复用接口，来实现集中式管理。</td>
+    </tr>
+    <tr>
+        <td bgcolor=#99ffcc><b>这就是为什么评论实体的定义字段不是new_id，而是entity_type和entity_id；当采用这种方式之后，上面的问题可以如下实现：</b></td>
+    </tr>
+    <tr>
+        <td bgcolor=#ccffff>对应上述例子：无论是哪个模块下的评论，都是一样的字段定义(id、content、user_id、created_date、entity_type、entity_id)具体参考前文数据库设计部分。三个模块的评论之间区别在于entity_type字段不同，资讯模块的评论typecode是1、论坛广场模块的评论typecode是2、个人主页模块的评论typecode是3、评论的评论typecode是4。这样就能实现一定程度的评论统一管理。</td>
+    </tr>
+</table>
+
+<h3 id="接口实现-3"><a href="#接口实现-3" class="headerlink" title="接口实现"></a>接口实现</h3><p><strong><font color=#ff6633>发布评论接口</font></strong>：将一条评论的信息存入数据库，用户id从HostHolder中获得，并且异步的更新所属实体的总评论数。</p>
+<p><strong><font color=#ff6633>获得评论接口</font></strong>：根据entity_type+entity_id获得相关实体的全部评论并根据时间排序。</p>
+<p><strong><font color=#ff6633>获得某个实体的评论总数接口</font></strong>：依然是根据entity_type+entity_id两个参数计算出相关实体的评论评论。</p>
+<p><strong><font color=#ff6633>删除评论接口</font></strong>：数据库不真正的进行删除，而是根据评论id更新评论的状态为1即不可见。</p>
+<h2 id="消息中心-站内信"><a href="#消息中心-站内信" class="headerlink" title="消息中心/站内信"></a>消息中心/站内信</h2><h3 id="业务分析-3"><a href="#业务分析-3" class="headerlink" title="业务分析"></a>业务分析</h3><table>
+    <tr>
+        <td bgcolor=#99ffcc><b>每条消息都有发出方和接收方，同一组双方的往来消息应该归为一个会话中，每个会话有一个唯一的会话id。这个会话id是由发送方id和接收方id拼接而成(小的在前)，每条消息实体都有所属的会话id。类似于如下形式：</b></td>
+    </tr>
+</table>
+
+<p><img src="https://s1.ax1x.com/2020/04/10/G7nsUK.png" alt="G7nsUK.png"></p>
+<table><tr>
+        <td bgcolor=#ccffff>业务分析完就设计对应的数据模型，见前文数据库设计。</td>
+    </tr>
+</table>
+
+<h3 id="接口实现-4"><a href="#接口实现-4" class="headerlink" title="接口实现"></a>接口实现</h3><p><strong><font color=#ff6633>发送站内信接口</font></strong>：会话id是由发送方id和接收方id连接而成(较小的id在前)。</p>
+<p><strong><font color=#ff6633>展示会话列表接口</font></strong>：根据当前登录用户的userId查出所有相关的消息，根据会话id进行分组，会话列表的展示页面只显示每组会话中最新的一条消息、用户的名称和头像、会话中总消息数量、会话中未读消息数量。</p>
+<p>查出每组会话中<strong>最新的消息</strong>和每组会话中<strong>消息的总数</strong>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;*从中间表中查出最新的消息和每个会话分组中消息数量，结果按照id降序*&#x2F;</span><br><span class="line">SELECT *,COUNT(id) as cnt </span><br><span class="line">&#x2F;*中间表：查出所有和id为12的用户有关的消息并以id降序排序*&#x2F;</span><br><span class="line">FROM (SELECT * FROM message WHERE from_id&#x3D;&#39;12&#39; OR to_id&#x3D;&#39;12&#39; ORDER BY id DESC) t </span><br><span class="line">GROUP BY conversation_id</span><br><span class="line">ORDER BY id DESC;</span><br></pre></td></tr></table></figure>
+
+<p>在编码中，稍有变化：COUNT(id) as id，将消息总数保存到消息对象实体的id字段中。</p>
+<p>查未读消息数量的sql：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SELECT COUNT(id) </span><br><span class="line">from message </span><br><span class="line">WHERE conversation_id&#x3D;&#39;4_12&#39; and to_id&#x3D;&#39;12&#39; and has_read&#x3D;&#39;0&#39;;</span><br></pre></td></tr></table></figure>
+
+<p><strong><font color=#ff6633>展示会话中的全部消息接口</font></strong>：用户点击会话列表中的某条会话后，根据会话id查出会话中所有消息实体，还需要每条消息发送者的用户名和头像链接。</p>
+<p><strong><font color=red>消息中心的操作都要获取当前登录用户id，所以将消息中心所有请求路径”/msg/*”设置为登录拦截器的拦截路径！保证对消息中心的请求都是在登录状态下发起的！</font></strong></p>
+<h2 id="赞-踩功能"><a href="#赞-踩功能" class="headerlink" title="赞/踩功能"></a>赞/踩功能</h2><h3 id="业务分析-4"><a href="#业务分析-4" class="headerlink" title="业务分析"></a>业务分析</h3><table>
+    <tr>
+        <td bgcolor=#ccffff>可以将用户对实体进行踩赞的数据保存，用户可以取消对某个实体的赞踩，可以查询某个实体是否被当前登录用户进行过赞或者踩，如果有则对应的按钮处于点击状态。一个实体可以被多个用户点踩点赞。</td>
+    </tr>
+    <tr>
+        <td bgcolor=#99ffcc><b>从效率来说:
+            <ul>Redis的数据存放在内存，所以速度快但是会受到内存空间限制。</ul>
+            <ul>MySQL存放在硬盘，在速度上肯定没有Redis快，但是存放的数据量要多的多。</ul></b>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor=#99ffcc><b>Redis性能好，快，并发高，但不能处理逻辑，而且不支持事务，看具体的场合，主要做数据缓存，减少MySQL数据库的压力。最擅长的是结构化数据的cache，计数器场景，轻量级的消息队列,Top排行榜等互联网应用场景。在点赞过后要立即刷新显示在页面，所以推荐使用Redis。至于并发问题，在此暂不考虑(其实是技术比较渣。。。)</b></td>
+    </tr>
+    <tr>
+        <td bgcolor=#99ffcc>
+            <b><ul>
+                <li>List: 双向列表，适用于最新列表，关注列表；</li>
+                <li>Set: 适用于无顺序的集合，点赞点踩，抽奖，已读，共同好友；</li>
+                <li>SortedSet : 具有排序加成功能，适用于排行榜，优先队列的实现；</li>
+                <li>Hash：对象属性，不定长属性数；</li>
+                <li>KV : 单一数值，适用于验证码，缓存等实现。</li>
+            </ul></b>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor=#ccffff>采用Redis的Set集合数据结构实现。还有一点和评论中心的分析类似，被点赞的实体由entityType和entityId共同组成，好处前文解释过了。</td>
+    </tr>
+</table>
+
+<h3 id="接口实现-5"><a href="#接口实现-5" class="headerlink" title="接口实现"></a>接口实现</h3><p>因为需要用到Redis，所以编写一个<strong>RedisAdapter类</strong>注解式声明为Spring Bean，其中封装一些需要用到的Redis操作方法，并实现一个InitializingBean接口来完成对Bean的初始化。</p>
+<p><strong><font color=red>PS：封装方法中一定要记得关闭使用过的Jedis客户端，否则用尽JedisPool中默认的八个Jedis实例，Pool的状态变为exhausted并阻塞。</font></strong></p>
+<p>有多个业务都需要使用Redis，为了防止key冲突，编写一个<strong>生成统一规范key的工具类</strong>，只要参数不同key就一定不同，并且同一个业务会采用同样的格式和部分相同的标志字段。</p>
+<p><strong><font color=#ff6633>获得当前用户对展示实体的赞/踩状态</font></strong>：拿到当前用户的id和实体类型以及实体id，工具类生成key，到缓存中查找用户对实体的赞踩状态，1=赞、-1=踩、0=其他。</p>
+<p><strong><font color=#ff6633>点赞</font></strong>：参数是当前用户的id和实体类型以及实体id，工具类生成key和userId值，添加到赞对应的缓存中，最后返回有被点赞实体有多少个赞。</p>
+<p><strong><font color=#ff6633>点踩</font></strong>：参数是当前用户的id和实体类型以及实体id，工具类生成key和userId值，添加到踩对应的缓存中，最后依然是返回有被点赞实体有多少个赞。</p>
+<p><strong><font color=red>PS：一个用户对同一个实体只能进行赞或者踩的其中一项，如果对某个实体点赞则需要将对这个实体点过的踩移除，反之点踩亦然。</font></strong></p>
+<p>实现之后，将赞踩的对应接口路径加入登录拦截器的拦截路径，因为赞踩也是登录用户的功能。</p>
+<h2 id="异步队列"><a href="#异步队列" class="headerlink" title="异步队列"></a>异步队列</h2><h3 id="业务分析-5"><a href="#业务分析-5" class="headerlink" title="业务分析"></a>业务分析</h3><table>
+    <tr>
+        <td bgcolor=#99ffcc>
+            <b>将各个业务之间相互独立化，用户操作一个业务之后立刻告诉用户所操作业务的结果，其他的一些连锁反应则稍后进行操作对用户透明化。</b>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor=#99ffcc>
+            <b>1.对一些实时性要求不高或者比较耗时的操作可以延后处理，将复杂的业务切开，将需要及时反馈的信息响应给用户，可以延后的操作全部异步处理。</b>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor=#ccffff>
+            例如：用户赞/踩请求之后，将点赞的请求投递到异步队列中，后续的可以有消费者到队列中取出请求交给对应的处理器去发送站内信等等。登录请求之后，立刻响应给用户是否登陆成功，用户账号的异常信息也可以稍后通过异步的方式给用户发送邮件等。
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor=#99ffcc>
+            <b>2.在高并发的场景下，很容易发生数据库连接数占满，导致整个网站的响应都变得缓慢。这种情况下除了直接对数据库进行升级优化(增加连接数、读写分离等)，还可以利用异步队列转移压力，将数据库的压力分散到缓存中。</b>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor=#ccffff>
+            例如：还是说本项目的赞/踩，将赞踩的请求放入异步队列，后续的赞踩请求可以将消息合并，即只更新消息中的点赞数，不产生新的任务。再有一个消费者进程或者线程去消费赞踩消息，更新到数据库，因为缓存层将多个数据库更新请求合并成了一个，所以降低了数据库的负载。
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor=#99ffcc>
+            <b><font color=red>使用异步队列的优点：</font></b>
+            <ul>
+                <li>解耦，业务之间独立性更好，不会因为某个业务的失败而导致所有业务的连锁失败。</li>
+                <li>异步，更好地用户体验，用户不需要等待所有的后台处理完毕即可得到"最关心的"响应结果。</li>
+                <li>销峰，数据库不需要直面瞬时的大量的流量，例如大量的赞踩请求到来，将大量的请求放入队列等待数据库消费。</li>
+            </ul>
+            <b><font color=red>使用异步队列的缺点：</font></b>
+            <ul>
+                <li>系统可用性降低，虽然实现了一定程度的解耦，增强了主体业务的可用性，但是由于引入了异步队列相关的新业务依赖，就增加了风险点。</li>
+                <li>系统的复杂性增加，需要想办法保证消费者不会重复消费，处理消息丢失，消息顺序等等难题。</li>
+                <li>一致性问题，消息到数据落地之间存在距离。</li>
+            </ul>
+        </td>
+    </tr>
+</table>
+
+<p><img src="https://s1.ax1x.com/2020/04/16/JkDeqH.png" alt="JkDeqH.png"></p>
+<h3 id="接口实现-6"><a href="#接口实现-6" class="headerlink" title="接口实现"></a>接口实现</h3><ol>
+<li>在JedisAdapter中封装<strong><font color=#ff6633>对象序列化存储</font></strong>和<strong><font color=#ff6633>对象反序列化获取</font></strong>方法方便后续缓存中存取对象操作，封装<strong><font color=#ff6633>lpush</font></strong>和<strong><font color=#ff6633>brpop</font></strong>方法，使用Redis实现异步队列的放消息和取消息操作。<ul>
+<li><strong><font color=red>lpush向列表头放入消息，brpop从右向左扫描key参数列表并将第一个非空的列表开始进行rpop获取消息。</font></strong></li>
+<li><strong><font color=red>取消息时如果所有的key都为空或者不存在，则阻塞timeout参数设置的时间，如果timeout为0则表示一直阻塞。</font></strong></li>
+<li><strong><font color=red>设置为永久阻塞(timeout=0)性能更好节省CPU、并且及时性更好，异步队列一直为空就保持阻塞不需要进行轮询检查。</font></strong></li>
+<li><strong><font color=red>阻塞期间如果有其他的client对之前任意一个key的列表进行push后，阻塞解除并返回。如果阻塞时间timeout不为0，并且阻塞超时则返回nil(空)。</font></strong></li>
+</ul>
+</li>
+<li><strong><font color=#ff6633>EventModel类</font></strong>用于封装<u>消息事件</u>的相关信息<u>序列化</u>之后放入队列。</li>
+<li><strong><font color=#ff6633>事件处理器接口</font></strong>EventHandler定义两个方法<u>处理消息</u>和<u>处理器所关注的事件类型</u>，实现处理器接口<strong><font color=#ff6633>LikeHandler</font></strong><u>给被点赞用户发送站内信</u>和<strong><font color=#ff6633>LoginExceptionHandler</font></strong><u>给异常用户发送邮件</u>并注册为bean，分别用来处理点赞和登录异常消息。</li>
+<li><strong><font color=#ff6633>消息生产者</font></strong>EventProducer用于各种业务中将消息投递到异步队列。</li>
+<li><strong><font color=#ff6633>消息消费者</font></strong>EventConsumer用于从队列中获取消息，并依据一个映射表将消息路由给对应的处理器。需要实现一个bean初始化接口，在初始化的时候得到所有处理器的映射，并启动一个线程去消费队列中的消息；实现一个ApplicationContextAware接口可以获取当前应用上下文已经注册的所有bean对象。</li>
+</ol>
+<h1 id="完结"><a href="#完结" class="headerlink" title="完结"></a>完结</h1><p>最后完成Junit单元测试，就可以打包部署。</p>
+<p><strong>本地部署</strong>：application继承SpringBootServletInitializer，打包方式修改成war，mvn package打包后，将war包放到本地安装好的WebServer(我安装的Tomcat)上，运行Tomcat去可以去访问对应的端口。</p>
+<p><strong>服务器部署</strong>：我选择部署到本地的虚拟机上。服务器安装nginx、mysql-server、libmysqlclient-dev、maven、redis。把war包放到tomcat目录，需要给tomcat目录增加执行权限。配置JDK版本为开发版本和tomcat适合的版本。修改Redis连接参数。简单的配置一下nginx。启动WebServer。</p>
+<p>总结一下项目所用设计的技术和工具，SpringBoot、Mybatis、拦截器模式、MVC模式、适配器模式、Git、Maven、IntilliJ、七牛云SDK、Redis、实现异步队列、邮件、单元测试/部署等等。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Spring/" rel="tag"><i class="fa fa-tag"></i> Spring</a>
+              <a href="/tags/Redis/" rel="tag"><i class="fa fa-tag"></i> Redis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/23/LeetCode%E2%80%94%E2%80%94%E4%B8%89%E8%A7%92%E5%BD%A2%E6%9C%80%E5%B0%8F%E8%B7%AF%E5%BE%84%E5%92%8C/" rel="prev" title="LeetCode——三角形最小路径和">
+      <i class="fa fa-chevron-left"></i> LeetCode——三角形最小路径和
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#开发环境"><span class="nav-number">1.</span> <span class="nav-text">开发环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据库设计"><span class="nav-number">2.</span> <span class="nav-text">数据库设计</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#功能模块"><span class="nav-number">3.</span> <span class="nav-text">功能模块</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#首页展示"><span class="nav-number">3.1.</span> <span class="nav-text">首页展示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#业务分析"><span class="nav-number">3.1.1.</span> <span class="nav-text">业务分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接口实现"><span class="nav-number">3.1.2.</span> <span class="nav-text">接口实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注册登录"><span class="nav-number">3.2.</span> <span class="nav-text">注册登录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#接口实现-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">接口实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拦截器实现"><span class="nav-number">3.2.2.</span> <span class="nav-text">拦截器实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安全性设计"><span class="nav-number">3.2.3.</span> <span class="nav-text">安全性设计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#资讯模块"><span class="nav-number">3.3.</span> <span class="nav-text">资讯模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#业务分析-1"><span class="nav-number">3.3.1.</span> <span class="nav-text">业务分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接口实现-2"><span class="nav-number">3.3.2.</span> <span class="nav-text">接口实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用第三方云服务实现上传-下载接口"><span class="nav-number">3.3.3.</span> <span class="nav-text">使用第三方云服务实现上传&#x2F;下载接口</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#评论中心"><span class="nav-number">3.4.</span> <span class="nav-text">评论中心</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#业务分析-2"><span class="nav-number">3.4.1.</span> <span class="nav-text">业务分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接口实现-3"><span class="nav-number">3.4.2.</span> <span class="nav-text">接口实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息中心-站内信"><span class="nav-number">3.5.</span> <span class="nav-text">消息中心&#x2F;站内信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#业务分析-3"><span class="nav-number">3.5.1.</span> <span class="nav-text">业务分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接口实现-4"><span class="nav-number">3.5.2.</span> <span class="nav-text">接口实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#赞-踩功能"><span class="nav-number">3.6.</span> <span class="nav-text">赞&#x2F;踩功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#业务分析-4"><span class="nav-number">3.6.1.</span> <span class="nav-text">业务分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接口实现-5"><span class="nav-number">3.6.2.</span> <span class="nav-text">接口实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#异步队列"><span class="nav-number">3.7.</span> <span class="nav-text">异步队列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#业务分析-5"><span class="nav-number">3.7.1.</span> <span class="nav-text">业务分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接口实现-6"><span class="nav-number">3.7.2.</span> <span class="nav-text">接口实现</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#完结"><span class="nav-number">4.</span> <span class="nav-text">完结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="M1ng"
+      src="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
+  <p class="site-author-name" itemprop="name">M1ng</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">202</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Jerrymouse1998" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Jerrymouse1998" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:577373789@qq.com" title="E-Mail → mailto:577373789@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-handshake-o"></i>
+      ↓交换友链QQ:577373789↓
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://jerrymouse1998.github.io/" title="https:&#x2F;&#x2F;jerrymouse1998.github.io&#x2F;" rel="noopener" target="_blank">M1ng&Q1ng</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+	  
+	  <!--添加标签云-->
+        
+          <script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+          <script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+          <div class="widget-wrap">
+            <!--<div>标签云</div>-->
+            <div id="myCanvasContainer" class="widget tagcloud">
+              <canvas width="250" height="250" id="resCanvas" style="width=100%">
+              <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/" rel="tag">BFS</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/" rel="tag">DFS</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Fibonacci/" rel="tag">Fibonacci</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HashTable/" rel="tag">HashTable</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/" rel="tag">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java8/" rel="tag">Java8</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KMP%E7%AE%97%E6%B3%95/" rel="tag">KMP算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LCP/" rel="tag">LCP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LCS/" rel="tag">LCS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Manacher%E7%AE%97%E6%B3%95/" rel="tag">Manacher算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">20</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sunday%E7%AE%97%E6%B3%95/" rel="tag">Sunday算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TreeSet/" rel="tag">TreeSet</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a><span class="tag-list-count">152</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E5%BF%83%E6%89%A9%E5%B1%95/" rel="tag">中心扩展</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E5%88%86%E6%B3%95/" rel="tag">二分法</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91/" rel="tag">二叉搜索树</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E5%8F%89%E6%A0%91/" rel="tag">二叉树</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BD%8D%E5%9B%BE/" rel="tag">位图</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F/" rel="tag">冒泡排序</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E6%B2%BB%E7%AE%97%E6%B3%95/" rel="tag">分治算法</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%91%E6%8C%87Offer/" rel="tag">剑指Offer</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag">动态规划</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%A1%E5%A1%94%E5%85%B0%E6%95%B0/" rel="tag">卡塔兰数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8E%84%E6%8B%89%E5%A4%9A%E5%A1%9E%E7%AD%9B/" rel="tag">厄拉多塞筛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8C%E6%8C%87%E9%92%88/" rel="tag">双指针</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E6%BA%AF/" rel="tag">回溯</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F/" rel="tag">基数排序</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A0%86/" rel="tag">堆</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A0%86%E6%8E%92%E5%BA%8F/" rel="tag">堆排序</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="tag">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BB%A7%E6%89%BF/" rel="tag">多继承</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E5%85%B8%E6%A0%91/" rel="tag">字典树</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="tag">字符串</a><span class="tag-list-count">26</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F/" rel="tag">希尔排序</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80%E5%BC%8F/" rel="tag">康托展开式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F/" rel="tag">归并排序</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BF%AB%E6%85%A2%E6%8C%87%E9%92%88/" rel="tag">快慢指针</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/" rel="tag">快速排序</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F/" rel="tag">插入排序</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%91%A9%E5%B0%94%E6%8A%95%E7%A5%A8%E7%AE%97%E6%B3%95/" rel="tag">摩尔投票算法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E7%BB%84/" rel="tag">数组</a><span class="tag-list-count">32</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A5%E6%9C%9F%E7%B1%BB/" rel="tag">日期类</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A0%88/" rel="tag">栈</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A1%B6%E6%8E%92%E5%BA%8F/" rel="tag">桶排序</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E7%AE%97%E6%B3%95/" rel="tag">欧几里得算法</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B5%81%E5%BC%8F%E8%AF%AD%E6%B3%95/" rel="tag">流式语法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/" rel="tag">滑动窗口</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E9%A1%BF%E8%BF%AD%E4%BB%A3%E6%B3%95/" rel="tag">牛顿迭代法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A1%AE%E5%AE%9A%E6%9C%89%E9%99%90%E8%87%AA%E5%8A%A8%E6%9C%BA/" rel="tag">确定有限自动机</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A8%8B%E5%BA%8F%E5%91%98%E9%9D%A2%E8%AF%95%E9%87%91%E5%85%B8/" rel="tag">程序员面试金典</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%9C%AF%E5%9F%BA%E6%9C%AC%E5%AE%9A%E7%90%86%E6%B3%95/" rel="tag">算术基本定理法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%A6%E7%91%9F%E5%A4%AB%E7%8E%AF/" rel="tag">约瑟夫环</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A3%B4%E8%9C%80%E5%AE%9A%E7%90%86/" rel="tag">裴蜀定理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F/" rel="tag">计数排序</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F/" rel="tag">责任链模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95/" rel="tag">贪心算法</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag">转载</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F/" rel="tag">选择排序</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%93%BE%E8%A1%A8/" rel="tag">链表</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%9F%E5%88%97/" rel="tag">队列</a><span class="tag-list-count">2</span></li></ul>
+              </canvas>
+            </div>
+         </div>
+        
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">M1ng</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">184k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-nest@1/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdnjs.cloudflare.com/ajax/libs/valine/1.3.10/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : true,
+      notify     : true,
+      appId      : 'qeADb7jtYMKlsXEEryXe2Grg-gzGzoHsz',
+      appKey     : 'WGN1y5zOMgAbEHXpunlL2THf',
+      placeholder: "欢迎留言、纠错、交朋友 ^.^ 请注意文明哦！",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+  
+  <!-- 樱花特效 -->
+  <script type="text/javascript">
+    var windowWidth = $(window).width();
+    <!-- if (windowWidth > 480) { -->
+      document.write('<script type="text/javascript" src="/js/sakura.js"><\/script>');
+    <!-- } -->
+  </script>
+
+</body>
+</html>
