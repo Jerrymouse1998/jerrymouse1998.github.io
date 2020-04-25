@@ -8165,7 +8165,7 @@
       </tags>
   </entry>
   <entry>
-    <title>LeetCode——有效括号</title>
+    <title>LeetCode——最接近的三数之和</title>
     <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%E6%9C%80%E6%8E%A5%E8%BF%91%E7%9A%84%E4%B8%89%E6%95%B0%E4%B9%8B%E5%92%8C/</url>
     <content><![CDATA[<h2 id="NO-16-最接近的三数之和-中等"><a href="#NO-16-最接近的三数之和-中等" class="headerlink" title="NO.16 最接近的三数之和 中等 "></a>NO.16 最接近的三数之和 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2019/12/18/QHphH1.png" alt="QHphH1.png"></p>
 <h3 id="思路一：暴力破解法"><a href="#思路一：暴力破解法" class="headerlink" title="思路一：暴力破解法"></a><font color=red><strong>思路一：暴力破解法</strong></font></h3><p>用list保存所有的三数之和的情况，然后找出最接近target的数：</p>
@@ -8348,7 +8348,7 @@
       </tags>
   </entry>
   <entry>
-    <title>LeetCode——有效括号</title>
+    <title>LeetCode——正则表达式匹配</title>
     <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%8C%B9%E9%85%8D/</url>
     <content><![CDATA[<h2 id="NO-10-正则表达式匹配-困难"><a href="#NO-10-正则表达式匹配-困难" class="headerlink" title="NO.10 正则表达式匹配 困难 "></a>NO.10 正则表达式匹配 <font color=#ff0099>困难</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2020/02/11/1TQmNV.png" alt="1TQmNV.png"></p>
 <p><img src="https://s2.ax1x.com/2020/02/11/1TQeA0.png" alt="1TQeA0.png"></p>
