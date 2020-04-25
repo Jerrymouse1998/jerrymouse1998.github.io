@@ -1,9 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——二叉树中的最大路径和</title>
+    <url>/2020/04/25/LeetCode%E2%80%94%E2%80%94%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%AD%E7%9A%84%E6%9C%80%E5%A4%A7%E8%B7%AF%E5%BE%84%E5%92%8C/</url>
+    <content><![CDATA[<h2 id="NO-124-二叉树中的最大路径和-困难"><a href="#NO-124-二叉树中的最大路径和-困难" class="headerlink" title="NO.124 二叉树中的最大路径和 困难 "></a>NO.124 二叉树中的最大路径和 <font color=#ff0099>困难</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/25/JsnAYR.png" alt="JsnAYR.png"></p>
+<p>本题是 NO.112 路径总和 与 NO.113 路径总和 II 的又一个升级版，本题不再是从根到叶子，而是任意路径。</p>
+<p><strong><font color=red>思路一：深搜</font></strong> 二叉树具有递归性，自然就会想到递归求左子树最大路径和 与 右子树最大路径和，然后再求整个树/子树的路径和。以求解某个子树的路径和为例：</p>
+<p><img src="https://s1.ax1x.com/2020/04/25/JsluoF.png" alt="JsluoF.png"></p>
+<p>这个总的子树最终返回的最大路径和可能是：a+b+子树根  或者  a+子树根+子树根的父节点  或者b+子树根+子树根的父节点</p>
+<p>最终的结果最小是0，不需要任何一个节点值加入路径和；如果路径和是负数，则舍弃。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> max = Integer.MIN_VALUE;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxPathSum</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    dfs(root);</span><br><span class="line">    <span class="keyword">return</span> max;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">dfs</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//求左右子树的路径和</span></span><br><span class="line">    <span class="keyword">int</span> left = dfs(root.left);</span><br><span class="line">    <span class="keyword">int</span> right = dfs(root.right);</span><br><span class="line">    <span class="comment">//如果路径和是负数，则舍弃掉这条路径</span></span><br><span class="line">    <span class="keyword">if</span> (left &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        left = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (right &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        right = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//更新max</span></span><br><span class="line">    max = Math.max(max, left + right + root.val);</span><br><span class="line">    <span class="comment">//返回子树最大的路径和</span></span><br><span class="line">    <span class="keyword">return</span> Math.max(left, right) + root.val;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    遍历</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>二叉树</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——买卖股票的最佳时机II</title>
+    <url>/2020/04/25/LeetCode%E2%80%94%E2%80%94%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E7%9A%84%E6%9C%80%E4%BD%B3%E6%97%B6%E6%9C%BAII-1/</url>
+    <content><![CDATA[<h2 id="NO-123-买卖股票的最佳时机III-困难"><a href="#NO-123-买卖股票的最佳时机III-困难" class="headerlink" title="NO.123 买卖股票的最佳时机III 困难 "></a>NO.123 买卖股票的最佳时机III <font color=#ff0099>困难</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/25/JsFsEt.png" alt="JsFsEt.png"></p>
+<p><strong><font color=red>思路一：动态规划</font></strong> NO.121是只能买卖一次股票，NO.122是任意买卖股票，而本题是只能买卖股票两次。</p>
+<p>相较于前两题的状态，本题又增加了一个交易次数的状态k。</p>
+<p><strong>dp[i][j][k]的含义</strong>：第i天的利润，j表示持股状态(0不持股，1持股)，k交易次数(卖出次数0~2)。所以每天有六种状态，思路就是从每天的六种状态中找到利润最大的。</p>
+<p><strong>初始化</strong>：<code>dp[0][0][0]=dp[0][0][1]=dp[0][0][2]=0</code>，啥也没干；<code>dp[0][1][0]=dp[0][1][1]=dp[0][1][2]=-prices[0]</code>，第一天持股只有支出。</p>
+<p><strong>状态转移</strong>：<code>dp[i][0][0]=dp[i-1][0][0]</code>，第i天不持股交易次数0，第i-1天一定未持股未交易，维持现状；</p>
+<p><code>dp[i][0][1]=MAX(dp[i-1][0][1],dp[i-1][1][0]+prices[i])</code>，第i天不持股1次交易，维持第i-1天的状态，或者第i-1天持股未交易第i天卖出。</p>
+<p><code>dp[i][0][2]=MAX(dp[i-1][0][2],dp[i-1][1][1]+prices[i])</code>，第i天不持股2次交易，维持第i-1天的状态，或者第i-1天持股1次交易第i天卖出。</p>
+<p><code>dp[i][1][0]=MAX(dp[i-1][1][0],dp[i-1][0][0]-prices[i])</code>，第i天持股未交易，维持第i-1天的状态，或者第i-1天不持股未交易第i天买入。</p>
+<p><code>dp[i][1][1]=MAX(dp[i-1][1][1],dp[i-1][0][1]-prices[i])</code>，第i天持股1次交易，维持第i-1天的状态，或者第i-1天不持股1次交易第i天买入。</p>
+<p><code>dp[i][1][2]=dp[i][1][2]</code>，第i天持股2次交易，已经到达交易限制，但是手中还持股，不需要考虑一定不能利润最大化。</p>
+<p>最终的结果一定是在不持股的三种状态中进行比较。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="keyword">int</span>[] prices)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (prices == <span class="keyword">null</span> || prices.length &lt; <span class="number">2</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//初始化</span></span><br><span class="line">    <span class="keyword">int</span>[][][] dp = <span class="keyword">new</span> <span class="keyword">int</span>[prices.length][<span class="number">2</span>][<span class="number">3</span>];</span><br><span class="line">    dp[<span class="number">0</span>][<span class="number">0</span>][<span class="number">0</span>] = dp[<span class="number">0</span>][<span class="number">0</span>][<span class="number">1</span>] = dp[<span class="number">0</span>][<span class="number">0</span>][<span class="number">2</span>] = <span class="number">0</span>;</span><br><span class="line">    dp[<span class="number">0</span>][<span class="number">1</span>][<span class="number">0</span>] = dp[<span class="number">0</span>][<span class="number">1</span>][<span class="number">1</span>] = dp[<span class="number">0</span>][<span class="number">1</span>][<span class="number">2</span>] = -prices[<span class="number">0</span>];</span><br><span class="line">    <span class="comment">//状态转移</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; prices.length; i++) &#123;</span><br><span class="line">        <span class="comment">//六种状态</span></span><br><span class="line">        dp[i][<span class="number">0</span>][<span class="number">0</span>] = dp[i - <span class="number">1</span>][<span class="number">0</span>][<span class="number">0</span>];</span><br><span class="line">        dp[i][<span class="number">0</span>][<span class="number">1</span>] = Math.max(dp[i - <span class="number">1</span>][<span class="number">0</span>][<span class="number">1</span>], dp[i - <span class="number">1</span>][<span class="number">1</span>][<span class="number">0</span>] + prices[i]);</span><br><span class="line">        dp[i][<span class="number">0</span>][<span class="number">2</span>] = Math.max(dp[i - <span class="number">1</span>][<span class="number">0</span>][<span class="number">2</span>], dp[i - <span class="number">1</span>][<span class="number">1</span>][<span class="number">1</span>] + prices[i]);</span><br><span class="line">        dp[i][<span class="number">1</span>][<span class="number">0</span>] = Math.max(dp[i - <span class="number">1</span>][<span class="number">1</span>][<span class="number">0</span>], dp[i - <span class="number">1</span>][<span class="number">0</span>][<span class="number">0</span>] - prices[i]);</span><br><span class="line">        dp[i][<span class="number">1</span>][<span class="number">1</span>] = Math.max(dp[i - <span class="number">1</span>][<span class="number">1</span>][<span class="number">1</span>], dp[i - <span class="number">1</span>][<span class="number">0</span>][<span class="number">1</span>] - prices[i]);</span><br><span class="line">        dp[i][<span class="number">1</span>][<span class="number">2</span>] = dp[i - <span class="number">1</span>][<span class="number">1</span>][<span class="number">2</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//最大利润一定是不持股的三种状态之一。</span></span><br><span class="line">    <span class="keyword">return</span> Math.max(dp[prices.length - <span class="number">1</span>][<span class="number">0</span>][<span class="number">2</span>],</span><br><span class="line">                    Math.max(dp[prices.length - <span class="number">1</span>][<span class="number">0</span>][<span class="number">1</span>], dp[prices.length - <span class="number">1</span>][<span class="number">0</span>][<span class="number">0</span>]));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    空间O(n)虽然是三维数组，但2和3是常数。</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>动态规划</tag>
+        <tag>贪心算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>剑指Offer——数组中的逆序对</title>
     <url>/2020/04/24/%E5%89%91%E6%8C%87Offer%E2%80%94%E2%80%94%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%80%86%E5%BA%8F%E5%AF%B9/</url>
-    <content><![CDATA[<h2 id="剑指Offer-115-不同的子序列-困难"><a href="#剑指Offer-115-不同的子序列-困难" class="headerlink" title="剑指Offer.115 不同的子序列 困难 "></a>剑指Offer.115 不同的子序列 <font color=#ff0099>困难</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/24/JDV7sH.png" alt="JDV7sH.png"></p>
+    <content><![CDATA[<h2 id="剑指Offer-51-数组中的逆序对-困难"><a href="#剑指Offer-51-数组中的逆序对-困难" class="headerlink" title="剑指Offer.51 数组中的逆序对 困难 "></a>剑指Offer.51 数组中的逆序对 <font color=#ff0099>困难</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/24/JDV7sH.png" alt="JDV7sH.png"></p>
 <p><strong><font color=red>思路一：暴力</font></strong> 写暴力是为了分析优化点。</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">reversePairs</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (nums == <span class="keyword">null</span> || nums.length &lt; <span class="number">2</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; nums.length; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (nums[i] &gt; nums[j]) count++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
