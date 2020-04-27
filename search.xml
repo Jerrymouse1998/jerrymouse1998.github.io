@@ -3,7 +3,7 @@
   <entry>
     <title>ArrayList和LinkedList不得不说的事</title>
     <url>/2020/04/27/ArrayList%E5%92%8CLinkedList%E4%B8%8D%E5%BE%97%E4%B8%8D%E8%AF%B4%E7%9A%84%E4%BA%8B/</url>
-    <content><![CDATA[<p>本文从ArrayList和LinkedList的不同点入手，到增加/删除元素API的效率比较，顺带扩充知识面：简述随机访问接口RandomAccess、vector集合，最后以ArrayList何时扩容、如何扩容(源码分析)收尾。<!-- mored --></p>
+    <content><![CDATA[<p>本文从ArrayList和LinkedList的不同点入手，到增加/删除元素API的效率比较，顺带扩充知识面：简述随机访问接口RandomAccess、vector集合，最后以ArrayList何时扩容、如何扩容(源码分析)收尾。<a id="more"></a></p>
 <h2 id="热身一下：List、Set、Map的区别？"><a href="#热身一下：List、Set、Map的区别？" class="headerlink" title="热身一下：List、Set、Map的区别？"></a>热身一下：List、Set、Map的区别？</h2><ul>
 <li>List存储一组不唯一、可重复的对象，即可以有多个元素引用相同的对象。</li>
 <li>Set是一个不允许重复的集合，即不会有多个元素引用相同的对象。</li>
