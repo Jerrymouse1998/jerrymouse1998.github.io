@@ -1,9 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——分发糖果</title>
+    <url>/2020/05/01/LeetCode%E2%80%94%E2%80%94%E5%88%86%E5%8F%91%E7%B3%96%E6%9E%9C/</url>
+    <content><![CDATA[<h2 id="NO-135-分发糖果-困难"><a href="#NO-135-分发糖果-困难" class="headerlink" title="NO.135 分发糖果 困难 "></a>NO.135 分发糖果 <font color=#ff0099>困难</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/05/01/JOtBzq.png" alt="JOtBzq.png"></p>
+<p><strong><font color=red>思路一：贪心算法</font></strong> 分发糖果的规则：</p>
+<ol>
+<li>如果[i]比[i-1]分高即右边的大于左边的，则[i]的糖果要比[i-1]的多，但是为了使总糖果数最少，所以给[i]增加最小的增量 +1。</li>
+<li>同理，如果[i]比[i+1]分高即左边的大于右边的，则[i]的糖果要比[i+1]的多，但是为了使总糖果数最少，所以给[i]增加最小的增量 +1。</li>
+</ol>
+<p>只有当必须给某个孩子增加糖果时(左大于右/右大于左)，才给这个孩子增加一个最小的增量 +1。</p>
+<p>开始，每个人都分配最少的糖果 1 个。先从左向右遍历孩子的分数，如果<code>[i]&gt;[i-1]</code>则使<code>[i]的糖果=[i-1]的糖果+1</code>，并将这一过程中每个人分配的糖果数量记录在 left 数组中。</p>
+<p>同理，再从逆序遍历孩子的分数，如果<code>[i]&gt;[i+1]</code>则使<code>[i]的糖果=[i+1]的糖果+1</code>，并将这一过程中每个人分配的糖果数量记录在 right 数组中。</p>
+<p>最后，计算总糖果时，每个人应得的糖果数是取 left 或 right 中对应的最大糖果数，这样才能同时满足开头的两个规则。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">candy</span><span class="params">(<span class="keyword">int</span>[] ratings)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>[] left = <span class="keyword">new</span> <span class="keyword">int</span>[ratings.length];</span><br><span class="line">    <span class="keyword">int</span>[] right = <span class="keyword">new</span> <span class="keyword">int</span>[ratings.length];</span><br><span class="line">    <span class="comment">//初始化每人最少一个糖</span></span><br><span class="line">    Arrays.fill(left, <span class="number">1</span>);</span><br><span class="line">    Arrays.fill(right, <span class="number">1</span>);</span><br><span class="line">    <span class="comment">//顺序遍历,按照规则一进行分配</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; ratings.length; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (ratings[i] &gt; ratings[i - <span class="number">1</span>]) left[i] = left[i - <span class="number">1</span>] + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//逆序遍历,按照规则二进行分配</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = ratings.length - <span class="number">2</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">        <span class="keyword">if</span> (ratings[i] &gt; ratings[i + <span class="number">1</span>]) right[i] = right[i + <span class="number">1</span>] + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//统计所有孩子的糖果</span></span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ratings.length; i++) &#123;</span><br><span class="line">        <span class="comment">//每个孩子按照,规则一和规则二中相应最大的数字进行分配</span></span><br><span class="line">        sum += Math.max(left[i], right[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    五次遍历。</p>
+<p>空间复杂度：O(n)    两个数组记录，两个规则下的分配方案。</p>
+<p>这个思路还能再优化一下，只用一个数组 candies 。第一次遍历不变，第二次遍历时如果<code>ratings[i] &gt; ratings[i + 1]</code>不立刻更新，如果此时 candies[i] 已经大于 candies[i+1]则不需要更新，否则更新为 candies[i+1]+1，并且到此已经完成了对 candies[i] 的分配，直接统计入结果中即可。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">candy</span><span class="params">(<span class="keyword">int</span>[] ratings)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>[] candies = <span class="keyword">new</span> <span class="keyword">int</span>[ratings.length];</span><br><span class="line">    <span class="comment">//初始化</span></span><br><span class="line">    candies[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">    <span class="comment">//顺序遍历</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; ratings.length; i++) &#123;</span><br><span class="line">        <span class="comment">//分数大于前面的孩子,则多一个糖</span></span><br><span class="line">        <span class="keyword">if</span> (ratings[i] &gt; ratings[i - <span class="number">1</span>]) candies[i] = candies[i - <span class="number">1</span>] + <span class="number">1</span>;</span><br><span class="line">        <span class="comment">//否则1个</span></span><br><span class="line">        <span class="keyword">else</span> candies[i] = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//注意不要漏统计最后一个孩子</span></span><br><span class="line">    <span class="keyword">int</span> sum = candies[candies.length - <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = ratings.length - <span class="number">2</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">        <span class="comment">//只有当左大于右,且左孩子的糖少于右孩子时才更新</span></span><br><span class="line">        <span class="keyword">if</span> (ratings[i] &gt; ratings[i + <span class="number">1</span>]) candies[i] = Math.max(candies[i], candies[i + <span class="number">1</span>] + <span class="number">1</span>);</span><br><span class="line">        <span class="comment">//统计</span></span><br><span class="line">        sum += candies[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    两次遍历。</p>
+<p>空间复杂度：O(n)    一个数组记录。</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>贪心算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——只出现一次的数字I&amp;II&amp;III</title>
+    <url>/2020/05/01/LeetCode%E2%80%94%E2%80%94%E5%8F%AA%E5%87%BA%E7%8E%B0%E4%B8%80%E6%AC%A1%E7%9A%84%E6%95%B0%E5%AD%97I-II-III/</url>
+    <content><![CDATA[<p><strong>只出现一次的数字 <font color=green>简单</font>、只出现一次的数字II <font color=orange>中等</font>、只出现一次的数字III <font color=orange>中等</font></strong> <a id="more"></a></p>
+<h2 id="NO-136-只出现一次的数字-简单"><a href="#NO-136-只出现一次的数字-简单" class="headerlink" title="NO.136 只出现一次的数字 简单"></a>NO.136 只出现一次的数字 <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/01/JOK1BR.png" alt="JOK1BR.png"></p>
+<p><strong><font color=red>思路一：异或</font></strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">singleNumber</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> num : nums) &#123;</span><br><span class="line">        ans^=num;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    空间复杂度：O(1)</p>
+<h2 id="NO-137-只出现一次的数字II-中等"><a href="#NO-137-只出现一次的数字II-中等" class="headerlink" title="NO.137 只出现一次的数字II 中等"></a>NO.137 只出现一次的数字II <font color=orange>中等</font></h2><p><img src="https://s1.ax1x.com/2020/05/01/JOKGAx.png" alt="JOKGAx.png"></p>
+<p><strong><font color=red>思路一：按位统计</font></strong> 遍历数组中每个元素的每一位(除了符号位)，统计每一位上 1 的个数，最后再将每一位上 1的数量取模 3，得到最终的结果。例如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">nums[<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">2</span>]=nums[<span class="number">0010</span>,<span class="number">0010</span>,<span class="number">0011</span>,<span class="number">0010</span>]</span><br><span class="line">统计每一位上<span class="number">1</span>的次数：<span class="number">0041</span></span><br><span class="line">每一位上的数字取模<span class="number">3</span>：<span class="number">0011</span> = <span class="number">3</span></span><br></pre></td></tr></table></figure>
+
+<p>不难理解，剩下的就是如何实现。</p>
+<p>对每个数字 num 的右移待统计位数，再对 1 求与，可以得到待统计位上的是 1 还是 0。</p>
+<p>统计完某一位上 1 的数量之后，取模 3 结果一定是 1 或 0 ，再左移回原本的位上，最后通过异或运算存到结果中。还是上例：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">nums[<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">2</span>]=nums[<span class="number">0010</span>,<span class="number">0010</span>,<span class="number">0011</span>,<span class="number">0010</span>]</span><br><span class="line">统计第<span class="number">0</span>位上<span class="number">1</span>的次数：<span class="number">1</span>	取模<span class="number">3</span>左移回到原位：<span class="number">0001</span>	异或存回res：<span class="number">0001</span></span><br><span class="line">统计第<span class="number">1</span>位上<span class="number">1</span>的次数：<span class="number">4</span>	取模<span class="number">3</span>左移回到原位：<span class="number">0010</span>	异或存回res：<span class="number">0011</span></span><br><span class="line">统计第<span class="number">3</span>位上<span class="number">1</span>的次数：<span class="number">0</span>	取模<span class="number">3</span>左移回到原位：<span class="number">0000</span>	异或存回res：<span class="number">0011</span></span><br><span class="line">统计第<span class="number">4</span>位上<span class="number">1</span>的次数：<span class="number">0</span>	取模<span class="number">3</span>左移回到原位：<span class="number">0000</span>	异或存回res：<span class="number">0011</span></span><br><span class="line">    最终结果res：<span class="number">0011</span> = <span class="number">3</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">singleNumber</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//分别统计每一位上 1 的个数</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">32</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> num : nums) &#123;</span><br><span class="line">            count += (num &gt;&gt; i) &amp; <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//个数取模 3 再还原回原位,最后保存至res</span></span><br><span class="line">        res ^= (count % <span class="number">3</span>) &lt;&lt; i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    32次遍历O(32n)。</p>
+<p>空间复杂度：O(1)</p>
+<h2 id="NO-260-只出现一次的数字III-中等"><a href="#NO-260-只出现一次的数字III-中等" class="headerlink" title="NO.260 只出现一次的数字III 中等"></a>NO.260 只出现一次的数字III <font color=orange>中等</font></h2><p><img src="https://s1.ax1x.com/2020/05/01/JOK3H1.png" alt="JOK3H1.png"></p>
+<p><strong><font color=red>思路一：分组异或</font></strong> 剑指Offer 第 56 题一样。</p>
+<p>如果只有一个数字出现过一次，直接将数组遍历依次异或，最终的到的结果就是只出现过一次的数字。因为异或运算，相同为 0，不同为 1。</p>
+<p>但是本题有两个只出现一次的数字 a、b，按照上述方法得到的结果一定是a^b。</p>
+<p>如果可以将 nums 分为两组， a 和 b分别再不同的组，其余相同的元素一定在同一个组。这样，我们就可以像开头提到的方法一样，将两组分别异或，两组最后得到的结果，一定就是 a 和 b 。</p>
+<p>重点在于如何分组：</p>
+<ol>
+<li>先将 nums 遍历依次异或，得到 res=a^b。</li>
+<li>与运算，拿到 res 任意一个等于 1 的位 h。</li>
+<li>遍历 nums 分别和 h 进行与运算，等于 0 的分一组进行异或，不等于 0 的分一组进行异或，最后两组的结果就是 a 和 b。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] singleNumber(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">    <span class="comment">//得到 a^b</span></span><br><span class="line">    <span class="keyword">int</span> n = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> num : nums) &#123;</span><br><span class="line">        n ^= num;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//得到n中任意一位1的位置</span></span><br><span class="line">    <span class="keyword">int</span> h = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> ((h &amp; n) == <span class="number">0</span>) &#123;</span><br><span class="line">        h &lt;&lt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//分组异或</span></span><br><span class="line">    <span class="keyword">int</span> a = <span class="number">0</span>, b = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> num : nums) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((num &amp; h) == <span class="number">0</span>) &#123;</span><br><span class="line">            a ^= num;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            b ^= num;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;a, b&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)     空间复杂度：O(1)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>位运算</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——快乐数</title>
+    <url>/2020/05/01/LeetCode%E2%80%94%E2%80%94%E5%BF%AB%E4%B9%90%E6%95%B0/</url>
+    <content><![CDATA[<h2 id="NO-202-快乐数-简单"><a href="#NO-202-快乐数-简单" class="headerlink" title="NO.202 快乐数 简单 "></a>NO.202 快乐数 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/30/JLPcin.png" alt="JLPcin.png"></p>
+<p>读完题很懵逼，无法认清自己，又找到一个盲点类型。看了一下相同类型的题目，判断一个链表是否有环，再看看题解。。。哦？找循环点！先算作找循环类型口巴。</p>
+<p><strong><font color=red>思路一：HashTable</font></strong> 用一个 HashSet 对每一个数字的每一位求平方相加，结果 num 如果是 1 则说明 n 是快乐数；如果不是 1，判断 HashSet 中是否已经存在相同的 num，如果存在说明出现闭环，不存在则结果放入 Set 并继续按位平方求和，判断结果。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isHappy</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    HashSet&lt;Integer&gt; set = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">    <span class="comment">//还没有证明n是快乐数,也没有发生循环</span></span><br><span class="line">    <span class="keyword">while</span> (n != <span class="number">1</span> &amp;&amp; !set.contains(n)) &#123;</span><br><span class="line">        set.add(n);</span><br><span class="line">        n = helper(n);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> n == <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//按位平方求和</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">helper</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> num = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (n &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> temp = n%<span class="number">10</span>;</span><br><span class="line">        num+=temp*temp;</span><br><span class="line">        n/=<span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> num;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不需要考虑平方求和之后的结果num超出范围，因为 999 的结果是 243 、9999 的结果  324 、、、 9999999999999  的结果  1053 。。。发现，三位数最大的按位平方求和结果还是个三位数，所以无论怎么求下去，都是三位数。</p>
+<p>时间复杂度：O(logn)</p>
+<p><strong><font color=red>思路二：快慢指针</font></strong> 不断地生成 num ，num 生成下一个 num ，这是一种链式的递减，如果链上的某个节点出现了 1 ，说明 n 是快乐数，如果链上出现了环，说明 n 不是快乐数。</p>
+<p>这种思路下，本问题就转换成了判断链表是否有环的问题，在判断的途中顺便检测是否有节点为 1 。</p>
+<p>慢指针一次走一个节点，快指针一次走两个节点，如果存在循环，那么快慢一定会相遇。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isHappy</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> slow = n, fast = helper(n);</span><br><span class="line">    <span class="keyword">while</span> (fast != <span class="number">1</span> &amp;&amp; slow != fast) &#123;</span><br><span class="line">        slow = helper(slow);</span><br><span class="line">        fast = helper(helper(fast));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> fast == <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//按位平方求和</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">helper</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> num = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (n &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> temp = n % <span class="number">10</span>;</span><br><span class="line">        num += temp * temp;</span><br><span class="line">        n /= <span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> num;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(logn)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>HashTable</tag>
+        <tag>快慢指针</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——加油站</title>
     <url>/2020/04/29/LeetCode%E2%80%94%E2%80%94%E5%8A%A0%E6%B2%B9%E7%AB%99/</url>
-    <content><![CDATA[<h2 id="NO-133-分割回文串-中等"><a href="#NO-133-分割回文串-中等" class="headerlink" title="NO.133 分割回文串 中等 "></a>NO.133 分割回文串 <font color=orange>中等</font> <a id="more"></a></h2><p>​                                 在一条环路上有 <em>N</em> 个加油站，其中第 <em>i</em> 个加油站有汽油 <code>gas[i]</code> 升。 </p>
+    <content><![CDATA[<h2 id="NO-134-加油站-中等"><a href="#NO-134-加油站-中等" class="headerlink" title="NO.134 加油站 中等 "></a>NO.134 加油站 <font color=orange>中等</font> <a id="more"></a></h2><p>​                                 在一条环路上有 <em>N</em> 个加油站，其中第 <em>i</em> 个加油站有汽油 <code>gas[i]</code> 升。 </p>
 <p><img src="https://s1.ax1x.com/2020/04/29/JoHW7j.png" alt="JoHW7j.png"></p>
 <p><img src="https://s1.ax1x.com/2020/04/29/JoHRBQ.png" alt="JoHRBQ.png"></p>
 <p><strong><font color=red>思路一：暴力模拟</font></strong> 尝试每个加油站分别作为起点出发一次。</p>
@@ -35,7 +146,7 @@
   <entry>
     <title>LeetCode——克隆图</title>
     <url>/2020/04/29/LeetCode%E2%80%94%E2%80%94%E5%85%8B%E9%9A%86%E5%9B%BE/</url>
-    <content><![CDATA[<h2 id="NO-133-分割回文串-中等"><a href="#NO-133-分割回文串-中等" class="headerlink" title="NO.133 分割回文串 中等 "></a>NO.133 分割回文串 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/29/JoafnH.png" alt="JoafnH.png"></p>
+    <content><![CDATA[<h2 id="NO-133-克隆图-中等"><a href="#NO-133-克隆图-中等" class="headerlink" title="NO.133 克隆图 中等 "></a>NO.133 克隆图 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/29/JoafnH.png" alt="JoafnH.png"></p>
 <p><img src="https://s1.ax1x.com/2020/04/29/JoahBd.png" alt="JoahBd.png"></p>
 <p><img src="https://s1.ax1x.com/2020/04/29/JoaRje.png" alt="JoaRje.png"></p>
 <p><img src="https://s1.ax1x.com/2020/04/29/Joa2cD.png" alt="Joa2cD.png"></p>
@@ -136,7 +247,7 @@
 <ol>
 <li>先将nums遍历依次异或，得到res=a^b。</li>
 <li>与运算，拿到res任意一个等于1的位h。</li>
-<li>遍历nums分别和h进行与运算，等于1的分一组进行异或，等于0的分一组进行异或，最后两组的结果就是a和b。</li>
+<li>遍历nums分别和h进行与运算，等于0的分一组进行异或，不等于0的分一组进行异或，最后两组的结果就是a和b。</li>
 </ol>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] singleNumbers(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">    <span class="comment">//得到a^b</span></span><br><span class="line">    <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> num : nums) &#123;</span><br><span class="line">        res ^= num;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//拿到res任意不为0的位</span></span><br><span class="line">    <span class="keyword">int</span> h = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> ((h &amp; res) == <span class="number">0</span>) &#123;</span><br><span class="line">        h &lt;&lt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//分组,分别进行异或</span></span><br><span class="line">    <span class="keyword">int</span> a = <span class="number">0</span>, b = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> num : nums) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((h &amp; num) == <span class="number">0</span>) &#123;</span><br><span class="line">            a ^= num;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            b ^= num;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;a, b&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
