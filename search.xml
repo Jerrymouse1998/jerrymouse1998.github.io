@@ -1,6 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——单词拆分I&amp;II</title>
+    <url>/2020/05/02/LeetCode%E2%80%94%E2%80%94%E5%8D%95%E8%AF%8D%E6%8B%86%E5%88%86I-II/</url>
+    <content><![CDATA[<p><strong>单词拆分 <font color=orange>中等</font>、单词拆分II <font color=#ff0099>困难</font></strong> <a id="more"></a></p>
+<h2 id="NO-139-单词拆分-中等"><a href="#NO-139-单词拆分-中等" class="headerlink" title="NO.139 单词拆分 中等"></a>NO.139 单词拆分 <font color=orange>中等</font></h2><p><img src="https://s1.ax1x.com/2020/05/02/JjLKSS.png" alt="JjLKSS.png"></p>
+<p><strong><font color=red>思路一：动态规划</font></strong> dp[i]的含义：s 的[0,i]字符区间形成的子串是否可以被拆分成字典中的单词。</p>
+<p>初始化：dp[s.length+1] 包含空串，dp[0]=true，即空串符合要求。</p>
+<p>状态转移：<code>dp[i]=i &gt;= len &amp;&amp; dp[i - len] &amp;&amp; s.substring(i - len, i).equals(word)</code>，即遍历 wordDict 的每一个 word,判断 word 是否位于[0,i]子串末尾，并且 word 单词之前的子串也符合要求，全部都满足的情况下，[0,i]子串才可以被拆分成字典中的单词。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">wordBreak</span><span class="params">(String s, List&lt;String&gt; wordDict)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">boolean</span>[] dp = <span class="keyword">new</span> <span class="keyword">boolean</span>[s.length()+<span class="number">1</span>];</span><br><span class="line">    dp[<span class="number">0</span>]=<span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= s.length(); i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (String word : wordDict) &#123;</span><br><span class="line">            <span class="keyword">int</span> len = word.length();</span><br><span class="line">            <span class="keyword">if</span> (i &gt;= len &amp;&amp; dp[i - len] &amp;&amp; s.substring(i - len, i).equals(word)) &#123;</span><br><span class="line">                dp[i]=<span class="keyword">true</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[s.length()];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n*m)    n字符串长度，m字典中单词个数。</p>
+<h2 id="NO-140-单词拆分II-困难"><a href="#NO-140-单词拆分II-困难" class="headerlink" title="NO.140 单词拆分II 困难"></a>NO.140 单词拆分II <font color=#ff0099>困难</font></h2><p><img src="https://s1.ax1x.com/2020/05/02/JjLnW8.png" alt="JjLnW8.png"></p>
+<p><img src="https://s1.ax1x.com/2020/05/02/JjLmJf.png" alt="JjLmJf.png"></p>
+<p><strong><font color=red>思路一：动态规划+递归</font></strong> 关键是用一个 HashMap 作为缓存，存储 S 的所有中间子串的拆分结果，大大减少了中间重复的运算。就是所谓的<code>memoization</code> 技术。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">wordBreak</span><span class="params">(String s, List&lt;String&gt; wordDict)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//取得字典中最长单词的长度</span></span><br><span class="line">    <span class="keyword">int</span> maxLen = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//字典存入 HashSet 中加快查找</span></span><br><span class="line">    HashSet&lt;String&gt; dict = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (String word : wordDict) &#123;</span><br><span class="line">        dict.add(word);</span><br><span class="line">        maxLen = Math.max(maxLen, word.length());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> helper(s, maxLen, dict, <span class="keyword">new</span> HashMap&lt;String, LinkedList&lt;String&gt;&gt;());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> List&lt;String&gt; <span class="title">helper</span><span class="params">(String s, <span class="keyword">int</span> maxLen, HashSet&lt;String&gt; wordDict, HashMap&lt;String, LinkedList&lt;String&gt;&gt; cache)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//如果已经求过 S 的分割结果,直接将结果返回</span></span><br><span class="line">    <span class="keyword">if</span> (cache.containsKey(s)) <span class="keyword">return</span> cache.get(s);</span><br><span class="line">    LinkedList&lt;String&gt; res = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">    <span class="comment">//S 为空，不需要拆分</span></span><br><span class="line">    <span class="keyword">if</span> (s.length() == <span class="number">0</span>) &#123;</span><br><span class="line">        res.add(<span class="string">""</span>);</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// S 的[0,i]子串</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length(); i++) &#123;</span><br><span class="line">        <span class="comment">//子串是字典中的单词</span></span><br><span class="line">        <span class="keyword">if</span> (i &lt; maxLen &amp;&amp; wordDict.contains(s.substring(<span class="number">0</span>, i + <span class="number">1</span>))) &#123;</span><br><span class="line">            <span class="comment">//遍历, [i+1,n] 字符串递归生成的拆分结果</span></span><br><span class="line">            <span class="keyword">for</span> (String temp : helper(s.substring(i + <span class="number">1</span>), maxLen, wordDict, cache)) &#123;</span><br><span class="line">                <span class="comment">// [0,i]单词和后序的拆分结果依次组合</span></span><br><span class="line">                res.add(s.substring(<span class="number">0</span>, i + <span class="number">1</span>) + (temp.isEmpty() ? <span class="string">""</span> : <span class="string">" "</span>) + temp);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//S 和 S的拆分结果 放入缓存后返回</span></span><br><span class="line">    cache.put(s, res);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>动态规划</tag>
+        <tag>字符串</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——复制带随机指针的链表</title>
+    <url>/2020/05/02/LeetCode%E2%80%94%E2%80%94%E5%A4%8D%E5%88%B6%E5%B8%A6%E9%9A%8F%E6%9C%BA%E6%8C%87%E9%92%88%E7%9A%84%E9%93%BE%E8%A1%A8/</url>
+    <content><![CDATA[<h2 id="NO-138-复制带随机指针的链表-中等"><a href="#NO-138-复制带随机指针的链表-中等" class="headerlink" title="NO.138 复制带随机指针的链表 中等 "></a>NO.138 复制带随机指针的链表 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/05/02/JjRIPA.png" alt="JjRIPA.png"></p>
+<p><img src="https://s1.ax1x.com/2020/05/02/JjR45d.png" alt="JjR45d.png"></p>
+<p><strong><font color=red>思路一：HashMap</font></strong> 第一遍复制节点的 val ，next 和 random 暂时为空，并将源节点和克隆节点形成映射存放在一个 HashMap 中。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Node <span class="title">copyRandomList</span><span class="params">(Node head)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    HashMap&lt;Node, Node&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    Node p = head;</span><br><span class="line">    <span class="keyword">while</span> (p != <span class="keyword">null</span>) &#123;</span><br><span class="line">        map.put(p, <span class="keyword">new</span> Node(p.val));</span><br><span class="line">        p = p.next;</span><br><span class="line">    &#125;</span><br><span class="line">    p = head;</span><br><span class="line">    <span class="keyword">while</span> (p != <span class="keyword">null</span>) &#123;</span><br><span class="line">        map.get(p).next = map.get(p.next);</span><br><span class="line">        map.get(p).random = map.get(p.random);</span><br><span class="line">        p = p.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> map.get(head);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<p>空间复杂度：O(n)</p>
+<p><strong><font color=red>思路二：常数空间</font></strong> 不借助 HashMap 也可以完成克隆，思路看图：</p>
+<ol>
+<li><p>输入如下图 [[1,2],[2,3],[3,null],[4,null]]</p>
+<p><img src="https://s1.ax1x.com/2020/05/02/Jj5Y0f.png" alt="Jj5Y0f.png"></p>
+</li>
+<li><p>复制源节点。</p>
+<p><img src="https://s1.ax1x.com/2020/05/02/Jj5t78.png" alt="Jj5t78.png"></p>
+</li>
+<li><p>生成克隆节点的 random 指针。</p>
+<p><img src="https://s1.ax1x.com/2020/05/02/Jj5UAS.png" alt="Jj5UAS.png"></p>
+</li>
+<li><p>将原链表和克隆链表分离。</p>
+<p><img src="https://s1.ax1x.com/2020/05/02/Jj5JnP.png" alt="Jj5JnP.png"></p>
+</li>
+</ol>
+<p>实现的时候，谨记：<strong>源节点的 next 就是其的克隆节点。</strong>代码对照着图片很简单的。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Node <span class="title">copyRandomList</span><span class="params">(Node head)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    <span class="comment">//克隆源节点</span></span><br><span class="line">    Node p = head;</span><br><span class="line">    <span class="keyword">while</span> (p != <span class="keyword">null</span>) &#123;</span><br><span class="line">        Node temp = p.next;</span><br><span class="line">        p.next = <span class="keyword">new</span> Node(p.val);</span><br><span class="line">        p.next.next = temp;</span><br><span class="line">        p = temp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//给克隆节点的 random 赋值</span></span><br><span class="line">    p = head;</span><br><span class="line">    <span class="keyword">while</span> (p != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (p.random != <span class="keyword">null</span>) p.next.random = p.random.next;</span><br><span class="line">        p = p.next.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//拆分</span></span><br><span class="line">    p= head;</span><br><span class="line">    Node cloneHead = p.next;</span><br><span class="line">    Node cloneP = cloneHead;</span><br><span class="line">    <span class="keyword">while</span> (cloneP.next != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">//原链表</span></span><br><span class="line">        p.next = p.next.next;</span><br><span class="line">        p=p.next;</span><br><span class="line">        <span class="comment">//克隆链表</span></span><br><span class="line">        cloneP.next = cloneP.next.next;</span><br><span class="line">        cloneP = cloneP.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//最后不要忘了给原链表收尾</span></span><br><span class="line">    p.next = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">return</span> cloneHead;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<p>空间复杂度：O(1)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>链表</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——分发糖果</title>
     <url>/2020/05/01/LeetCode%E2%80%94%E2%80%94%E5%88%86%E5%8F%91%E7%B3%96%E6%9E%9C/</url>
     <content><![CDATA[<h2 id="NO-135-分发糖果-困难"><a href="#NO-135-分发糖果-困难" class="headerlink" title="NO.135 分发糖果 困难 "></a>NO.135 分发糖果 <font color=#ff0099>困难</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/05/01/JOtBzq.png" alt="JOtBzq.png"></p>
