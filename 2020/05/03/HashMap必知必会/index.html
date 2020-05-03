@@ -27,23 +27,24 @@
     var CONFIG = {"hostname":"www.m1ng.top","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="NO.90 子集II 中等">
+  <meta name="description" content="HashMap 是难点也是重点，更是面试中的常客，充分了解 HashMap 绝对有助于提升编程的内功心法。本文重点是对 JDK1.7 和 JDK1.8 中其实现方式的变化进行分析学习。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="LeetCode——子集II">
-<meta property="og:url" content="http://www.m1ng.top/2020/04/01/LeetCode%E2%80%94%E2%80%94%E5%AD%90%E9%9B%86II/index.html">
+<meta property="og:title" content="HashMap必知必会">
+<meta property="og:url" content="http://www.m1ng.top/2020/05/03/HashMap%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/index.html">
 <meta property="og:site_name" content="M1ng&amp;Q1ng">
-<meta property="og:description" content="NO.90 子集II 中等">
+<meta property="og:description" content="HashMap 是难点也是重点，更是面试中的常客，充分了解 HashMap 绝对有助于提升编程的内功心法。本文重点是对 JDK1.7 和 JDK1.8 中其实现方式的变化进行分析学习。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://s1.ax1x.com/2020/04/01/G1Q13j.png">
-<meta property="article:published_time" content="2020-04-01T04:05:55.000Z">
-<meta property="article:modified_time" content="2020-04-01T04:07:15.826Z">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/02/JvqspT.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/02/Jvqy1U.png">
+<meta property="article:published_time" content="2020-05-03T09:18:35.000Z">
+<meta property="article:modified_time" content="2020-05-03T09:19:42.684Z">
 <meta property="article:author" content="M1ng">
-<meta property="article:tag" content="leetcode">
-<meta property="article:tag" content="回溯">
+<meta property="article:tag" content="源码">
+<meta property="article:tag" content="集合">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://s1.ax1x.com/2020/04/01/G1Q13j.png">
+<meta name="twitter:image" content="https://s1.ax1x.com/2020/05/02/JvqspT.png">
 
-<link rel="canonical" href="http://www.m1ng.top/2020/04/01/LeetCode%E2%80%94%E2%80%94%E5%AD%90%E9%9B%86II/">
+<link rel="canonical" href="http://www.m1ng.top/2020/05/03/HashMap%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/">
 
 
 <script id="page-configurations">
@@ -55,7 +56,7 @@
   };
 </script>
 
-  <title>LeetCode——子集II | M1ng&Q1ng</title>
+  <title>HashMap必知必会 | M1ng&Q1ng</title>
   
 
 
@@ -204,7 +205,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://www.m1ng.top/2020/04/01/LeetCode%E2%80%94%E2%80%94%E5%AD%90%E9%9B%86II/">
+    <link itemprop="mainEntityOfPage" href="http://www.m1ng.top/2020/05/03/HashMap%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
@@ -217,7 +218,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          LeetCode——子集II
+          HashMap必知必会
         </h1>
 
         <div class="post-meta">
@@ -228,7 +229,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-04-01 12:05:55 / 修改时间：12:07:15" itemprop="dateCreated datePublished" datetime="2020-04-01T12:05:55+08:00">2020-04-01</time>
+              <time title="创建时间：2020-05-03 17:18:35 / 修改时间：17:19:42" itemprop="dateCreated datePublished" datetime="2020-05-03T17:18:35+08:00">2020-05-03</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -236,7 +237,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%A2%98%E8%A7%A3%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">题解笔记</span></a>
+                  <a href="/categories/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Java学习笔记</span></a>
                 </span>
             </span>
 
@@ -256,8 +257,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2020/04/01/LeetCode%E2%80%94%E2%80%94%E5%AD%90%E9%9B%86II/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/04/01/LeetCode%E2%80%94%E2%80%94%E5%AD%90%E9%9B%86II/" itemprop="commentCount"></span>
+    <a title="valine" href="/2020/05/03/HashMap%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/05/03/HashMap%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -267,7 +268,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>153</span>
+              <span>4.2k</span>
             </span>
 
         </div>
@@ -279,11 +280,133 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="NO-90-子集II-中等"><a href="#NO-90-子集II-中等" class="headerlink" title="NO.90 子集II 中等 "></a>NO.90 子集II <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/01/G1Q13j.png" alt="G1Q13j.png"></p>
-<p><strong><font color=red>思路一：回溯</font></strong> 姊妹题NO.79子集，解决思路一样，不同的就是本题存在重复元素，深搜的时候进行重复元素剪枝即可转化成NO.79的样子。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">List&lt;List&lt;Integer&gt;&gt; res=<span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; subsetsWithDup(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">    <span class="keyword">if</span> (nums==<span class="keyword">null</span>||nums.length==<span class="number">0</span>)<span class="keyword">return</span> res;</span><br><span class="line">    <span class="comment">//把重复的元素紧凑到一起</span></span><br><span class="line">    Arrays.sort(nums);</span><br><span class="line">    dfs(nums,<span class="number">0</span>,<span class="keyword">new</span> LinkedList&lt;Integer&gt;());</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> idx, LinkedList&lt;Integer&gt; track)</span> </span>&#123;</span><br><span class="line">    res.add(<span class="keyword">new</span> ArrayList&lt;&gt;(track));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = idx; i &lt; nums.length; i++) &#123;</span><br><span class="line">        <span class="comment">//重复的剪枝</span></span><br><span class="line">        <span class="keyword">if</span> (i&gt;idx&amp;&amp;nums[i]==nums[i-<span class="number">1</span>])<span class="keyword">continue</span>;</span><br><span class="line">        track.add(nums[i]);</span><br><span class="line">        dfs(nums,i+<span class="number">1</span>,track);</span><br><span class="line">        track.removeLast();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <p>HashMap 是难点也是重点，更是面试中的常客，充分了解 HashMap 绝对有助于提升编程的内功心法。本文重点是对 JDK1.7 和 JDK1.8 中其实现方式的变化进行分析学习。<a id="more"></a></p>
+<h1 id="引"><a href="#引" class="headerlink" title="引"></a>引</h1><h2 id="不同集合底层数据结构？"><a href="#不同集合底层数据结构？" class="headerlink" title="不同集合底层数据结构？"></a>不同集合底层数据结构？</h2><table>
+<thead>
+<tr>
+<th align="center"></th>
+<th>集合实现</th>
+<th>Object数组</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong><font color=red>List</font></strong></td>
+<td>ArrayList</td>
+<td>Object数组</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td>Vector</td>
+<td>Object数组</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td>LinkedList</td>
+<td>双向链表(JDK1.6及之前为循环链表)</td>
+</tr>
+<tr>
+<td align="center"><strong><font color=red>Set</font></strong></td>
+<td>HashSet(无序、唯一)</td>
+<td>基于 HashMap 实现</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td>LinkedHashSet</td>
+<td>继承自 HashSet ，内部通过 LinkedHashMap 实现。</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td>TreeSet(有序、唯一)</td>
+<td>红黑树(自平衡BST)</td>
+</tr>
+<tr>
+<td align="center"><strong><font color=red>Map</font></strong></td>
+<td>HashMap</td>
+<td>JDK1.8 之前<strong>数组+链表</strong>，JDK1.8开始<strong>数组+链表+红黑树</strong></td>
+</tr>
+<tr>
+<td align="center"></td>
+<td>LinkedHashMap</td>
+<td>继承自 HashMap 并在其基础上增加了一条双向链表，使得其可以保持键值对插入的顺序，实现了访问顺序相关逻辑。</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td>HashTable</td>
+<td>数组+链表</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td>TreeMap</td>
+<td>红黑树，基于 Key 进行排序</td>
+</tr>
+</tbody></table>
+<h2 id="说HashTable、HashMap"><a href="#说HashTable、HashMap" class="headerlink" title="说HashTable、HashMap ?"></a>说HashTable、HashMap ?</h2><ol>
+<li>HashMap 是非线程安全的，而 HashTable 是线程安全的，HashTable 内的方法大多都经过<code>synchronized</code>修饰；因为线程安全的问题上的处理，导致 HashMap 效率要略高于 HashTable ；并且 HashTable 已经是基本被淘汰的方案了！</li>
+<li>HashMap 中允许存在一个为 null 的 key (value 可以有多个 null)，但是如果向 HashTable 中 put 一个为 null 的 key，会直接抛出 NullPointerException 。</li>
+<li>HashTable 的默认初始容量大小是 11，HashMap 的默认初始容量大小是 16；如果创建时指定初始容量，HashTable 会直接使用指定的容量，HashMap 会将指定容量扩充为一个 2 的幂大小。<u>(具体原因，在正文会进行分析)</u></li>
+<li>JDK1.8 之后 HashMap 当链表长度大于阈值(默认 8 )时，先检查当前数组数组的长度，数组长度小于 64 则先进行数组扩容，否则转换为红黑树，以减少 Hash 冲突从而减少搜索时间。HashTable 没有这个机制。</li>
+</ol>
+<h2 id="HashSet用过么？"><a href="#HashSet用过么？" class="headerlink" title="HashSet用过么？"></a>HashSet用过么？</h2><p>HashSet 的底层就是一个 HashMap ，HashSet 源码很少，大多直接调用调用了 HashMap 的实现。</p>
+<p><strong>和 HashMap 的区别</strong>：HashMap 实现了 Map 接口，存储键值对，其 hashcode 使用 Key进行计算；HashSet 实现了Set 接口，直接存储数据对象，使用成员对象计算 hashcode值。</p>
+<p><strong>HashSet 如何保证插入对象唯一</strong>：当元素插入时，先调用<code>hash()</code>方法计算插入对象的 hashcode值去得到对象加入的位置，同时会和集合中其他的对象的 hashcode 值进行比较，如果没有相同的 hashcode 值则说明对象没重复；如果 hashcode 值重复，这是会调用对象的<code>equals()</code>方法来检查 hashcode 相同的对象是否真的相同，最终相同则插入失败，否则成功。</p>
+<h2 id="PS"><a href="#PS" class="headerlink" title="PS"></a>PS</h2><ol>
+<li>通常<code>==</code>是判断两个变量或实例指向的内存空间是否相同，即引用是否相同 ；通常<code>equals()</code>是判断两个变量或实例指向的内存空间的值是否相同，即值是否相同 。</li>
+<li>如果两个对象相等，hashcode 一定相同；hashcode相同，对象不一定相等。</li>
+<li><code>hashCode()</code>的默认行为是对堆上的对象产生独特值。如果没有重写<code>hashCode()</code>，则该 class 的两个对象无论如何都不会相等（即使这两个对象指向相同的数据）。 </li>
+</ol>
+<h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><h2 id="历史课-￣︶￣-JDK1-8-前后的变化"><a href="#历史课-￣︶￣-JDK1-8-前后的变化" class="headerlink" title="历史课 (*￣︶￣) JDK1.8 前后的变化"></a>历史课 (*￣︶￣) JDK1.8 前后的变化</h2><p><b><font color=#ff9933 size=6>JDK1.8 之前</font></b> HashMap 底层是采用<strong>数组+链表</strong>的实现。HashMap 通过 Key 的 hashcode 经过<code>hash()</code>处理后得到 hash 值：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">hash</span><span class="params">(<span class="keyword">int</span> h)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// This function ensures that hashCodes that differ only by</span></span><br><span class="line">    <span class="comment">// constant multiples at each bit position have a bounded</span></span><br><span class="line">    <span class="comment">// number of collisions (approximately 8 at default load factor).</span></span><br><span class="line"></span><br><span class="line">    h ^= (h &gt;&gt;&gt; <span class="number">20</span>) ^ (h &gt;&gt;&gt; <span class="number">12</span>);</span><br><span class="line">    <span class="keyword">return</span> h ^ (h &gt;&gt;&gt; <span class="number">7</span>) ^ (h &gt;&gt;&gt; <span class="number">4</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>时间复杂度：O(n*2^n)    n数组元素个数。生成每个子集最多需要n的时间，共有2^n个子集。</p>
+<p>在通过<code>(n-1)&amp;hash</code>判断当前元素存放的位置(n数组长度)，最后如果计算得到的位置上存在元素，就判断这个元素和待插入元素的 hash 和 Key 是否相同，如果相同则进行覆盖，否则<strong>链表散列</strong>解决冲突。</p>
+<p><b><font color=#ff9933 size=6>JDK1.8 之后</font></b> HashMap 底层采用<strong>数组+链表+红黑树</strong>的实现。hash 的计算方法相较于之前更简洁，但是原理不变：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">  <span class="function"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">hash</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> h;</span><br><span class="line">    <span class="comment">// key.hashCode()：返回散列值也就是hashcode</span></span><br><span class="line">    <span class="comment">// ^ ：按位异或</span></span><br><span class="line">    <span class="comment">// &gt;&gt;&gt;:无符号右移，忽略符号位，空位都以0补齐</span></span><br><span class="line">    <span class="keyword">return</span> (key == <span class="keyword">null</span>) ? <span class="number">0</span> : (h = key.hashCode()) ^ (h &gt;&gt;&gt; <span class="number">16</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>依然是采用之前那套方法找到待插入元素的位置，区别在于当发生 hash 冲突之后，如果这个位置上的链表大于阈值(默认是 8 )，检查当前数组的长度，如果长度小于 64 则进行数组扩容，否则将链表转化为红黑树，从而增加之后的搜索效率。</p>
+<h2 id="HashMap数组长度为什么是2的幂次方？"><a href="#HashMap数组长度为什么是2的幂次方？" class="headerlink" title="HashMap数组长度为什么是2的幂次方？"></a>HashMap数组长度为什么是2的幂次方？</h2><p>插个题外话 HashMap 是如何保证总是使用<code>2的幂</code>作为数组大小的？看指定初始容量的构造方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_INITIAL_CAPACITY = <span class="number">1</span> &lt;&lt; <span class="number">4</span>; <span class="comment">// 默认大小16</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAXIMUM_CAPACITY = <span class="number">1</span> &lt;&lt; <span class="number">30</span>; <span class="comment">//默认最大容量</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">float</span> DEFAULT_LOAD_FACTOR = <span class="number">0.75f</span>; <span class="comment">//默认装载因子</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashMap</span><span class="params">(<span class="keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(initialCapacity, DEFAULT_LOAD_FACTOR);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashMap</span><span class="params">(<span class="keyword">int</span> initialCapacity, <span class="keyword">float</span> loadFactor)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//判断一下指定容量是否合法</span></span><br><span class="line">    <span class="keyword">if</span> (initialCapacity &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Illegal initial capacity: "</span> +</span><br><span class="line">                                           initialCapacity);</span><br><span class="line">    <span class="comment">//判断指定容量大于默认最大容量</span></span><br><span class="line">    <span class="keyword">if</span> (initialCapacity &gt; MAXIMUM_CAPACITY)</span><br><span class="line">        initialCapacity = MAXIMUM_CAPACITY;</span><br><span class="line">    <span class="comment">//判断装载因子是否合法</span></span><br><span class="line">    <span class="keyword">if</span> (loadFactor &lt;= <span class="number">0</span> || Float.isNaN(loadFactor))</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Illegal load factor: "</span> +</span><br><span class="line">                                           loadFactor);</span><br><span class="line">    <span class="keyword">this</span>.loadFactor = loadFactor;</span><br><span class="line">    <span class="keyword">this</span>.threshold = tableSizeFor(initialCapacity);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最终调用了<code>tableSizeFor(initialCapacity)</code>方法，这个方法保证了总是使用2的幂作为数组大小：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Returns a power of two size for the given target capacity.</span></span><br><span class="line"><span class="comment"> * 这个方法保证了总是使用2的幂作为数组大小</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">tableSizeFor</span><span class="params">(<span class="keyword">int</span> cap)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n = cap - <span class="number">1</span>;</span><br><span class="line">    n |= n &gt;&gt;&gt; <span class="number">1</span>;</span><br><span class="line">    n |= n &gt;&gt;&gt; <span class="number">2</span>;</span><br><span class="line">    n |= n &gt;&gt;&gt; <span class="number">4</span>;</span><br><span class="line">    n |= n &gt;&gt;&gt; <span class="number">8</span>;</span><br><span class="line">    n |= n &gt;&gt;&gt; <span class="number">16</span>;</span><br><span class="line">    <span class="keyword">return</span> (n &lt; <span class="number">0</span>) ? <span class="number">1</span> : (n &gt;= MAXIMUM_CAPACITY) ? MAXIMUM_CAPACITY : n + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>回归正题，为什么采用2的幂大小？hash 取值范围是<code>[-2^8,2^8-1]</code>，当然不能真的创建一个 42亿大小的数组，所以 hash 值用之前要对数组长度取模，得到的余数才是真正的存放位置，这点和前面”历史课”散列计算的方法<code>(n - 1) &amp; hash</code>是匹配的！</p>
+<p><code>(n - 1) &amp; hash</code>采用位运算的方式取余，相较于使用 % 操作的运算效率要高。<strong>如果数组的长度是 2的幂 则可以使<code>(n - 1) &amp; hash</code>和<code>hash % n</code>这两个运算的结果相同！</strong></p>
+<h2 id="线程安全问题！"><a href="#线程安全问题！" class="headerlink" title="线程安全问题！"></a>线程安全问题！</h2><p>主要原因是因为并发场景下的 rehash 会造成元素之间形成一个循环链表。</p>
+<blockquote>
+<p>所谓 rehash ： 当增大 Hash表 的容量，整个 Hash表 里所有无素的插入位置都需要被重算一遍。这叫rehash，这个成本相当的大。     关于rehash—— <a href="https://coolshell.cn/articles/9606.html" target="_blank" rel="noopener">https://coolshell.cn/articles/9606.html</a> </p>
+</blockquote>
+<p>不过 JDK1.8 后解决了这个问题，但是在多线程的情况下使用 HashMap 还是会存在数据丢失等问题，并发场景下推荐使用 ConcurrentHashMap。</p>
+<h2 id="ConcurrentHashMap"><a href="#ConcurrentHashMap" class="headerlink" title="ConcurrentHashMap"></a>ConcurrentHashMap</h2><p>说到 HashMap 的线程安全问题，就不得不提到 J.U.C 包下的 ConcurrentHashMap ，这也是面试的常客。</p>
+<p>先介绍一下 ConcurrentHashMap ：</p>
+<ul>
+<li>数据结构：<font color=#ff9933>JDK1.7</font>的 ConcurrentHashMap 底层采用<strong>分段数组+链表</strong>实现，<font color=#ff9933>JDK1.8</font> 开始其数据结构采用和 HashMap 一样的<strong>数组+链表+红黑树</strong>，数组是本体，链表和红黑树主要是为了解决哈希冲突存在的。</li>
+<li>如何实现线程安全：在 <font color=#ff9933>JDK1.7</font> 的时候，ConcurrentHashMap 采用<strong>分段锁</strong>对整个桶数组进行了分割分段(Segment)，每一把锁只锁住容器中一部分的数据，多线程访问容器里不同数据段的数据，就不会引发锁的竞争，提高了并发量。从 <font color=#ff9933>JDK1.8</font> 开始不再使用之前的<strong>Segment</strong>的概念，改为直接使用<strong>Node数组+链表+红黑树</strong>，并发控制使用<code>synchronize</code>和<code>CAS</code>来实现。整个看起来像是优化过且线程安全的 HashMap，虽然 <font color=#ff9933>JDK1.8</font> 的源码中还能看到 Segment 的数据结构，但是已经被简化了属性，只是为了兼容旧版本。</li>
+</ul>
+<p>PS：这里提一下 HashTable 也是用 <code>synchronize</code>进行并发控制，但是效率缺很低的原因。因为其所有方法<code>synchronize</code>时使用的是同一把锁，所以当一个线程正在访问同步方法时，其他的线程如果也想去访问同步方法时，一定会进入阻塞或轮询状态形成一种串行化的操作，并且竞争可能会越来越激烈，从而导致效率大打折扣。</p>
+<p>这里看一下 HashTable 和 ConcurrentHashMap 锁的对比：</p>
+<p><img src="https://s1.ax1x.com/2020/05/02/JvqspT.png" alt="JvqspT.png"></p>
+<p><img src="https://s1.ax1x.com/2020/05/02/Jvqy1U.png" alt="Jvqy1U.png"></p>
+<blockquote>
+<p> 图片来源：<a href="http://www.cnblogs.com/chengxiao/p/6842045.html" target="_blank" rel="noopener">http://www.cnblogs.com/chengxiao/p/6842045.html</a> </p>
+</blockquote>
+<h2 id="再说-ConcurrentHashMap-线程安全"><a href="#再说-ConcurrentHashMap-线程安全" class="headerlink" title="再说 ConcurrentHashMap 线程安全"></a>再说 ConcurrentHashMap 线程安全</h2><p><b><font color=#ff9933 size=6>JDK1.7</font></b> 首先将数据分成一段一段的进行存储，每一段数据有一把锁，当一个线程访问某段数据时，就去获得这段数据对应的锁，并不对其他段的数据造成影响，即其他线程可以对其他段数据进行访问而不被阻塞。</p>
+<p>此时的 ConcurrentHashMap 是由 Segment 数据结构和 HashEntry 数组结构组成。</p>
+<p>Segment 继承自 ReentrantLock，所以是一种可重入锁，其作用就是扮演锁的角色。HashEntry 才是用于存储键值对数据的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Segment</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; <span class="keyword">extends</span> <span class="title">ReentrantLock</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一个 ConcurrentHashMap 里包含一个 Segment 数组，Segment 的结构和 此时的HashMap 类似，是一种<strong>数组+链表</strong>的结构，一个 Segment 对应包含一个 HashEntry 数组，每个 HashEntry 是一个链表结构的元素，每个 Segment 可以锁住其对应的一个 HashEntry 数组中的元素，即当对一个 HashEntry 数组中的元素进行修改时，必须先获得其对应的 Segment 锁。</p>
+<p><b><font color=#ff9933 size=6>JDK1.8</font></b> 的 ConcurrentHashMap 取消了 Segment 分段锁的思想，改为<code>CAS</code>和<code>synchronize</code>来保证并发安全。数据结构和此时的 HashMap 的结构类似<strong>数组+链表+红黑树</strong>。前文说过的 Java 8 在链表长度上超过阈值(8)并且数组长度超过 64 时将链表转换为红黑树。</p>
+<p><code>synchronize</code>只会锁住当前链表或红黑树的首节点，只要 hash 不冲突，就不会发生并发，效率大大提升。</p>
+<h1 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h1><h2 id="Comparable-和-Comparator"><a href="#Comparable-和-Comparator" class="headerlink" title="Comparable 和 Comparator"></a>Comparable 和 Comparator</h2><ul>
+<li><p>Comparable 接口出自 java.lang 包下，接口下只有一个 <code>compareTo(T o)</code>抽象方法，如果希望 TreeMap/TreeSet 插入元素时希望采用自定义排序，可以让插入对象实现这个接口重写方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(T o)</span></span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Comparator 是个函数式接口出自 java.util 包下，这个接口下方法有二十多个方法，其中有一个抽象方法 <code>compare(T o1, T o2)</code>，其常用方式是调用带参数的<code>Collections.sort()</code>时传一个 Comparator 的匿名类，支持采用 Lambda 的方式实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">compare</span><span class="params">(T o1, T o2)</span></span>;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>当我们需要对一个集合进行自定义排序时，可以重写 <code>compare(T o1, T o2)</code>或者 <code>compareTo(T o)</code>；</p>
+<p>或者当我们需要对某一个集合实现两种自定义排序的时候，比如对 Student 对象元素中的姓名采用一种自定义排序方式、学校名采用另一种自定义排序方式的需求，可以重写 <code>compareTo(T o)</code>方法实现一种、再实现 Comparable 接口实现另一种方法，也可以用两个 Comparator 分别重写<code>compareTo(T o)</code>方法进行实现，第二个方案可以使用两个带参数的 <code>Collections.sort()</code>实现。</p>
 <hr>
 <p>本人菜鸟，有错误请告知，感激不尽！</p>
 <p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
@@ -297,8 +420,8 @@
       <footer class="post-footer">
           
           <div class="post-tags">
-              <a href="/tags/leetcode/" rel="tag"><i class="fa fa-tag"></i> leetcode</a>
-              <a href="/tags/%E5%9B%9E%E6%BA%AF/" rel="tag"><i class="fa fa-tag"></i> 回溯</a>
+              <a href="/tags/%E6%BA%90%E7%A0%81/" rel="tag"><i class="fa fa-tag"></i> 源码</a>
+              <a href="/tags/%E9%9B%86%E5%90%88/" rel="tag"><i class="fa fa-tag"></i> 集合</a>
           </div>
 
         
@@ -307,13 +430,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/03/31/LeetCode%E2%80%94%E2%80%94%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84/" rel="prev" title="LeetCode——排序数组">
-      <i class="fa fa-chevron-left"></i> LeetCode——排序数组
+    <a href="/2020/05/03/LeetCode%E2%80%94%E2%80%94%E9%87%8D%E6%8E%92%E9%93%BE%E8%A1%A8/" rel="prev" title="LeetCode——重排链表">
+      <i class="fa fa-chevron-left"></i> LeetCode——重排链表
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/04/01/LeetCode%E2%80%94%E2%80%94%E6%9C%89%E6%95%88%E6%8B%AC%E5%8F%B7%E7%9A%84%E5%B5%8C%E5%A5%97%E6%B7%B1%E5%BA%A6/" rel="next" title="LeetCode——有效括号的嵌套深度">
-      LeetCode——有效括号的嵌套深度 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -374,7 +494,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NO-90-子集II-中等"><span class="nav-number">1.</span> <span class="nav-text">NO.90 子集II 中等 </span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#引"><span class="nav-number">1.</span> <span class="nav-text">引</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#不同集合底层数据结构？"><span class="nav-number">1.1.</span> <span class="nav-text">不同集合底层数据结构？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#说HashTable、HashMap"><span class="nav-number">1.2.</span> <span class="nav-text">说HashTable、HashMap ?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HashSet用过么？"><span class="nav-number">1.3.</span> <span class="nav-text">HashSet用过么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PS"><span class="nav-number">1.4.</span> <span class="nav-text">PS</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#正文"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#历史课-￣︶￣-JDK1-8-前后的变化"><span class="nav-number">2.1.</span> <span class="nav-text">历史课 (*￣︶￣) JDK1.8 前后的变化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HashMap数组长度为什么是2的幂次方？"><span class="nav-number">2.2.</span> <span class="nav-text">HashMap数组长度为什么是2的幂次方？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程安全问题！"><span class="nav-number">2.3.</span> <span class="nav-text">线程安全问题！</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ConcurrentHashMap"><span class="nav-number">2.4.</span> <span class="nav-text">ConcurrentHashMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#再说-ConcurrentHashMap-线程安全"><span class="nav-number">2.5.</span> <span class="nav-text">再说 ConcurrentHashMap 线程安全</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#补充"><span class="nav-number">3.</span> <span class="nav-text">补充</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Comparable-和-Comparator"><span class="nav-number">3.1.</span> <span class="nav-text">Comparable 和 Comparator</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
