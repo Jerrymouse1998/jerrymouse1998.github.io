@@ -1,6 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>框架灵魂——反射</title>
+    <url>/2020/05/04/%E6%A1%86%E6%9E%B6%E7%81%B5%E9%AD%82%E2%80%94%E2%80%94%E5%8F%8D%E5%B0%84/</url>
+    <content><![CDATA[<p>反射是框架设计的灵魂！但是本文并不是什么高深莫测的框架设计，只是对 Java 反射机制的一次简单总结。温故而知新，可以为师矣！<a id="more"></a></p>
+<h1 id="引"><a href="#引" class="headerlink" title="引"></a>引</h1><p>为什么说反射是框架设计的灵魂？其实在学校 Java SE 的时候，并没有去了解反射机制，第一次听说这个名词是在学习 Spring 的时候，其中有两个重要的概念 IOC (动态加载 Bean)和 AOP (动态代理)就是依靠 Java 的反射机制去实现的。除此之外，还有 JDBC 连接数据库时使用 <code>Class.forName()</code> 通过反射加载数据库驱动程序，JDBC 中还使用反射将表字段映射到 Java 对象的 <code>getter/setter</code> 方法的。Jackson、GSON等等类库也是利用反射将 JSON 文件的属性映射到 Java 对象的 <code>getter/setter</code> 方法。</p>
+<p>可见反射真的是无处不在！而且是框架设计的灵魂所在！</p>
+<h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><p>Java 反射机制是在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；对于任意一个对象，都能够调用它的任意一个方法和属性；这种动态获取的信息以及动态调用对象的方法的功能成为 Java 语言的反射机制。——出自：<a href="https://blog.csdn.net/sinat_38259539/article/details/71799078" target="_blank" rel="noopener">Java基础之—反射（非常重要）</a></p>
+<h2 id="如何获取-Class-对象？"><a href="#如何获取-Class-对象？" class="headerlink" title="如何获取 Class 对象？"></a>如何获取 Class 对象？</h2><p>想要利用反射机制动态的获取类的属性和方法，需要依靠 Class 对象。Class 类对象将一个类的方法、变量等信息都告诉运行的程序。Java 提供了两种方式获取 Class 对象：</p>
+<ol>
+<li><p>已经有类的情况下：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Class m1ngClass = M1ng<span class="class">.<span class="keyword">class</span></span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过 <code>Class.forName()</code> 拿到 Class 对象：(常用)</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Class m1ngClass = Class.forName(<span class="string">"edu.m1ng.test.M1ng"</span>);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="简单感受一下反射机制"><a href="#简单感受一下反射机制" class="headerlink" title="简单感受一下反射机制"></a>简单感受一下反射机制</h2><p>待操作的自定义类：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">M1ng</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> String like;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">M1ng</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = <span class="string">"m1ng"</span>;</span><br><span class="line">        <span class="keyword">this</span>.like = <span class="string">"coding"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">whoami</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"i am "</span>+name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">like</span><span class="params">(String name)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name + <span class="string">" like "</span> + like;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>感受一下反射机制的威力：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException, NoSuchFieldException </span>&#123;</span><br><span class="line">    <span class="comment">//拿到 Class 对象并创建实例</span></span><br><span class="line">    Class&lt;?&gt; m1ngClass = Class.forName(<span class="string">"edu.test.M1ng"</span>);</span><br><span class="line">    M1ng m1ng = (M1ng) m1ngClass.newInstance();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//获取类中的所有方法(继承自 Object 的方法和自定义的方法)</span></span><br><span class="line">    Method[] allMethods = m1ngClass.getMethods();</span><br><span class="line">    <span class="keyword">for</span> (Method method : allMethods) &#123;</span><br><span class="line">        System.out.println(method.getName());</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//获取指定方法，并调用</span></span><br><span class="line">    Method whoami = m1ngClass.getDeclaredMethod(<span class="string">"whoami"</span>, <span class="keyword">null</span>);</span><br><span class="line">    Method likeMethod = m1ngClass.getDeclaredMethod(<span class="string">"like"</span>, String<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">    whoami.invoke(m1ng);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//获取指定参数并修改</span></span><br><span class="line">    Field likeField = m1ngClass.getDeclaredField(<span class="string">"like"</span>);</span><br><span class="line">    likeField.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">    likeField.set(m1ng,<span class="string">"zqc"</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//调用私有方法，需要取消安全检查 设置为可访问的</span></span><br><span class="line">    likeMethod.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">    System.out.println(likeMethod.invoke(m1ng,<span class="string">"M1ng"</span>));</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">输出：</span><br><span class="line">whoami</span><br><span class="line">wait</span><br><span class="line">wait</span><br><span class="line">wait</span><br><span class="line">equals</span><br><span class="line">toString</span><br><span class="line">hashCode</span><br><span class="line">getClass</span><br><span class="line">notify</span><br><span class="line">notifyAll</span><br><span class="line">i am m1ng</span><br><span class="line">M1ng like zqc</span><br></pre></td></tr></table></figure>
+
+<h2 id="反射机制的优缺点"><a href="#反射机制的优缺点" class="headerlink" title="反射机制的优缺点"></a>反射机制的优缺点</h2><ul>
+<li>优点：运行期类型的判断，动态加载类，提高代码灵活度。</li>
+<li>缺点：反射需要一系列的解释处理，通知 JVM 要做的事情，性能肯定要比直接使用明确的 Java 代码要慢得多。而且动态操作去改变类的属性也会增加类的安全隐患。</li>
+</ul>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>Java学习笔记</category>
+      </categories>
+  </entry>
+  <entry>
     <title>LeetCode——对链表进行插入排序&amp;排序链表</title>
     <url>/2020/05/04/LeetCode%E2%80%94%E2%80%94%E5%AF%B9%E9%93%BE%E8%A1%A8%E8%BF%9B%E8%A1%8C%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F-%E6%8E%92%E5%BA%8F%E9%93%BE%E8%A1%A8/</url>
     <content><![CDATA[<p><strong>对链表进行插入排序 <font color=orange>中等</font> 、排序链表 <font color=orange>中等</font> <a id="more"></a></strong></p>
