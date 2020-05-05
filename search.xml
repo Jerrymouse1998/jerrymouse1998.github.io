@@ -3,7 +3,7 @@
   <entry>
     <title>LeetCode——寻找旋转排序数组中的最小值I&amp;II</title>
     <url>/2020/05/05/LeetCode%E2%80%94%E2%80%94%E5%AF%BB%E6%89%BE%E6%97%8B%E8%BD%AC%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E6%9C%80%E5%B0%8F%E5%80%BCI-II/</url>
-    <content><![CDATA[<p>*<em>寻找旋转排序数组中的最小值 <font color=orange>中等</font>、寻找旋转排序数组中的最小值 II <font color=#ff0099>困难</font> *</em> <a id="more"></a></p>
+    <content><![CDATA[<p><strong>寻找旋转排序数组中的最小值 <font color=orange>中等</font>、寻找旋转排序数组中的最小值 II <font color=#ff0099>困难</font></strong><a id="more"></a></p>
 <h2 id="NO-153-寻找旋转排序数组中的最小值-中等"><a href="#NO-153-寻找旋转排序数组中的最小值-中等" class="headerlink" title="NO.153 寻找旋转排序数组中的最小值 中等"></a>NO.153 寻找旋转排序数组中的最小值 <font color=orange>中等</font></h2><p><img src="https://s1.ax1x.com/2020/05/05/YPjr1H.png" alt="YPjr1H.png"></p>
 <p><strong><font color=red>思路一：二分法</font></strong> O(n) 遍历本题没什么意义，题目给的是排序数组上搜索，二分法无疑。</p>
 <p>重点在于如何判断 mid 的条件？</p>
@@ -34,7 +34,7 @@
   <entry>
     <title>LeetCode——乘积最大子数组</title>
     <url>/2020/05/05/LeetCode%E2%80%94%E2%80%94%E4%B9%98%E7%A7%AF%E6%9C%80%E5%A4%A7%E5%AD%90%E6%95%B0%E7%BB%84/</url>
-    <content><![CDATA[<h2 id="NO-152-乘积最大子数组-中等"><a href="#NO-152-乘积最大子数组-中等" class="headerlink" title="NO.152 乘积最大子数组 中等"></a>NO.152 乘积最大子数组 <font color=orange>中等</font></h2><p><img src="https://s1.ax1x.com/2020/05/05/YPO85F.png" alt="YPO85F.png"></p>
+    <content><![CDATA[<h2 id="NO-152-乘积最大子数组-中等"><a href="#NO-152-乘积最大子数组-中等" class="headerlink" title="NO.152 乘积最大子数组 中等 "></a>NO.152 乘积最大子数组 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/05/05/YPO85F.png" alt="YPO85F.png"></p>
 <p><strong><font color=red>思路一：动态规划</font></strong> 不能立刻舍弃小于当前的值，因为<strong>最小的值</strong>可能会在后面乘上另一个负数后变成<strong>最大的数</strong>，而<strong>最大的数</strong>也可能乘上一个负数变成<strong>最小的数</strong>。</p>
 <p>所以，DP 的过程中需要记录当前位置 i 为结尾的子数组的最大乘积 imax 和最小乘积 imin，当遇到 nums[i] 是负数的时候， imax 和 imin 的角色发生互换。</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProduct</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> imax = <span class="number">1</span>, imin = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> max = Integer.MIN_VALUE;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">        <span class="comment">//当前元素是负数,imax imin 互换</span></span><br><span class="line">        <span class="keyword">if</span> (nums[i] &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">int</span> temp = imax;</span><br><span class="line">            imax = imin;</span><br><span class="line">            imin = temp;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//分别记录乘积最大子数组的值 和 乘积最小子数组的值</span></span><br><span class="line">        imax = Math.max(imax * nums[i], nums[i]);</span><br><span class="line">        imin = Math.min(imin * nums[i], nums[i]);</span><br><span class="line">        <span class="comment">//更新 max</span></span><br><span class="line">        max = Math.max(max, imax);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> max;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -56,7 +56,7 @@
   <entry>
     <title>LeetCode——逆波兰表达式求值</title>
     <url>/2020/05/05/LeetCode%E2%80%94%E2%80%94%E9%80%86%E6%B3%A2%E5%85%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B1%82%E5%80%BC/</url>
-    <content><![CDATA[<h2 id="NO-150-逆波兰表达式求值-中等"><a href="#NO-150-逆波兰表达式求值-中等" class="headerlink" title="NO.150 逆波兰表达式求值 中等"></a>NO.150 逆波兰表达式求值 <font color=orange>中等</font></h2><p><img src="https://s1.ax1x.com/2020/05/05/YPqAqf.png" alt="YPqAqf.png"></p>
+    <content><![CDATA[<h2 id="NO-150-逆波兰表达式求值-中等"><a href="#NO-150-逆波兰表达式求值-中等" class="headerlink" title="NO.150 逆波兰表达式求值 中等 "></a>NO.150 逆波兰表达式求值 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/05/05/YPqAqf.png" alt="YPqAqf.png"></p>
 <blockquote>
 <p> 逆波兰式（Reverse Polish notation，RPN，或逆波兰记法），也叫后缀表达式（将运算符写在操作数之后） —— <a href="https://baike.baidu.com/item/%E9%80%86%E6%B3%A2%E5%85%B0%E5%BC%8F/128437" target="_blank" rel="noopener">百度百科</a></p>
 </blockquote>
