@@ -1,6 +1,227 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Redis基本数据结构</title>
+    <url>/2020/05/06/Redis%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</url>
+    <content><![CDATA[<p> Redis 有 5 种基础数据结构：string(字符串)、list(列表)、hash(字典)、set(集合) 和 zset(有序集合)，这 5 种是 Redis 相关知识中最基础、最重要的！<a id="more"></a></p>
+<h1 id="引"><a href="#引" class="headerlink" title="引"></a>引</h1><blockquote>
+<p>每种数据结构都有自己底层的内部编码实现，而且是多种实现，这样Redis会在合适的场景选择合适的内部编码。</p>
+<p>可以看到每种数据结构都有两种以上的内部编码实现，例如string数据结构就包含了raw、int和embstr三种内部编码。</p>
+<p>同时，有些内部编码可以作为多种外部数据结构的内部实现，例如ziplist就是hash、list和zset共有的内部编码。——<a href="https://snailclimb.gitee.io/javaguide" target="_blank" rel="noopener">JavaGuide</a></p>
+</blockquote>
+<p><a href="https://redis.io/documentation" target="_blank" rel="noopener">Redis 文档</a>、<a href="http://try.redis.io/#run" target="_blank" rel="noopener">在线 Redis 命令练习</a></p>
+<h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><h2 id="String-字符串"><a href="#String-字符串" class="headerlink" title="String 字符串"></a>String 字符串</h2><p>Redis 中的字符串是<strong>可变字符串</strong>，底层实现类似于 Java 中的 ArrayList ，有一个<strong>字符数组</strong>：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Note: sdshdr5 is never used, we just access the flags byte directly.</span></span><br><span class="line"><span class="comment"> * However is here to document the layout of type 5 SDS strings. */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr5</span> &#123;</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, and 5 msb of string length */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr8</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint8_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr16</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint16_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint16_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr32</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint32_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint32_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr64</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint64_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint64_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>同样的一组结构 Redis 使用泛型定义了好多次，当字符串比较短的时候，len 和 alloc 可以使用 byte 和 short 来表示，这是为了对内存做极致的优化，不同长度的字符串使用不同的结构体来表示。</p>
+<p><strong>PS：Redis 规定了字符串的长度不得超过 512 MB。</strong> </p>
+<h3 id="常用操作"><a href="#常用操作" class="headerlink" title="常用操作"></a>常用操作</h3><ul>
+<li><code>SET key value</code>插入相同 key 的键值对会覆盖旧的</li>
+<li><code>GET key</code>获取对应的 value</li>
+<li><code>EXISTS key</code>是否存在、<code>DEL key</code>删除键值对</li>
+<li><code>MSET key1 value1 key2 value2 ...</code>批量 SET</li>
+<li><code>MGET key1 key2 ...</code>批量GET</li>
+<li><code>EXPIRE key time</code> time秒后过期删除</li>
+<li><code>SETEX key time value</code>等价于 SET + EXPIRE</li>
+<li><code>SETNX key value</code>如果 key 存在则 SET 失败</li>
+<li><code>INCR key [n]</code>为一个整数 Value 自增，默认自增 1，可以传参自增 n</li>
+<li><code>GETSET key value2</code>为 key 设置新的 value2 并返回旧的value </li>
+<li>。。。</li>
+</ul>
+<p>value 可以是任何种类的字符串、二进制数据、JSON 化的对象、甚至是图片。。</p>
+<h2 id="List-列表"><a href="#List-列表" class="headerlink" title="List 列表"></a>List 列表</h2><p> 底层采用 压缩列表ziplist 或 linkedlist 结构，linkedlist 实现类似于 Java 的 LinkedList ，采用<strong>双向链表</strong>实现，保证了插入/删除的速度，但索引定位时间是个 O(n)：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Node, List, and Iterator are the only data structures used currently. */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">listNode</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">listNode</span> *<span class="title">prev</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">listNode</span> *<span class="title">next</span>;</span></span><br><span class="line">    <span class="keyword">void</span> *value;</span><br><span class="line">&#125; listNode;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">listIter</span> &#123;</span></span><br><span class="line">    listNode *next;</span><br><span class="line">    <span class="keyword">int</span> direction;</span><br><span class="line">&#125; listIter;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">list</span> &#123;</span></span><br><span class="line">    listNode *head;</span><br><span class="line">    listNode *tail;</span><br><span class="line">    <span class="keyword">void</span> *(*dup)(<span class="keyword">void</span> *ptr);</span><br><span class="line">    <span class="keyword">void</span> (*<span class="built_in">free</span>)(<span class="keyword">void</span> *ptr);</span><br><span class="line">    <span class="keyword">int</span> (*match)(<span class="keyword">void</span> *ptr, <span class="keyword">void</span> *key);</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> len;</span><br><span class="line">&#125; <span class="built_in">list</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="常用操作-1"><a href="#常用操作-1" class="headerlink" title="常用操作"></a>常用操作</h3><ul>
+<li><code>LPUSH listname value</code> / <code>RPUSH listname value</code> 分别向 list 的表头和表尾添加新元素</li>
+<li><code>LRANGE listname start end</code> 取出 [start,end] 索引范围内的元素，索引负数表示倒数</li>
+<li><code>LINDEX listname index</code> 类似于 Java 链表操作的<code>get(int index)</code></li>
+</ul>
+<p>list 还实现了队列，先进先出的特点可以用于消息队列、异步处理。。可以确保元素的访问顺序：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; RPUSH books python java golang</span><br><span class="line">(integer) 3</span><br><span class="line">&gt; LPOP books</span><br><span class="line">&quot;python&quot;</span><br><span class="line">&gt; LPOP books</span><br><span class="line">&quot;java&quot;</span><br><span class="line">&gt; LPOP books</span><br><span class="line">&quot;golang&quot;</span><br><span class="line">&gt; LPOP books</span><br><span class="line">(nil)</span><br></pre></td></tr></table></figure>
+
+<p>list 还实现了栈，确保了先进后出的特点：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; RPUSH books python java golang</span><br><span class="line">&gt; RPOP books</span><br><span class="line">&quot;golang&quot;</span><br><span class="line">&gt; RPOP books</span><br><span class="line">&quot;java&quot;</span><br><span class="line">&gt; RPOP books</span><br><span class="line">&quot;python&quot;</span><br><span class="line">&gt; RPOP books</span><br><span class="line">(nil)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Hash-字典"><a href="#Hash-字典" class="headerlink" title="Hash 字典"></a>Hash 字典</h2><p>采用  ziplist(压缩列表) 或 hashtable 实现，其中 hashtable 类似于 Java8 之前的 HashMap，采用<strong>数组 + 链表</strong>的拉链法解决 hash 冲突：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictht</span> &#123;</span></span><br><span class="line">    <span class="comment">// 哈希表数组</span></span><br><span class="line">    dictEntry **table;</span><br><span class="line">    <span class="comment">// 哈希表大小</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="built_in">size</span>;</span><br><span class="line">    <span class="comment">// 哈希表大小掩码，用于计算索引值，总是等于 size - 1</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> sizemask;</span><br><span class="line">    <span class="comment">// 该哈希表已有节点的数量</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> used;</span><br><span class="line">&#125; dictht;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dict</span> &#123;</span></span><br><span class="line">    dictType *type;</span><br><span class="line">    <span class="keyword">void</span> *privdata;</span><br><span class="line">    <span class="comment">// 内部有两个 dictht 结构</span></span><br><span class="line">    dictht ht[<span class="number">2</span>];</span><br><span class="line">    <span class="keyword">long</span> rehashidx; <span class="comment">/* rehashing not in progress if rehashidx == -1 */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> iterators; <span class="comment">/* number of iterators currently running */</span></span><br><span class="line">&#125; dict;</span><br></pre></td></tr></table></figure>
+
+<p>table 是一个数组，数组中的每个元素都是一个 dictEntry 结构的指针，这个 dictEntry 保存着一个键值对：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> &#123;</span></span><br><span class="line">    <span class="comment">// 键</span></span><br><span class="line">    <span class="keyword">void</span> *key;</span><br><span class="line">    <span class="comment">// 值</span></span><br><span class="line">    <span class="keyword">union</span> &#123;</span><br><span class="line">        <span class="keyword">void</span> *val;</span><br><span class="line">        <span class="keyword">uint64_t</span> u64;</span><br><span class="line">        <span class="keyword">int64_t</span> s64;</span><br><span class="line">        <span class="keyword">double</span> d;</span><br><span class="line">    &#125; v;</span><br><span class="line">    <span class="comment">// 指向下个哈希表节点，形成链表</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125; dictEntry;</span><br></pre></td></tr></table></figure>
+
+<p>字典结构的内部包含两个 hashtable ，通常情况下只有一个 hashtable 是有值的，但是在字典扩容/缩容的时候，需要分配新的 hashtable ，然后进行 渐进式搬迁。</p>
+<h3 id="渐进式-rehash"><a href="#渐进式-rehash" class="headerlink" title="渐进式 rehash"></a>渐进式 rehash</h3><p>字典扩容需要申请新的数组，将旧数组中的所有链表元素重新计算插入位置，并搬迁到新的数组中，是一个 O(n) 时间的操作，Redis 作为单线程应用，很难去承受这个耗时的操作，所以 Redis 采用了 渐进式 rehash 逐步搬迁的方式：</p>
+<p>渐进式 rehash 在 rehash 的时候，同时保留新旧两个 hash 结构，查询会分别去两个 hash 结构中进行，然后再后续的定时任务以及 hash 操作指令中，循序渐进的把旧字典中的内容迁移到新字典中，当全部迁移完毕才会用新的 hash 结构取代旧的。</p>
+<h3 id="何时扩容？"><a href="#何时扩容？" class="headerlink" title="何时扩容？"></a>何时扩容？</h3><p>一般<strong>当 hash 表中的元素个数等于第一维数组的长度</strong>时，开始扩容，扩容到<strong>原数组大小的 2 倍</strong>。如果 Redis 正在进行 bgsave(持久化)，Redis 尽量不去扩容，但是如果元素个数<strong>达到了第一维数组长度的 5 倍</strong>，会强制扩容。</p>
+<p>顺便提一下，当 <strong>hash 表中的元素个数少于数组长度的 10%</strong> ，会进行缩容操作，且不会考虑 bgsave。</p>
+<h3 id="常用操作-2"><a href="#常用操作-2" class="headerlink" title="常用操作"></a>常用操作</h3><ul>
+<li><code>HSET hashname key value</code>向 hashname 字典中插入键值对，如果 key 不存在成功插入返回 1 ，key 存在成功更新(覆盖)返回 0 </li>
+<li><code>HGET hashname key</code>从 hashname 字典中取出 key 的 value，<code>HGETALL hashname</code>取出 hashname 字典中所有键值对(key value 间隔出现)</li>
+<li><code>HMSET hashname key1 value1 key2 value2 ...</code>成功批量 SET 返回 OK</li>
+</ul>
+<h2 id="SET-集合"><a href="#SET-集合" class="headerlink" title="SET 集合"></a>SET 集合</h2><p>功能上类似于 Java 中的 HashSet ，内部的键值对是<strong>无序、唯一的</strong>，实现是 <strong>intset+hashtable</strong>，hashtable 就是一个标准拉链法解决冲突的哈希表，但是这个表中所有的 value 都是 null 。inset 就是一个数组：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">intset</span> &#123;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 编码方式</span></span><br><span class="line">    <span class="keyword">uint32_t</span> encoding;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 集合包含的元素数量</span></span><br><span class="line">    <span class="keyword">uint32_t</span> length;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 保存元素的数组</span></span><br><span class="line">    <span class="keyword">int8_t</span> contents[];</span><br><span class="line"></span><br><span class="line">&#125; intset;</span><br></pre></td></tr></table></figure>
+
+<p><strong>当集合中元素全部都是整形、且数量不超过 512 个</strong>的时候用 intset 存储实现，否则就是用 hashtable 存储实现。</p>
+<h3 id="常用操作-3"><a href="#常用操作-3" class="headerlink" title="常用操作"></a>常用操作</h3><ul>
+<li><code>SADD setname key1 key2 ...</code>添加一个或多个 key ，相同的 key 会被忽略</li>
+<li><code>SMEMBERS setname</code>拿到集合中所有 key ，是无序的</li>
+<li><code>SISMEMBER setname key</code> key 是否存在</li>
+<li><code>SCARD setname</code> 获取 key 的个数</li>
+<li><code>SPOP setname</code>弹出一个</li>
+</ul>
+<h2 id="ZSET-有序列表"><a href="#ZSET-有序列表" class="headerlink" title="ZSET 有序列表"></a>ZSET 有序列表</h2><p>有序列表的底层实现，当集合中元素个数小于 128 个、且所有元素小于 64 字节时，仍然采用 ziplist 实现，每个 key 和其对应的 score 紧挨着。</p>
+<p>否则采用 skiplist跳表 实现，效果类似于 Java 中 SortedSet 和 HashMap 的集合体，一方面是一个 Set 保证了内部 key 的唯一性，另一方面每个 key 都有可以映射到一个 double 类型的 score 值，用来代表排序的权重。</p>
+<p>“跳表”数据结构，比较复杂：</p>
+<blockquote>
+<p>想象你是一家创业公司的老板，刚开始只有几个人，大家都平起平坐。后来随着公司的发展，人数越来越多，团队沟通成本逐渐增加，渐渐地引入了组长制，对团队进行划分，于是有一些人<strong>又是员工又有组长的身份</strong>。</p>
+<p>再后来，公司规模进一步扩大，公司需要再进入一个层级：部门。于是每个部门又会从组长中推举一位选出部长。</p>
+<p>跳跃表就类似于这样的机制，最下面一层所有的元素都会串起来，都是员工，然后每隔几个元素就会挑选出一个代表，再把这几个代表使用另外一级指针串起来。然后再在这些代表里面挑出二级代表，再串起来。<strong>最终形成了一个金字塔的结构。</strong></p>
+<p>想一下你目前所在的地理位置：亚洲 &gt; 中国 &gt; 某省 &gt; 某市 &gt; ….，<strong>就是这样一个结构！</strong></p>
+<p>​                                                                                                                                                    ——<a href="https://snailclimb.gitee.io/javaguide/#/docs/database/Redis/redis-collection/Redis(1)%E2%80%94%E2%80%945%E7%A7%8D%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84" target="_blank" rel="noopener">JavaGuide</a></p>
+</blockquote>
+<p>推荐阅读：<a href="https://www.jianshu.com/p/fb7547369655" target="_blank" rel="noopener">redis zset底层数据结构</a></p>
+<h3 id="常用操作-4"><a href="#常用操作-4" class="headerlink" title="常用操作"></a>常用操作</h3><ul>
+<li><code>ZADD zsetname score key</code>添加元素，并且元素有一个对应的权重值 socre</li>
+<li><code>ZREM zsetname key</code>删除 key</li>
+<li><code>ZRANGE zsetname start end</code>按照 score 递增排序，列出[start,end]索引区间里的 key，索引是负数代表倒数</li>
+<li><code>ZREVRANGE zsetname start end</code>按照 score 递减排序，列出[start,end]索引区间里的 key，索引是负数代表倒数</li>
+<li><code>ZCARD zsetname</code>获取 key 的个数，类似于 count()</li>
+<li><code>ZSCORE zsetname key</code>获取 key 对应的 score</li>
+<li><code>ZRANK zsetname key</code>获取 key 的排名</li>
+<li><code>ZRANGEBYSCORE zsetname score1 score2</code>获取[score1,score2]区间里的 key</li>
+<li><code>ZRANGEBYSCORE zsetname -inf score withscores</code>获取[- ∞ ,score]分值区间里的 key 及其对应的 score 间隔出现，-inf 负无穷</li>
+</ul>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>Redis</category>
+      </categories>
+      <tags>
+        <tag>链表</tag>
+        <tag>HashTable</tag>
+        <tag>redis</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——寻找峰值</title>
+    <url>/2020/05/06/LeetCode%E2%80%94%E2%80%94%E5%AF%BB%E6%89%BE%E5%B3%B0%E5%80%BC/</url>
+    <content><![CDATA[<h2 id="NO-162-寻找峰值-中等"><a href="#NO-162-寻找峰值-中等" class="headerlink" title="NO.162 寻找峰值 中等 "></a>NO.162 寻找峰值 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/05/06/YAeBNT.png" alt="YAeBNT.png"></p>
+<p><strong><font color=red>思路一：二分法</font></strong> 数组搜索时间复杂度要求 O(logN)，第一个就应该想到二分查找，但是本题的数组是个无序数组，但是我们并不需要其有序，因为知道”山峰”的特点：相较于左边部分是递增的，相较于右边部分是递减的。</p>
+<p>当 <code>nums[mid] &gt; nums[mid+1]</code> 时，根据特点知道山峰一定在[left,mid]区间内；否则山峰在[mid+1,right]区间内。根据这个特点就可以对搜索区间折半收缩。</p>
+<p>搜索结束条件是搜索区间内只剩下一个元素，即为山峰；选择搜索区间是左闭右闭的[left,right]，所以结束条件是 <code>left == right</code>。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findPeakElement</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> left = <span class="number">0</span>, right = nums.length - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = left + ((right - left) &gt;&gt;&gt; <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">if</span> (nums[mid] &gt; nums[mid + <span class="number">1</span>]) &#123;</span><br><span class="line">            right = mid;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            left = mid + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> left;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(logn)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>二分法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——相交链表</title>
+    <url>/2020/05/06/LeetCode%E2%80%94%E2%80%94%E7%9B%B8%E4%BA%A4%E9%93%BE%E8%A1%A8/</url>
+    <content><![CDATA[<h2 id="NO-160-相交链表-简单"><a href="#NO-160-相交链表-简单" class="headerlink" title="NO.160 相交链表 简单 "></a>NO.160 相交链表 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/05/06/YAEFAS.png" alt="YAEFAS.png"></p>
+<p><img src="https://s1.ax1x.com/2020/05/06/YAEC0f.png" alt="YAEC0f.png"></p>
+<p><img src="https://s1.ax1x.com/2020/05/06/YAEP78.png" alt="YAEP78.png"></p>
+<p><strong><font color=red>思路一：两次遍历</font></strong> 如果两个链表长度相同，那么问题就简单了，直接两个指针分别遍历两个链表，指针相等则找到交点。所以我们要做的就是找到两个指针遍历的起点，消除长度差。</p>
+<p>示例一：</p>
+<p>intersectVal = 8</p>
+<p>headA [  4,1,8,4,5]</p>
+<p>headB [8,0,1,8,4,5]</p>
+<p>需要让两个指针 pa从headA的头节点4开始，pb从headB的节点0开始，去同步遍历。</p>
+<p>这个4和0如何找到呢？</p>
+<ol>
+<li>先让pa和pb同时步进遍历两个链表，当pa遍历完headA就去遍历headB，pb遍历完headB就去遍历headA</li>
+<li>pa一定先遍历完指向了headb的头节点8，当pb遍历完headB指向headA的时候，pa到达节点0，此时就实现了消除了长度差，继续同步步进遍历，pa和pb会同时到达相交节点8</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">getIntersectionNode</span><span class="params">(ListNode headA, ListNode headB)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (headA == <span class="keyword">null</span> || headB == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    ListNode pa = headA, pb = headB;</span><br><span class="line">    <span class="comment">//找到交点 或者 pa和pb第二次遍历都完成 时跳出循环</span></span><br><span class="line">    <span class="keyword">while</span> (pa != pb) &#123;</span><br><span class="line">        <span class="comment">//pa 或 pb 遍历完成后指向另一条链表</span></span><br><span class="line">        pa = pa == <span class="keyword">null</span> ? headB : pa.next;</span><br><span class="line">        pb = pb == <span class="keyword">null</span> ? headA : pb.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pa;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)  最坏情况两次完整的遍历</p>
+<p>空间复杂度：O(1)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>链表</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——最小栈</title>
+    <url>/2020/05/06/LeetCode%E2%80%94%E2%80%94%E6%9C%80%E5%B0%8F%E6%A0%88/</url>
+    <content><![CDATA[<h2 id="NO-155-最小栈-简单"><a href="#NO-155-最小栈-简单" class="headerlink" title="NO.155 最小栈 简单 "></a>NO.155 最小栈 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/05/06/YApcP1.png" alt="YApcP1.png"></p>
+<p><strong><font color=red>思路一：两个栈</font></strong> 利用栈去实现栈，看起来好像比较奇怪，但这道题的重点是在于如何每次 O(1) 时间获取到最小值。本题不需要考虑栈空。</p>
+<p>用一个栈 min 存放最小元素，当有新元素 x 入栈的时候，判断 x 是否小于等于 min 的栈顶元素，true 将 x 推入 min，否则只推入主栈。弹出元素时，判断弹出的元素 y ，是否等于 min 的栈顶元素，true 将 min 的栈顶元素也一起弹出，否则只弹出主栈元素。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MinStack</span> </span>&#123;</span><br><span class="line">    Stack&lt;Integer&gt; stack;</span><br><span class="line">    Stack&lt;Integer&gt; min;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * initialize your data structure here.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MinStack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        stack = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">        min = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        stack.push(x);</span><br><span class="line">        <span class="keyword">if</span> (!min.isEmpty()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (x &lt;= min.peek()) &#123;</span><br><span class="line">                min.push(x);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            min.push(x);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> pop = stack.pop();</span><br><span class="line">        <span class="keyword">if</span> (pop == min.peek()) &#123;</span><br><span class="line">            min.pop();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">top</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> stack.peek();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getMin</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> min.peek();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong><font color=red>思路二：一个栈</font></strong> 使用一个栈存储数据，用一个变量 min 保存最小的元素，当新入栈元素 x 小于等于 min 的时候，先将 min 入栈且更新 min 为 x，再将 x 入栈，保持栈中当前最小元素 min 的下面”压着”下一个最小元素。</p>
+<p>出栈时，如果出栈元素 y 等于 min，则 y 出栈后，再出栈一个元素作为 min。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MinStack</span> </span>&#123;</span><br><span class="line">    Stack&lt;Integer&gt; stack;</span><br><span class="line">    <span class="keyword">int</span> min;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * initialize your data structure here.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MinStack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        stack = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">        min = Integer.MAX_VALUE;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (x &lt;= min) &#123;</span><br><span class="line">            stack.push(min);</span><br><span class="line">            min = x;</span><br><span class="line">        &#125;</span><br><span class="line">        stack.push(x);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Integer pop = stack.pop();</span><br><span class="line">        <span class="keyword">if</span> (pop == min) &#123;</span><br><span class="line">            min = stack.pop();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">top</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> stack.peek();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getMin</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> min;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong><font color=red>思路三：不使用栈</font></strong> 用一个链表实现栈，链表节点有一个 min 保存当前节点插入时栈内的最小值。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> value;</span><br><span class="line">    <span class="keyword">int</span> min;</span><br><span class="line">    Node next;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(<span class="keyword">int</span> value, <span class="keyword">int</span> min)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.min = min;</span><br><span class="line">        <span class="keyword">this</span>.value = value;</span><br><span class="line">        <span class="keyword">this</span>.next = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>每次新元素入栈时，采用头插法，新节点的 min 保存当前栈内的最小元素，head 指针始终指向栈顶(表头)：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MinStack</span> </span>&#123;</span><br><span class="line">    Node head;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * initialize your data structure here.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MinStack</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (head == <span class="keyword">null</span>) &#123;</span><br><span class="line">            head = <span class="keyword">new</span> Node(x, x);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            Node node = <span class="keyword">new</span> Node(x, Math.min(x, head.min));</span><br><span class="line">            node.next = head;</span><br><span class="line">            head = node;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        head = head.next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">top</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> head.value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getMin</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> head.min;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>栈</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——最低票价</title>
+    <url>/2020/05/06/LeetCode%E2%80%94%E2%80%94%E6%9C%80%E4%BD%8E%E7%A5%A8%E4%BB%B7/</url>
+    <content><![CDATA[<h2 id="NO-983-最低票价-中等"><a href="#NO-983-最低票价-中等" class="headerlink" title="NO.983 最低票价 中等 "></a>NO.983 最低票价 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/05/06/YkOY6J.png" alt="YkOY6J.png"></p>
+<p><img src="https://s1.ax1x.com/2020/05/06/YkOJl4.png" alt="YkOJl4.png"></p>
+<p><strong><font color=red>思路一：动态规划</font></strong> 从后向前判断，第 i 日应该如何购买。</p>
+<p>dp[day]的含义：从第 day 天开始，累计需要购买的通行证的最小费用，只需要向后看 30 天内的购买方案即可。</p>
+<p>初始化：dp[maxday + 31]，最大日期多增加一个月，因为第 maxday 还要向后看 30 天。</p>
+<p>状态转移：计算 [minday,maxday] 区间内的每一天 day ，如果第 day 天不需要旅行，那么从第 day 天不需要购买通行证，<code>dp[day]=dp[day+1]</code>；</p>
+<p>如果第 day 天需要旅行，那么有三种方案：</p>
+<ol>
+<li>当天买一个 1 天的通行证，<code>dp[day]=costs[0]+dp[day+1]</code></li>
+<li>当天买一个 7 天的通行证，<code>dp[day]=costs[1]+dp[day+7]</code></li>
+<li>当天买一个 30 天的通行证，<code>dp[day]=costs[1]+dp[day+30]</code></li>
+</ol>
+<p>三种方案选”实惠”的：<code>dp[day]=Min(costs[0]+dp[day+1],costs[1]+dp[day+7],costs[1]+dp[day+30])</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">mincostTickets</span><span class="params">(<span class="keyword">int</span>[] days, <span class="keyword">int</span>[] costs)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> minDay = days[<span class="number">0</span>], maxDay = days[days.length - <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">int</span>[] dp = <span class="keyword">new</span> <span class="keyword">int</span>[maxDay + <span class="number">31</span>];</span><br><span class="line">    <span class="comment">//days 数组索引</span></span><br><span class="line">    <span class="keyword">int</span> i = days.length - <span class="number">1</span>;</span><br><span class="line">    <span class="comment">//计算 [minDay,maxDay] 区间内的每一天</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> day = maxDay; day &gt;= minDay; day--) &#123;</span><br><span class="line">        <span class="comment">//第 day 天需要旅行</span></span><br><span class="line">        <span class="keyword">if</span> (day == days[i]) &#123;</span><br><span class="line">            <span class="comment">//三种方案</span></span><br><span class="line">            dp[day] = Math.min(costs[<span class="number">0</span>] + dp[day + <span class="number">1</span>],</span><br><span class="line">                               Math.min(costs[<span class="number">1</span>] + dp[day + <span class="number">7</span>], costs[<span class="number">2</span>] + dp[day + <span class="number">30</span>]));</span><br><span class="line">            <span class="comment">// days[i]计算完毕</span></span><br><span class="line">            i--;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">//第 day 天不需要旅行 dp[day]=0+dp[day + 1]</span></span><br><span class="line">            dp[day] = dp[day + <span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[minDay];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(maxDay-minDay)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>动态规划</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——寻找旋转排序数组中的最小值I&amp;II</title>
     <url>/2020/05/05/LeetCode%E2%80%94%E2%80%94%E5%AF%BB%E6%89%BE%E6%97%8B%E8%BD%AC%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E6%9C%80%E5%B0%8F%E5%80%BCI-II/</url>
     <content><![CDATA[<p><strong>寻找旋转排序数组中的最小值 <font color=orange>中等</font>、寻找旋转排序数组中的最小值 II <font color=#ff0099>困难</font></strong><a id="more"></a></p>
