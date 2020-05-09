@@ -1,6 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——两数之和I&amp;II</title>
+    <url>/2020/05/09/LeetCode%E2%80%94%E2%80%94%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8CI-II/</url>
+    <content><![CDATA[<p><strong>两数之和 I <font color=green>简单</font>、两数之和 II <font color=green>简单 </font></strong> <a id="more"></a></p>
+<h2 id="NO-1-两数之和-简单"><a href="#NO-1-两数之和-简单" class="headerlink" title="NO.1 两数之和 简单"></a>NO.1 两数之和 <font color=green>简单</font></h2><p><img src="https://s2.ax1x.com/2019/12/03/QMw3c9.png" alt="QMw3c9.png"></p>
+<p><font color=red><strong>思路一：暴力法</strong></font>    看到题，最先想到的思路就是<strong>暴力解法</strong>，直接两层for循环遍历：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums,<span class="keyword">int</span> target)&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=i+<span class="number">1</span>;j&lt;nums.length;j++)&#123;</span><br><span class="line">            <span class="keyword">if</span> (nums[i]+nums[j]==target) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;i,j&#125;;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"no result!"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n^2)</p>
+<p><font color=red><strong>思路二：哈希表法</strong></font>    通过一个哈希表来空间换时间：1.遍历nums数组，判断每个元素和目标值的差temp是否在哈希表中。2.如果在就返回当前遍历元素的下标和哈希表中temp这个key对应的value。3.如果不在就将当前遍历元素作为key、当前遍历元素下标作为value存入哈希表。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums,<span class="keyword">int</span> target)&#123;</span><br><span class="line">        Map&lt;Integer,Integer&gt; map =<span class="keyword">new</span> HashMap&lt;Integer,Integer&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)&#123;</span><br><span class="line">            <span class="keyword">int</span> temp=target-nums[i];</span><br><span class="line"><span class="comment">//          所需要的temp是否在map中，如果在就返回map中temp值对应的value(即temp值对应的下标)和i。</span></span><br><span class="line">            <span class="keyword">if</span> (map.containsKey(temp))&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;map.get(temp),i&#125;;</span><br><span class="line">            &#125;</span><br><span class="line"><span class="comment">//          temp如果不在map中，就将nums[i]作为key、下标i作为value放入map中</span></span><br><span class="line">            map.put(nums[i],i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException(<span class="string">"no twoSum result!"</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    空间复杂度：O(n)</p>
+<h2 id="NO-167-两数之和-II-简单"><a href="#NO-167-两数之和-II-简单" class="headerlink" title="NO.167 两数之和 II 简单"></a>NO.167 两数之和 II <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/09/YQIckj.png" alt="YQIckj.png"></p>
+<p><strong><font color=red>思路一：双指针</font></strong> 双指针遍历数组，如果第 i 个元素加第 j 个元素的和 sum 等于 target 返回[i+1,j+1]；</p>
+<p>如果 sum &gt; target 说明需要更小的数字，则 j– ；如果 sum &lt; target 说明需要更大的数字，则 i++ 。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] numbers, <span class="keyword">int</span> target) &#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>, j = numbers.length - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; j) &#123;</span><br><span class="line">        <span class="keyword">int</span> sum = numbers[i] + numbers[j];</span><br><span class="line">        <span class="keyword">if</span> (sum == target) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;i + <span class="number">1</span>, j + <span class="number">1</span>&#125;;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sum &gt; target) &#123;</span><br><span class="line">            j--;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> 时间复杂度：O(n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和学习记录博客:<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">博客</a>、<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+  </entry>
+  <entry>
+    <title>LeetCode——Excel表列名称&amp;Excel表列序号</title>
+    <url>/2020/05/09/LeetCode%E2%80%94%E2%80%94Excel%E8%A1%A8%E5%88%97%E5%90%8D%E7%A7%B0-Excel%E8%A1%A8%E5%88%97%E5%BA%8F%E5%8F%B7/</url>
+    <content><![CDATA[<p><strong>Excel表列名称 <font color=green>简单</font>、Excel表列序号 <font color=green>简单</font></strong> <a id="more"></a></p>
+<h2 id="NO-168-Excel表列名称-简单"><a href="#NO-168-Excel表列名称-简单" class="headerlink" title="NO.168 Excel表列名称 简单"></a>NO.168 Excel表列名称 <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/09/YQIy7Q.png" alt="YQIy7Q.png"></p>
+<p><strong><font color=red>思路一：取余</font></strong> 很麻烦的题目，虽然是个简单，但是细节很磨人。看完题，不难想到取余的方法，有点 10 进制转换 26 进制的感觉，不过是将数字都换成和逐一对应的字母罢了。</p>
+<p>需要注意的是，对 26 取余之后得到的是低位值，对 26 做商得到的是高位值，所以最后要 <code>reverse()</code>一下。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">convertToTitle</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    StringBuilder ans = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">    <span class="keyword">while</span> (n &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        n--;</span><br><span class="line">        ans.append((<span class="keyword">char</span>) (<span class="string">'A'</span> + n % <span class="number">26</span>));</span><br><span class="line">        n/=<span class="number">26</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans.reverse().toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="NO-171-Excel表列序号-简单"><a href="#NO-171-Excel表列序号-简单" class="headerlink" title="NO.171 Excel表列序号 简单"></a>NO.171 Excel表列序号 <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/09/YQLSDP.png" alt="YQLSDP.png"></p>
+<p><strong><font color=red>思路一：按位转换</font></strong> NO.168的逆运算，既然NO.168 是 10 进制转 26 进制，那么本题就是 26 进制转换 10 进制。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">titleToNumber</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">char</span> c : s.toCharArray()) &#123;</span><br><span class="line">        <span class="keyword">int</span> temp = c-<span class="string">'A'</span>;</span><br><span class="line">        ans = ans*<span class="number">10</span> + temp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>字符串</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——分数到小数</title>
     <url>/2020/05/08/LeetCode%E2%80%94%E2%80%94%E5%88%86%E6%95%B0%E5%88%B0%E5%B0%8F%E6%95%B0/</url>
     <content><![CDATA[<h2 id="NO-166-分数到小数-中等"><a href="#NO-166-分数到小数-中等" class="headerlink" title="NO.166 分数到小数 中等 "></a>NO.166 分数到小数 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/05/08/Ynr5qS.png" alt="Ynr5qS.png"></p>
@@ -8170,30 +8220,6 @@
         <tag>leetcode</tag>
         <tag>BFS</tag>
         <tag>数组</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LeetCode——两数之和</title>
-    <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/</url>
-    <content><![CDATA[<h2 id="NO-1-两数之和-简单"><a href="#NO-1-两数之和-简单" class="headerlink" title="NO.1 两数之和    简单 "></a>NO.1 两数之和    <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2019/12/03/QMw3c9.png" alt="QMw3c9.png"></p>
-<p><font color=red><strong>思路一：暴力法</strong></font>    看到题，最先想到的思路就是<strong>暴力解法</strong>，直接两层for循环遍历：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums,<span class="keyword">int</span> target)&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=i+<span class="number">1</span>;j&lt;nums.length;j++)&#123;</span><br><span class="line">            <span class="keyword">if</span> (nums[i]+nums[j]==target) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;i,j&#125;;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"no result!"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>时间复杂度：O(n^2)</p>
-<p><font color=red><strong>思路二：哈希表法</strong></font>    通过一个哈希表来空间换时间：1.遍历nums数组，判断每个元素和目标值的差temp是否在哈希表中。2.如果在就返回当前遍历元素的下标和哈希表中temp这个key对应的value。3.如果不在就将当前遍历元素作为key、当前遍历元素下标作为value存入哈希表。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums,<span class="keyword">int</span> target)&#123;</span><br><span class="line">        Map&lt;Integer,Integer&gt; map =<span class="keyword">new</span> HashMap&lt;Integer,Integer&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)&#123;</span><br><span class="line">            <span class="keyword">int</span> temp=target-nums[i];</span><br><span class="line"><span class="comment">//          所需要的temp是否在map中，如果在就返回map中temp值对应的value(即temp值对应的下标)和i。</span></span><br><span class="line">            <span class="keyword">if</span> (map.containsKey(temp))&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;map.get(temp),i&#125;;</span><br><span class="line">            &#125;</span><br><span class="line"><span class="comment">//          temp如果不在map中，就将nums[i]作为key、下标i作为value放入map中</span></span><br><span class="line">            map.put(nums[i],i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException(<span class="string">"no twoSum result!"</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p>时间复杂度：O(n)</p>
-<hr>
-<p>本人菜鸟，有错误请告知，感激不尽！</p>
-<p>更多题解和学习记录博客:<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">博客</a>、<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
-]]></content>
-      <categories>
-        <category>题解笔记</category>
-      </categories>
-      <tags>
-        <tag>leetcode</tag>
-        <tag>HashTable</tag>
       </tags>
   </entry>
   <entry>
