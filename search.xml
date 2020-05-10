@@ -1,28 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>LeetCode——两数之和I&amp;II</title>
-    <url>/2020/05/09/LeetCode%E2%80%94%E2%80%94%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8CI-II/</url>
-    <content><![CDATA[<p><strong>两数之和 I <font color=green>简单</font>、两数之和 II <font color=green>简单 </font></strong> <a id="more"></a></p>
-<h2 id="NO-1-两数之和-简单"><a href="#NO-1-两数之和-简单" class="headerlink" title="NO.1 两数之和 简单"></a>NO.1 两数之和 <font color=green>简单</font></h2><p><img src="https://s2.ax1x.com/2019/12/03/QMw3c9.png" alt="QMw3c9.png"></p>
-<p><font color=red><strong>思路一：暴力法</strong></font>    看到题，最先想到的思路就是<strong>暴力解法</strong>，直接两层for循环遍历：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums,<span class="keyword">int</span> target)&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=i+<span class="number">1</span>;j&lt;nums.length;j++)&#123;</span><br><span class="line">            <span class="keyword">if</span> (nums[i]+nums[j]==target) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;i,j&#125;;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"no result!"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    <title>LeetCode——二叉搜索树迭代器</title>
+    <url>/2020/05/10/LeetCode%E2%80%94%E2%80%94%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E8%BF%AD%E4%BB%A3%E5%99%A8/</url>
+    <content><![CDATA[<h2 id="NO-173-二叉搜索树迭代器-中等"><a href="#NO-173-二叉搜索树迭代器-中等" class="headerlink" title="NO.173 二叉搜索树迭代器 中等 "></a>NO.173 二叉搜索树迭代器 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/05/10/Y17a1s.png" alt="Y17a1s.png"></p>
+<p><strong><font color=red>思路一：栈</font></strong> 看到空间要求 O(h) 的时候，就可以大概想到是对树做递归，递归栈的大小取决于树的高度。</p>
+<p>要求 <code>next()</code> 返回当前最小节点，如果一直调用直至树为空，应该返回一个递增序列，即 BST 的中序遍历。</p>
+<p>树的定义：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TreeNode</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> val;</span><br><span class="line">    <span class="keyword">public</span> TreeNode left;</span><br><span class="line">    <span class="keyword">public</span> TreeNode right;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TreeNode</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123; val = x; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>时间复杂度：O(n^2)</p>
-<p><font color=red><strong>思路二：哈希表法</strong></font>    通过一个哈希表来空间换时间：1.遍历nums数组，判断每个元素和目标值的差temp是否在哈希表中。2.如果在就返回当前遍历元素的下标和哈希表中temp这个key对应的value。3.如果不在就将当前遍历元素作为key、当前遍历元素下标作为value存入哈希表。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums,<span class="keyword">int</span> target)&#123;</span><br><span class="line">        Map&lt;Integer,Integer&gt; map =<span class="keyword">new</span> HashMap&lt;Integer,Integer&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)&#123;</span><br><span class="line">            <span class="keyword">int</span> temp=target-nums[i];</span><br><span class="line"><span class="comment">//          所需要的temp是否在map中，如果在就返回map中temp值对应的value(即temp值对应的下标)和i。</span></span><br><span class="line">            <span class="keyword">if</span> (map.containsKey(temp))&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;map.get(temp),i&#125;;</span><br><span class="line">            &#125;</span><br><span class="line"><span class="comment">//          temp如果不在map中，就将nums[i]作为key、下标i作为value放入map中</span></span><br><span class="line">            map.put(nums[i],i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException(<span class="string">"no twoSum result!"</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>迭代器：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BSTIterator</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    Stack&lt;TreeNode&gt; stack;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BSTIterator</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">        stack = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">        <span class="keyword">this</span>.inorder_left(root);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//遍历 root 最左节点入栈</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">inorder_left</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (root != <span class="keyword">null</span>) &#123;</span><br><span class="line">            stack.push(root);</span><br><span class="line">            root = root.left;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> the next smallest number</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        TreeNode node = stack.pop();</span><br><span class="line">        <span class="keyword">if</span> (node.right != <span class="keyword">null</span>) &#123;</span><br><span class="line">            inorder_left(node.right);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> node.val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> whether we have a next smallest number</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> !stack.isEmpty();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>时间复杂度：O(n)    空间复杂度：O(n)</p>
-<h2 id="NO-167-两数之和-II-简单"><a href="#NO-167-两数之和-II-简单" class="headerlink" title="NO.167 两数之和 II 简单"></a>NO.167 两数之和 II <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/09/YQIckj.png" alt="YQIckj.png"></p>
-<p><strong><font color=red>思路一：双指针</font></strong> 双指针遍历数组，如果第 i 个元素加第 j 个元素的和 sum 等于 target 返回[i+1,j+1]；</p>
-<p>如果 sum &gt; target 说明需要更小的数字，则 j– ；如果 sum &lt; target 说明需要更大的数字，则 i++ 。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] numbers, <span class="keyword">int</span> target) &#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>, j = numbers.length - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; j) &#123;</span><br><span class="line">        <span class="keyword">int</span> sum = numbers[i] + numbers[j];</span><br><span class="line">        <span class="keyword">if</span> (sum == target) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;i + <span class="number">1</span>, j + <span class="number">1</span>&#125;;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sum &gt; target) &#123;</span><br><span class="line">            j--;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p> 时间复杂度：O(n)</p>
+<p>时间复杂度：O(1)    <code>hasNext()</code> 毋庸置疑的是个 O(1) 操作； <code>next()</code> 操作虽然有一个最坏情况(呈链表)下 O(n)的操作，但是每个节点只会入栈一次，所以 n 次 <code>next()</code> 操作平均下来时间复杂度依然是 O(1) ，这是一种”摊还”的概念。</p>
+<p>空间复杂度：O(h)    h 树的高度</p>
 <hr>
 <p>本人菜鸟，有错误请告知，感激不尽！</p>
-<p>更多题解和学习记录博客:<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">博客</a>、<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
 ]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>二叉树</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——阶乘后的零</title>
+    <url>/2020/05/10/LeetCode%E2%80%94%E2%80%94%E9%98%B6%E4%B9%98%E5%90%8E%E7%9A%84%E9%9B%B6/</url>
+    <content><![CDATA[<h2 id="NO-172-阶乘后的零-简单"><a href="#NO-172-阶乘后的零-简单" class="headerlink" title="NO.172 阶乘后的零 简单 "></a>NO.172 阶乘后的零 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/05/10/Y1hykj.png" alt="Y1hykj.png"></p>
+<h3 id="思路一：暴力"><a href="#思路一：暴力" class="headerlink" title="思路一：暴力 "></a><strong><font color=red>思路一：暴力 </font></strong></h3><p>如果是先计算阶乘 res ，再去数 res 低位有多少个，是行不通的，输入如果较大，阶乘很容易发生溢出，即使使用了 long 、BigInteger 等等大范围类型满足了存下大输入的阶乘结果，计算阶乘的过程和求低位0的过程都是不满足限制时间 O(logn) 的。</p>
+<h3 id="思路二：优化暴力，找-5"><a href="#思路二：优化暴力，找-5" class="headerlink" title="思路二：优化暴力，找 5 "></a><strong><font color=red>思路二：优化暴力，找 5 </font></strong></h3><p>分析一下阶乘后的 0 是如何产生的，自然想到是每次乘一个 10 低位增加一个 0 ，10=2*5，那么为什么只找 5 ，不考虑 2 呢？</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">5!	&#x3D; 5 * 4 * 3 * 2 * 1</span><br><span class="line"></span><br><span class="line">11! &#x3D; 11 * 10 * 9 * 8 * 7 * 6 * 5 * 4 * 3 * 2 * 1 </span><br><span class="line">    &#x3D; 11 * (2 * 5) * 9 * (4 * 2) * 7 * (3 * 2) * (1 * 5) * (2 * 2) * 3 * (1 * 2) * 1</span><br><span class="line">    </span><br><span class="line">从一个 5 的倍数，到下一个 5 的倍数之间，一定存在偶数！偶数自然是可以拆成 2*x 的形式！</span><br><span class="line">所以只要找到 5，那么一定存在 2 和其配对，得到 10 !</span><br></pre></td></tr></table></figure>
+
+<p>综上所述，只要遍历阶乘中出现的每个数，找 5 出现的次数即可。</p>
+<p>注意：要找到的是 5 ！ 例如，25 = 5 * 5 算是 2 个 5 ，125 = 5 * 5 * 5 算是 3 个 5。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">trailingZeroes</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//遍历</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="comment">//是 5 的倍数,统计能分解成几个 5 </span></span><br><span class="line">        <span class="keyword">int</span> num = i;</span><br><span class="line">        <span class="keyword">while</span> (num &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (num % <span class="number">5</span> == <span class="number">0</span>) &#123;</span><br><span class="line">                count ++;</span><br><span class="line">                num /= <span class="number">5</span>;</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    不符合要求，超时！</p>
+<h3 id="思路三：隔-5-找-5"><a href="#思路三：隔-5-找-5" class="headerlink" title="思路三：隔 5 找 5 "></a><strong><font color=red>思路三：隔 5 找 5 </font></strong></h3><p>每隔 5 个数会出现 5 = 5 一个 5，每隔 25 个数出现 25 = 5 * 5 两个 5，每隔 125 个数出现 125 = 5 * 5 * 5 三个 5。。。以此类推。。。</p>
+<p>最终 <code>5 的个数 = n/5 + n/25 + n/125 + ...</code> </p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">trailingZeroes</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (n &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        count += n/<span class="number">5</span>;</span><br><span class="line">        n/=<span class="number">5</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(logn)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——二叉树的最近公共祖先</title>
+    <url>/2020/05/10/LeetCode%E2%80%94%E2%80%94%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%9C%80%E8%BF%91%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88/</url>
+    <content><![CDATA[<h2 id="NO-236-二叉树的最近公共祖先-中等"><a href="#NO-236-二叉树的最近公共祖先-中等" class="headerlink" title="NO.236 二叉树的最近公共祖先 中等 "></a>NO.236 二叉树的最近公共祖先 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/05/10/Y1WYHH.png" alt="Y1WYHH.png"></p>
+<p><img src="https://s1.ax1x.com/2020/05/10/Y1WJDe.png" alt="Y1WJDe.png"></p>
+<p><strong><font color=red>思路一：深搜</font></strong> 去根节点的左右子树中寻找 p 和 q 两个节点：</p>
+<p>返回条件：如果左子树或右子树为空，则返回 null；如果左子树或右子树中找到了 p 或者 q ，这棵子树一定返回 p 或 q 。</p>
+<p>递归分别去左右子树中深搜寻找 p 或 q，左右子树深搜的结果记为 left 、right ，深搜全部完成后，如果 left 为空，则结果只需要看 right 标记的节点(p 或 q)；如果 right 为空，只需要看 left ；如果 right 和 left 都不为空，这说明左右子树的根节点 root 是 p 和 q 的公共祖先，此时 p 和 q 分别在 root 的左右子树中，一边一个。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">lowestCommonAncestor</span><span class="params">(TreeNode root, TreeNode p, TreeNode q)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//base 子树中不存在 p 和 q ,或者子树中找到了 p 或 q</span></span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>||root == p||root==q)<span class="keyword">return</span> root;</span><br><span class="line">    <span class="comment">//到左右子树中寻找 p 或 q</span></span><br><span class="line">    TreeNode left = lowestCommonAncestor(root.left, p, q);</span><br><span class="line">    TreeNode right = lowestCommonAncestor(root.right, p, q);</span><br><span class="line">    <span class="comment">//一边为空不存在 p 或 q,公共祖先一定是另一边标记的节点</span></span><br><span class="line">    <span class="keyword">if</span> (left==<span class="keyword">null</span>)<span class="keyword">return</span> right;</span><br><span class="line">    <span class="keyword">if</span> (right ==<span class="keyword">null</span>)<span class="keyword">return</span> left;</span><br><span class="line">    <span class="comment">//p 和 q 分别在子树根 root 的两侧各一个</span></span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    深度遍历</p>
+<p>空间复杂度：O(n)    递归栈大小取决于树的深度，最坏情况树呈链表状</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>二叉树</tag>
+      </tags>
   </entry>
   <entry>
     <title>LeetCode——Excel表列名称&amp;Excel表列序号</title>
@@ -9885,6 +9940,38 @@
       <tags>
         <tag>leetcode</tag>
         <tag>厄拉多塞筛</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——两数之和I&amp;II</title>
+    <url>/2019/10/01/LeetCode%E2%80%94%E2%80%94%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8CI-II/</url>
+    <content><![CDATA[<p><strong>两数之和 I <font color=green>简单</font>、两数之和 II <font color=green>简单 </font></strong> <a id="more"></a></p>
+<h2 id="NO-1-两数之和-简单"><a href="#NO-1-两数之和-简单" class="headerlink" title="NO.1 两数之和 简单"></a>NO.1 两数之和 <font color=green>简单</font></h2><p><img src="https://s2.ax1x.com/2019/12/03/QMw3c9.png" alt="QMw3c9.png"></p>
+<p><font color=red><strong>思路一：暴力法</strong></font>    看到题，最先想到的思路就是<strong>暴力解法</strong>，直接两层for循环遍历：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums,<span class="keyword">int</span> target)&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=i+<span class="number">1</span>;j&lt;nums.length;j++)&#123;</span><br><span class="line">            <span class="keyword">if</span> (nums[i]+nums[j]==target) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;i,j&#125;;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"no result!"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n^2)</p>
+<p><font color=red><strong>思路二：哈希表法</strong></font>    通过一个哈希表来空间换时间：1.遍历nums数组，判断每个元素和目标值的差temp是否在哈希表中。2.如果在就返回当前遍历元素的下标和哈希表中temp这个key对应的value。3.如果不在就将当前遍历元素作为key、当前遍历元素下标作为value存入哈希表。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums,<span class="keyword">int</span> target)&#123;</span><br><span class="line">        Map&lt;Integer,Integer&gt; map =<span class="keyword">new</span> HashMap&lt;Integer,Integer&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.length;i++)&#123;</span><br><span class="line">            <span class="keyword">int</span> temp=target-nums[i];</span><br><span class="line"><span class="comment">//          所需要的temp是否在map中，如果在就返回map中temp值对应的value(即temp值对应的下标)和i。</span></span><br><span class="line">            <span class="keyword">if</span> (map.containsKey(temp))&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;map.get(temp),i&#125;;</span><br><span class="line">            &#125;</span><br><span class="line"><span class="comment">//          temp如果不在map中，就将nums[i]作为key、下标i作为value放入map中</span></span><br><span class="line">            map.put(nums[i],i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException(<span class="string">"no twoSum result!"</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    空间复杂度：O(n)</p>
+<h2 id="NO-167-两数之和-II-简单"><a href="#NO-167-两数之和-II-简单" class="headerlink" title="NO.167 两数之和 II 简单"></a>NO.167 两数之和 II <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/09/YQIckj.png" alt="YQIckj.png"></p>
+<p><strong><font color=red>思路一：双指针</font></strong> 双指针遍历数组，如果第 i 个元素加第 j 个元素的和 sum 等于 target 返回[i+1,j+1]；</p>
+<p>如果 sum &gt; target 说明需要更小的数字，则 j– ；如果 sum &lt; target 说明需要更大的数字，则 i++ 。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] numbers, <span class="keyword">int</span> target) &#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>, j = numbers.length - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; j) &#123;</span><br><span class="line">        <span class="keyword">int</span> sum = numbers[i] + numbers[j];</span><br><span class="line">        <span class="keyword">if</span> (sum == target) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;i + <span class="number">1</span>, j + <span class="number">1</span>&#125;;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sum &gt; target) &#123;</span><br><span class="line">            j--;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> 时间复杂度：O(n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和学习记录博客:<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">博客</a>、<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>双指针</tag>
+        <tag>HashTable</tag>
       </tags>
   </entry>
   <entry>
