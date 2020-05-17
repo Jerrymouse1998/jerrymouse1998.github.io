@@ -1,6 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——课程表I&amp;II</title>
+    <url>/2020/05/17/LeetCode%E2%80%94%E2%80%94%E8%AF%BE%E7%A8%8B%E8%A1%A8I-II/</url>
+    <content><![CDATA[<p><strong>NO.207 课程表 <font color=orange>中等</font> 、NO.210 课程表 II <font color=orange>中等</font></strong> </p>
+<p><strong>非常经典的拓扑排序问题</strong> <a id="more"></a></p>
+<h2 id="NO-207-课程表-中等"><a href="#NO-207-课程表-中等" class="headerlink" title="NO.207 课程表 中等"></a>NO.207 课程表 <font color=orange>中等</font></h2><p><img src="https://s1.ax1x.com/2020/05/17/Ygz9p9.png" alt="Ygz9p9.png"></p>
+<p><img src="https://s1.ax1x.com/2020/05/17/YgzSfJ.png" alt="YgzSfJ.png"></p>
+<p><strong><font color=red>思路一：拓扑排序</font></strong> 拓扑排序的总体思路选择 <code>广度优先遍历+贪心</code> 。</p>
+<p>通常拓扑排序有两个主要功能：</p>
+<ol>
+<li>得到一条拓扑序列，拓扑序列不唯一。</li>
+<li>判断一个有向图是否有环。</li>
+</ol>
+<p>实现上，用两个集合，分别保存每个节点入度的数量、每个节点的下一个后继节点。还需要一个队列，进行广度优先遍历。</p>
+<p>将没有前驱的节点(入度为 0 )入队，广搜每出队一个节点，就将该节点的所有后继邻接节点的入度 -1 ，如果入度减为 0(没有前驱节点) 则节点入队。</p>
+<p>广搜过程中记录出队节点的数量 count，如果图中有环，则 <code>count&lt;numCourses</code> 。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canFinish</span><span class="params">(<span class="keyword">int</span> numCourses, <span class="keyword">int</span>[][] prerequisites)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (prerequisites.length == <span class="number">0</span>) <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    <span class="comment">//保存每个节点的入度</span></span><br><span class="line">    <span class="keyword">int</span>[] inDegree = <span class="keyword">new</span> <span class="keyword">int</span>[numCourses];</span><br><span class="line">    <span class="comment">//保存每个节点的下一个后继邻接节点</span></span><br><span class="line">    HashSet&lt;Integer&gt;[] nextAdjacency = <span class="keyword">new</span> HashSet[numCourses];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; numCourses; i++) nextAdjacency[i] = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">    <span class="comment">//预处理</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span>[] temp : prerequisites) &#123;</span><br><span class="line">        inDegree[temp[<span class="number">0</span>]]++;</span><br><span class="line">        nextAdjacency[temp[<span class="number">1</span>]].add(temp[<span class="number">0</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//广搜队列</span></span><br><span class="line">    Queue&lt;Integer&gt; queue = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">    <span class="comment">//入度为 0 的节点入队</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; inDegree.length; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (inDegree[i] == <span class="number">0</span>) &#123;</span><br><span class="line">            queue.offer(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//开始广搜,记录出过队的节点数量</span></span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (!queue.isEmpty()) &#123;</span><br><span class="line">        Integer poll = queue.poll();</span><br><span class="line">        count++;</span><br><span class="line">        <span class="comment">//遍历出队节点的所有后继邻接节点</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> next : nextAdjacency[poll]) &#123;</span><br><span class="line">            <span class="comment">//减少后继节点的一条入度</span></span><br><span class="line">            inDegree[next]--;</span><br><span class="line">            <span class="comment">//如果后继节点的入度为 0 则入队</span></span><br><span class="line">            <span class="keyword">if</span> (inDegree[next] == <span class="number">0</span>) &#123;</span><br><span class="line">                queue.offer(next);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//如果存在环,则 count&lt;numCourses</span></span><br><span class="line">    <span class="keyword">return</span> count == numCourses;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(E+V)    边的数量 E ，节点数量 V。两次遍历邻接表</p>
+<p>空间复杂度：O(E+V)</p>
+<h2 id="NO-210-课程表-II-中等"><a href="#NO-210-课程表-II-中等" class="headerlink" title="NO.210 课程表 II 中等"></a>NO.210 课程表 II <font color=orange>中等</font></h2><p><img src="https://s1.ax1x.com/2020/05/17/YgzZkD.png" alt="YgzZkD.png"></p>
+<p><img src="https://s1.ax1x.com/2020/05/17/YgzETO.png" alt="YgzETO.png"></p>
+<p>相较于前一题，本题需要返回一条拓扑排序的路径。</p>
+<p><strong><font color=red>思路一：拓扑排序</font></strong> 和上一题的思路一样，区别在于本题需要记录出队的节点序列，而不仅仅是数量。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] findOrder(<span class="keyword">int</span> numCourses, <span class="keyword">int</span>[][] prerequisites) &#123;</span><br><span class="line">    <span class="comment">//保存每个节点的入度</span></span><br><span class="line">    <span class="keyword">int</span>[] inDegree = <span class="keyword">new</span> <span class="keyword">int</span>[numCourses];</span><br><span class="line">    <span class="comment">//保存每个节点的后继邻接节点</span></span><br><span class="line">    List&lt;Integer&gt;[] nextAdjacency = <span class="keyword">new</span> List[numCourses];</span><br><span class="line">    <span class="comment">//预处理</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; numCourses; i++) nextAdjacency[i] = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span>[] temp : prerequisites) &#123;</span><br><span class="line">        inDegree[temp[<span class="number">0</span>]]++;</span><br><span class="line">        nextAdjacency[temp[<span class="number">1</span>]].add(temp[<span class="number">0</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//广搜队列</span></span><br><span class="line">    Queue&lt;Integer&gt; queue = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">    <span class="comment">//入度为 0 的节点入队</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; inDegree.length; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (inDegree[i] == <span class="number">0</span>) &#123;</span><br><span class="line">            queue.offer(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//保存出队节点序列 和 数量</span></span><br><span class="line">    <span class="keyword">int</span>[] res = <span class="keyword">new</span> <span class="keyword">int</span>[numCourses];</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//广搜</span></span><br><span class="line">    <span class="keyword">while</span> (!queue.isEmpty()) &#123;</span><br><span class="line">        <span class="keyword">int</span> poll = queue.poll();</span><br><span class="line">        res[count++] = poll;</span><br><span class="line">        <span class="comment">//遍历出队节点的所有后继邻接节点</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> next : nextAdjacency[poll]) &#123;</span><br><span class="line">            <span class="comment">//后继邻接节点入度-1</span></span><br><span class="line">            inDegree[next]--;</span><br><span class="line">            <span class="comment">//后继邻接节点入度为 0 则入队</span></span><br><span class="line">            <span class="keyword">if</span> (inDegree[next] == <span class="number">0</span>) &#123;</span><br><span class="line">                queue.offer(next);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//是否有环</span></span><br><span class="line">    <span class="keyword">return</span> count == numCourses ? res : <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">0</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(E+V)    边的数量 E ，节点数量 V。两次遍历邻接表</p>
+<p>空间复杂度：O(E+V)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>图</tag>
+        <tag>拓扑排序</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——最大数</title>
+    <url>/2020/05/17/LeetCode%E2%80%94%E2%80%94%E6%9C%80%E5%A4%A7%E6%95%B0/</url>
+    <content><![CDATA[<h2 id="NO-179-最大数-中等"><a href="#NO-179-最大数-中等" class="headerlink" title="NO.179 最大数 中等 "></a>NO.179 最大数 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/05/17/Yg6L4J.png" alt="Yg6L4J.png"></p>
+<p><strong><font color=red>思路一：自定义排序</font></strong> 需求是按照每个数字首位递减排序，首位相等则比较下一位，最终按照这个规则完成排序。将所有元素串起来得到最大的整数。</p>
+<p>先比较首位，首尾相等再比较下一位，并且每一位的比较按照字典排序即可。这非常符合字符串的大小比较。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">largestNumber</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//转换成字符串</span></span><br><span class="line">    String[] strs = <span class="keyword">new</span> String[nums.length];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">        strs[i] = String.valueOf(nums[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//自定义排序</span></span><br><span class="line">    Arrays.sort(strs, (e1, e2) -&gt; &#123;</span><br><span class="line">        String x = e1 + e2;</span><br><span class="line">        String y = e2 + e1;</span><br><span class="line">        <span class="keyword">return</span> y.compareTo(x);</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="comment">//拼接得到结果</span></span><br><span class="line">    <span class="keyword">if</span> (strs[<span class="number">0</span>].equals(<span class="string">"0"</span>)) <span class="keyword">return</span> <span class="string">"0"</span>;</span><br><span class="line">    StringBuilder ans = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">    <span class="keyword">for</span> (String str : strs) &#123;</span><br><span class="line">        ans.append(str);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>踩个坑： Lambda 的时候传值先给 e2 再给 e1 ，例如 [“10”,”2”]，传值结果是 e2=10，e1=2 </p>
+<p>时间复杂度：O(nlogn)    取决于排序的时间复杂度。</p>
+<p>空间复杂度：O(n)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>字符串</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——地下城游戏</title>
     <url>/2020/05/15/LeetCode%E2%80%94%E2%80%94%E5%9C%B0%E4%B8%8B%E5%9F%8E%E6%B8%B8%E6%88%8F/</url>
     <content><![CDATA[<h2 id="NO-174-地下城游戏-困难"><a href="#NO-174-地下城游戏-困难" class="headerlink" title="NO.174 地下城游戏 困难 "></a>NO.174 地下城游戏 <font color=#ff0099>困难</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/05/12/YYXMee.png" alt="YYXMee.png"></p>
