@@ -221,7 +221,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-05-20 16:04:00 / 修改时间：16:06:59" itemprop="dateCreated datePublished" datetime="2020-05-20T16:04:00+08:00">2020-05-20</time>
+              <time title="创建时间：2020-05-20 16:04:00 / 修改时间：17:36:59" itemprop="dateCreated datePublished" datetime="2020-05-20T16:04:00+08:00">2020-05-20</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -265,23 +265,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="NO-1371-每个元音包含偶数次的最长子字符串-中等"><a href="#NO-1371-每个元音包含偶数次的最长子字符串-中等" class="headerlink" title="NO.1371 每个元音包含偶数次的最长子字符串 中等"></a>NO.1371 每个元音包含偶数次的最长子字符串 <font color=orange>中等</font></h2><p><img src="https://s1.ax1x.com/2020/05/20/Yo88u8.png" alt="Yo88u8.png"></p>
-<p>暴力解法，枚举每个子串，然后遍历子串记录其中元音字母的出现情况，记录符合要求的最长子串，O(n^3)超时。</p>
-<p>然后看见子串，就想到了滑动窗口，滑了半天也没滑出来结果。</p>
-<p>看别人的题解，时刻提醒这自己勤能补拙！</p>
-<p><strong><font color=red>思路一：动态规划+状态压缩</font></strong> 直接说结果，用五个二进制位来分别表示 aeiou 的出现次数，出现偶数次对应位是 0，计数次对应位是 1，所以这个表示范围是 <code>00000~11111</code> ，即十进制的 <code>0~31</code> 共 32 种状态 status。</p>
-<p>因此状态数组 dp[status] 表示出现当前状态的子串的结尾下标，例如：</p>
-<p>status 是二进制的 01010 表示 eo 出现计数次、aiu 出现偶数次，此时的 <code>status=10</code> 如果 dp[status]=8 ，表示出现当前状态的子串的结尾下标是 8 ，下次再出现同样的状态时用 <code>当前下标 i  - dp[status] +1</code> 即可得到第 i 元素作为结尾符合要求的最长子串。</p>
-<p>综上所述 dp[status] 数组的含义是：status 状态子串的结尾下标。</p>
-<p>初始化：dp[0] = 0 即空串的状态为 00000，其余都填充为 -1。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findTheLongestSubstring</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>[] dp = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">32</span>];</span><br><span class="line">    <span class="comment">//初始化</span></span><br><span class="line">    Arrays.fill(dp, -<span class="number">1</span>);</span><br><span class="line">    dp[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> status = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//遍历</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length(); i++) &#123;</span><br><span class="line">        <span class="keyword">char</span> c = s.charAt(i);</span><br><span class="line">        <span class="comment">//记录元音字母出现的次数,更新状态</span></span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">'a'</span>) &#123;</span><br><span class="line">            status ^= (<span class="number">1</span> &lt;&lt; <span class="number">0</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">'e'</span>) &#123;</span><br><span class="line">            status ^= (<span class="number">1</span> &lt;&lt; <span class="number">1</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">'i'</span>) &#123;</span><br><span class="line">            status ^= (<span class="number">1</span> &lt;&lt; <span class="number">2</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">'o'</span>) &#123;</span><br><span class="line">            status ^= (<span class="number">1</span> &lt;&lt; <span class="number">3</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">'u'</span>) &#123;</span><br><span class="line">            status ^= (<span class="number">1</span> &lt;&lt; <span class="number">4</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//如果状态重复出现</span></span><br><span class="line">        <span class="keyword">if</span> (dp[status] &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">            ans = Math.max(ans, i - dp[status] + <span class="number">1</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            dp[status] = i + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>时间复杂度：O(n)</p>
-<p>空间复杂度：O(1)</p>
-<hr>
-<p>本人菜鸟，有错误请告知，感激不尽！</p>
-<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
-
+          <h2 id="NO-1371-每个元音包含偶数次的最长子字符串-中等"><a href="#NO-1371-每个元音包含偶数次的最长子字符串-中等" class="headerlink" title="NO.1371 每个元音包含偶数次的最长子字符串 中等 "></a>NO.1371 每个元音包含偶数次的最长子字符串 <font color=orange>中等</font>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/05/20/LeetCode%E2%80%94%E2%80%94%E6%AF%8F%E4%B8%AA%E5%85%83%E9%9F%B3%E5%8C%85%E5%90%AB%E5%81%B6%E6%95%B0%E6%AC%A1%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%90%E5%AD%97%E7%AC%A6%E4%B8%B2/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -325,7 +317,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-05-20 16:02:32 / 修改时间：16:06:33" itemprop="dateCreated datePublished" datetime="2020-05-20T16:02:32+08:00">2020-05-20</time>
+              <time title="创建时间：2020-05-20 16:02:32 / 修改时间：17:36:57" itemprop="dateCreated datePublished" datetime="2020-05-20T16:02:32+08:00">2020-05-20</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -369,19 +361,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="NO-680-验证回文字符串II-简单"><a href="#NO-680-验证回文字符串II-简单" class="headerlink" title="NO.680 验证回文字符串II 简单"></a>NO.680 验证回文字符串II <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/20/YT3nv6.png" alt="YT3nv6.png"></p>
-<p><strong><font color=red>思路一：暴力</font></strong> 遍历 s 依次删除每个字符(包含删除空字符，即不删)，判断剩下的新字符串是否为回文串。</p>
-<p>时间复杂度：O(n^2)    <strong>超时</strong></p>
-<p>空间复杂度：O(n)    保存新字符串</p>
-<p><strong><font color=red>思路二：双指针贪心算法</font></strong> 双指针相向遍历，如果 <code>s[i]==s[j]</code> 就 <code>i++;j--;</code> 继续遍历，如果 <code>s[i] != s[j]</code> 则分别删除 i 字符或 j 字符后，剩下的部分子串继续双指针遍历判断是否为回文串，此时可以直接返回判断的结果即可。如果最后走出开始的双指针循环，这说明不需要删除元素，s 本身就是回文串。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">validPalindrome</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s.equals(<span class="string">""</span>)) <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>, j = s.length() - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; j) &#123;</span><br><span class="line">        <span class="keyword">if</span> (s.charAt(i) == s.charAt(j)) &#123;</span><br><span class="line">            i++;</span><br><span class="line">            j--;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">//s[i] 和 s[j] 不相等,分别删除 s[i] 或 s[j] 后判断是否为有效回文串</span></span><br><span class="line">            <span class="keyword">return</span> isPalindrome(s, i + <span class="number">1</span>, j) || isPalindrome(s, i, j - <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//双指针判断 s 的 [i,j] 子串是否为回文串</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isPalindrome</span><span class="params">(String s, <span class="keyword">int</span> i, <span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; j) &#123;</span><br><span class="line">        <span class="keyword">if</span> (s.charAt(i) == s.charAt(j)) &#123;</span><br><span class="line">            i++;</span><br><span class="line">            j--;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>时间复杂度：O(n)    一次遍历</p>
-<p>空间复杂度：O(1)</p>
-<hr>
-<p>本人菜鸟，有错误请告知，感激不尽！</p>
-<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
-
+          <h2 id="NO-680-验证回文字符串II-简单"><a href="#NO-680-验证回文字符串II-简单" class="headerlink" title="NO.680 验证回文字符串II 简单 "></a>NO.680 验证回文字符串II <font color=green>简单</font>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/05/20/LeetCode%E2%80%94%E2%80%94%E9%AA%8C%E8%AF%81%E5%9B%9E%E6%96%87%E5%AD%97%E7%AC%A6%E4%B8%B2II/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -425,7 +413,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-05-20 16:02:09 / 修改时间：16:06:41" itemprop="dateCreated datePublished" datetime="2020-05-20T16:02:09+08:00">2020-05-20</time>
+              <time title="创建时间：2020-05-20 16:02:09 / 修改时间：17:36:54" itemprop="dateCreated datePublished" datetime="2020-05-20T16:02:09+08:00">2020-05-20</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -469,16 +457,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="NO-187-重复的DNA序列-中等"><a href="#NO-187-重复的DNA序列-中等" class="headerlink" title="NO.187 重复的DNA序列 中等"></a>NO.187 重复的DNA序列 <font color=orange>中等</font></h2><p><img src="https://s1.ax1x.com/2020/05/18/YfDxte.png" alt="YfDxte.png"></p>
-<p><strong><font color=red>思路一：HashTable</font></strong> 一次遍历，枚举所有字符开头的子串，用一个 HashSet 存储遇见的子串，子串发生重复时保存进结果集(结果集也需要去重)。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">findRepeatedDnaSequences</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    Set&lt;String&gt; res = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">    HashSet&lt;String&gt; set = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= s.length() - <span class="number">10</span>; i++) &#123;</span><br><span class="line">        String temp = s.substring(i, i + <span class="number">10</span>);</span><br><span class="line">        <span class="keyword">if</span> (set.contains(temp)) &#123;</span><br><span class="line">            res.add(temp);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            set.add(temp);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ArrayList&lt;&gt;(res);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>空间复杂度：O(n)</p>
-<p>时间复杂度：O(n)</p>
-<hr>
-<p>本人菜鸟，有错误请告知，感激不尽！</p>
-<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
-
+          <h2 id="NO-187-重复的DNA序列-中等"><a href="#NO-187-重复的DNA序列-中等" class="headerlink" title="NO.187 重复的DNA序列 中等 "></a>NO.187 重复的DNA序列 <font color=orange>中等</font>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/05/20/LeetCode%E2%80%94%E2%80%94%E9%87%8D%E5%A4%8D%E7%9A%84DNA%E5%BA%8F%E5%88%97/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
