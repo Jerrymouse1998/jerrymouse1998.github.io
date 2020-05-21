@@ -1,6 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——旋转链表&amp;旋转数组</title>
+    <url>/2020/05/21/LeetCode%E2%80%94%E2%80%94%E6%97%8B%E8%BD%AC%E9%93%BE%E8%A1%A8-%E6%97%8B%E8%BD%AC%E6%95%B0%E7%BB%84/</url>
+    <content><![CDATA[<p><strong>NO.61 旋转链表 <font color=orange>中等</font> 、NO.189 旋转数组 <font color=green>简单</font></strong>  <a id="more"></a></p>
+<h2 id="NO-61-旋转链表-中等"><a href="#NO-61-旋转链表-中等" class="headerlink" title="NO.61 旋转链表 中等"></a>NO.61 旋转链表 <font color=orange>中等</font></h2><p><img src="https://s2.ax1x.com/2020/03/09/3zzHQ1.png" alt="3zzHQ1.png"></p>
+<p><strong><font color=red>思路一：成环再断</font></strong> 先将链表首尾相连形成环，然后找到旋转后的新链表的新头节点和尾节点，从两者之间断开形成需要的结果。</p>
+<p><img src="https://s2.ax1x.com/2020/03/09/8prla4.png" alt="8prla4.png"></p>
+<p><img src="https://s2.ax1x.com/2020/03/09/8prurT.png" alt="8prurT.png"></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">rotateRight</span><span class="params">(ListNode head, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(head==<span class="keyword">null</span>||head.next==<span class="keyword">null</span>)<span class="keyword">return</span> head;</span><br><span class="line">    <span class="comment">//标记初始链表的结尾，n记录节点数</span></span><br><span class="line">    ListNode oldTail=head;</span><br><span class="line">    <span class="keyword">int</span> n=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (oldTail.next!=<span class="keyword">null</span>)&#123;</span><br><span class="line">        oldTail=oldTail.next;</span><br><span class="line">        n++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//链表成环</span></span><br><span class="line">    oldTail.next=head;</span><br><span class="line">    <span class="comment">//旋转之后的新结尾</span></span><br><span class="line">    ListNode newTail=head;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n - k % n; i++) &#123;</span><br><span class="line">        newTail=newTail.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//新头节点</span></span><br><span class="line">    ListNode newHead=newTail.next;</span><br><span class="line">    <span class="comment">//新尾节点和新头节点之间断开</span></span><br><span class="line">    newTail.next=<span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">return</span> newHead;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<h2 id="NO-189-旋转数组-简单"><a href="#NO-189-旋转数组-简单" class="headerlink" title="NO.189 旋转数组 简单"></a>NO.189 旋转数组 <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/21/YbHmiq.png" alt="YbHmiq.png"></p>
+<p><strong><font color=red>思路一：环形替代</font></strong> 数组不需要像链表一样用一个循环去统计元素个数，但是数组也不方便像链表一样轻松直观地形成环。<strong>数组更像是一个一个的座位。</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">这道题就像换座位一样，假设有 5 个座位 [0,1,2,3,4] ，</span><br><span class="line">座位上每个人 [A,B,C,D,E] 需要向后移动 3 个&quot;座位&quot;，到达最后的&quot;角落&quot;就循环到开头继续后移。</span><br><span class="line">        0 号座位的人站 A 起来，把 3 号座位的人 D 赶到&quot;一旁站着&quot;，然后自己坐下完成移位；</span><br><span class="line"></span><br><span class="line">        D 不甘心站在一边，就去找 1 号座位的人 B 并用同样的方法赶走 B，自己坐下完成移位；</span><br><span class="line"></span><br><span class="line">        B 也不愿站着，就去赶走 4 号座位的人 E ，自己坐下完成移位；</span><br><span class="line"></span><br><span class="line">        E 去赶走了 C ， 自己坐下完成移位；</span><br><span class="line"></span><br><span class="line">        最后 C 一看，0 号座位没人坐，刚好适合自己，于是坐下，完成移位；</span><br><span class="line"></span><br><span class="line">        至此，所有人完成换位，共换位 5 次。</span><br><span class="line"></span><br><span class="line">但是有特殊情况：只有四个座位 [0,1,2,3] 分别坐着 [A,B,C,D] 需要没人后移 2 个座位，</span><br><span class="line"></span><br><span class="line">        还是从 start&#x3D;0 号座位开始，先是 A 去赶走 C，坐下完成移位；</span><br><span class="line"></span><br><span class="line">        这时 C 一看刚好自己需要的位置 0 号座位是空的，直接坐下；</span><br><span class="line"></span><br><span class="line">        此时没有人站在一旁，但是仅仅只进行了 2 次换位，于是去催促 start+1&#x3D;1 号座位的人继续换位；</span><br><span class="line"></span><br><span class="line">        B 去赶走了 D 坐在 3 号座位，D 去坐在空着的 2 号座位，完成移位；</span><br><span class="line"></span><br><span class="line">        至此共换位 4 次，换位完成。</span><br></pre></td></tr></table></figure>
+
+<p>需要统计换位的总次数 count，需要记录本轮换位的开始位置 start，本轮当前需要进行换位的元素 pre 和 元素原本的位置 curr。</p>
+<p>每轮换位的完成条件是<code>需要换位元素的原本位置 == 开始位置start</code>，此时如果没有全不完成换位，则从 start+1 的位置开始下一轮换位，直至所有元素都完成换位。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">rotate</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> len = nums.length;</span><br><span class="line">    k = k % len;</span><br><span class="line">    <span class="comment">//记录换位次数</span></span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//从哪个位置开始换位</span></span><br><span class="line">    <span class="keyword">int</span> start = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (count &lt; len) &#123;</span><br><span class="line">        <span class="comment">//本轮从哪个位置开始换位</span></span><br><span class="line">        <span class="keyword">int</span> curr = start;</span><br><span class="line">        <span class="comment">//需要换位的元素</span></span><br><span class="line">        <span class="keyword">int</span> pre = nums[curr];</span><br><span class="line">        <span class="comment">//开始本轮换位</span></span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            <span class="comment">//要去抢占的位置</span></span><br><span class="line">            <span class="keyword">int</span> next = (curr + k) % len;</span><br><span class="line">            <span class="comment">//被赶走的元素</span></span><br><span class="line">            <span class="keyword">int</span> temp = nums[next];</span><br><span class="line">            <span class="comment">//pre 坐下</span></span><br><span class="line">            nums[next] = pre;</span><br><span class="line">            <span class="comment">//下一个需要换位的元素 和 元素原本的位置</span></span><br><span class="line">            pre = temp;</span><br><span class="line">            curr = next;</span><br><span class="line">            count++;</span><br><span class="line">        &#125; <span class="keyword">while</span> (start != curr);</span><br><span class="line">        start++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n) 每个元素换位一次</p>
+<p>空间复杂度：O(1)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和学习记录博客:<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">博客</a>、<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>链表</tag>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——买卖股票的最佳时机</title>
+    <url>/2020/05/21/LeetCode%E2%80%94%E2%80%94%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E7%9A%84%E6%9C%80%E4%BD%B3%E6%97%B6%E6%9C%BA/</url>
+    <content><![CDATA[<p><strong>NO.121 买卖股票的最佳时机 <font color=green>简单</font> 、NO.122 买卖股票的最佳时机II <font color=green>简单</font> 、NO.123 买卖股票的最佳时机III <font color=#ff0099>困难</font> 、NO.188 买卖股票的最佳时机IV <font color=#ff0099>困难</font></strong> <a id="more"></a></p>
+<h2 id="NO-121-买卖股票的最佳时机-简单"><a href="#NO-121-买卖股票的最佳时机-简单" class="headerlink" title="NO.121 买卖股票的最佳时机 简单"></a>NO.121 买卖股票的最佳时机 <font color=green>简单</font></h2><p><img src="https://s2.ax1x.com/2020/03/09/3zzoW9.png" alt="3zzoW9.png"></p>
+<p><strong><font color=red>思路一：暴力法</font></strong> 没什么好说的，双重循环计算所有元素两两组合相减的结果，取最大。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="keyword">int</span>[] prices)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> maxProfit=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; prices.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i+<span class="number">1</span>; j &lt; prices.length; j++) &#123;</span><br><span class="line">            maxProfit=Math.max(maxProfit,prices[j]-prices[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> maxProfit;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n^2)</p>
+<p><strong><font color=red>思路二：优化暴力法到一次遍历</font></strong> 买卖股票从第二天开始我们每天都会”后悔”：后悔没有在之前的最低点进行买入，只有这样我们的收益才会最大化。</p>
+<p>由此可见，我们想要当天利益最大化，只需要在过去的某个最低点买入股票就好。所以我们只需要记录曾经出现过的最低点就好。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="keyword">int</span>[] prices)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> minPoint=Integer.MAX_VALUE,maxProfit=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; prices.length; i++) &#123;</span><br><span class="line">        <span class="comment">//记录曾出现过最低点</span></span><br><span class="line">        minPoint=Math.min(prices[i],minPoint);</span><br><span class="line">        <span class="comment">//当日-曾经的最低</span></span><br><span class="line">        maxProfit=Math.max(maxProfit,prices[i]-minPoint);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> maxProfit;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<p>从NO.121题不难看出：<strong><font color=red>买股票的最佳时机是曾经！股市有风险，入股需谨慎！</font></strong>(狗头)</p>
+<p>单纯的解答本题是比较简单的，但是买卖股票可以算作是一个系列的经典问题，在leetcode上就有本题一系列的变种问题：买卖股票的最佳时机、买卖股票的最佳时机II、买卖股票的最佳时机III、买卖股票的最佳时机IV、买卖股票的最佳时机含冷冻期、买卖股票的最佳时机含手续费。</p>
+<p>虽然这些题有难有易，但是既然是一类问题，就有这一些通用的方法。</p>
+<p>这六个问题都是由第四个问题简化变种而来的，第四题相较于本题多了一个参数k，限制只能进行k次交易；第一题也就是本题是只进行一次交易，相当于 k = 1；第二题是不限交易次数，相当于 k = +infinity（正无穷）；第三题是只进行 2 次交易，相当于 k = 2；剩下两道也是不限次数，但是加了交易「冷冻期」和「手续费」的额外条件，其实就是第二题的变种。</p>
+<h2 id="NO-122-买卖股票的最佳时机II-简单"><a href="#NO-122-买卖股票的最佳时机II-简单" class="headerlink" title="NO.122 买卖股票的最佳时机II 简单"></a>NO.122 买卖股票的最佳时机II <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/04/24/JBeCGT.png" alt="JBeCGT.png"></p>
+<p><img src="https://s1.ax1x.com/2020/04/24/JBe9iV.png" alt="JBe9iV.png"></p>
+<p><strong><font color=red>思路一：贪心算法</font></strong> 姊妹题NO.121，区别在于NO.121题只允许交易一次(一次买入、一次卖出)，而本题没有交易次数的限制。</p>
+<p>所以想到贪心算法，因为我们是”上帝视角”知道”未来股价”，所以只要赚钱我们每天都进行交易。</p>
+<p>所谓赚钱就是：”明天i+1股价”-“今天i股价”&gt;0，这种情况今天就买入；否则就是赔钱或者不赚钱的情况，不进行交易。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="keyword">int</span>[] prices)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (prices == <span class="keyword">null</span> || prices.length == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> Profit = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; prices.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">        <span class="comment">//今天i买，明天i+1赚钱。就今天买入，明天卖。</span></span><br><span class="line">        <span class="keyword">int</span> sub = prices[i + <span class="number">1</span>] - prices[i];</span><br><span class="line">        <span class="keyword">if</span> (sub &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            Profit += sub;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> Profit;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<p><strong><font color=red>思路二：动态规划</font></strong> 贪心算法已经很好地解决了这个问题，但是我们还是要带入一下DP解法，为后序的姊妹题NO.122买卖股票的最佳时机III、以及等等很多其他的XXX买卖股票问题都是基于本题进行变化的，无非是在本题的基础上增加更多的限制条件。</p>
+<p>dp[i][j]的含义：i表示第i天，j表示持股状态(0表示不持股，1表示持股)。dp[i][j]整体就表示第i天持股/不持股时手里的钱。</p>
+<p>初始化：dp[0][0]=0，刚开始不赔不赚；dp[0][1]= -prices[0]，只支出了。</p>
+<p>状态转移：<code>dp[i][0]=Max(dp[i-1][0],dp[i-1][1]+prices[i])</code>，即第i天不持股时手里钱最多为MAX(i-1天不持股i天继续不持股，i-1天持股+i天以当日价格卖掉股票)；</p>
+<p>同理<code>dp[i][1]=Max(dp[i-1][0]-prices[i],dp[i-1][1])</code>，即第i天持股时手里钱最多为MAX(i-1天不持股-i天以当日价格买入股票，i-1天持股i天继续持股)。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="keyword">int</span>[] prices)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (prices == <span class="keyword">null</span> || prices.length &lt; <span class="number">2</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//初始化</span></span><br><span class="line">    <span class="keyword">int</span>[][] dp = <span class="keyword">new</span> <span class="keyword">int</span>[prices.length][<span class="number">2</span>];</span><br><span class="line">    dp[<span class="number">0</span>][<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">    dp[<span class="number">0</span>][<span class="number">1</span>] -= prices[<span class="number">0</span>];</span><br><span class="line">    <span class="comment">//状态转移</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; prices.length; i++) &#123;</span><br><span class="line">        dp[i][<span class="number">0</span>] = Math.max(dp[i - <span class="number">1</span>][<span class="number">0</span>], dp[i - <span class="number">1</span>][<span class="number">1</span>] + prices[i]);</span><br><span class="line">        dp[i][<span class="number">1</span>] = Math.max(dp[i - <span class="number">1</span>][<span class="number">0</span>] - prices[i], dp[i - <span class="number">1</span>][<span class="number">1</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//最后一天一定是不持股的</span></span><br><span class="line">    <span class="keyword">return</span> dp[prices.length - <span class="number">1</span>][<span class="number">0</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<h2 id="NO-123-买卖股票的最佳时机III-困难"><a href="#NO-123-买卖股票的最佳时机III-困难" class="headerlink" title="NO.123 买卖股票的最佳时机III 困难"></a>NO.123 买卖股票的最佳时机III <font color=#ff0099>困难</font></h2><p><img src="https://s1.ax1x.com/2020/04/25/JsFsEt.png" alt="JsFsEt.png"></p>
+<p><strong><font color=red>思路一：动态规划</font></strong> NO.121是只能买卖一次股票，NO.122是任意买卖股票，而本题是只能买卖股票两次。</p>
+<p>相较于前两题的状态，本题又增加了一个交易次数的状态k。</p>
+<p><strong>dp[i][j][k]的含义</strong>：第i天的利润，j表示持股状态(0不持股，1持股)，k交易次数(卖出次数0~2)。所以每天有六种状态，思路就是从每天的六种状态中找到利润最大的。</p>
+<p><strong>初始化</strong>：<code>dp[0][0][0]=dp[0][0][1]=dp[0][0][2]=0</code>，啥也没干；<code>dp[0][1][0]=dp[0][1][1]=dp[0][1][2]=-prices[0]</code>，第一天持股只有支出。</p>
+<p><strong>状态转移</strong>：<code>dp[i][0][0]=dp[i-1][0][0]</code>，第i天不持股交易次数0，第i-1天一定未持股未交易，维持现状；</p>
+<p><code>dp[i][0][1]=MAX(dp[i-1][0][1],dp[i-1][1][0]+prices[i])</code>，第i天不持股1次交易，维持第i-1天的状态，或者第i-1天持股未交易第i天卖出。</p>
+<p><code>dp[i][0][2]=MAX(dp[i-1][0][2],dp[i-1][1][1]+prices[i])</code>，第i天不持股2次交易，维持第i-1天的状态，或者第i-1天持股1次交易第i天卖出。</p>
+<p><code>dp[i][1][0]=MAX(dp[i-1][1][0],dp[i-1][0][0]-prices[i])</code>，第i天持股未交易，维持第i-1天的状态，或者第i-1天不持股未交易第i天买入。</p>
+<p><code>dp[i][1][1]=MAX(dp[i-1][1][1],dp[i-1][0][1]-prices[i])</code>，第i天持股1次交易，维持第i-1天的状态，或者第i-1天不持股1次交易第i天买入。</p>
+<p><code>dp[i][1][2]=dp[i][1][2]</code>，第i天持股2次交易，已经到达交易限制，但是手中还持股，不需要考虑一定不能利润最大化。</p>
+<p>最终的结果一定是在不持股的三种状态中进行比较。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="keyword">int</span>[] prices)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (prices == <span class="keyword">null</span> || prices.length &lt; <span class="number">2</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//初始化</span></span><br><span class="line">    <span class="keyword">int</span>[][][] dp = <span class="keyword">new</span> <span class="keyword">int</span>[prices.length][<span class="number">2</span>][<span class="number">3</span>];</span><br><span class="line">    dp[<span class="number">0</span>][<span class="number">0</span>][<span class="number">0</span>] = dp[<span class="number">0</span>][<span class="number">0</span>][<span class="number">1</span>] = dp[<span class="number">0</span>][<span class="number">0</span>][<span class="number">2</span>] = <span class="number">0</span>;</span><br><span class="line">    dp[<span class="number">0</span>][<span class="number">1</span>][<span class="number">0</span>] = dp[<span class="number">0</span>][<span class="number">1</span>][<span class="number">1</span>] = dp[<span class="number">0</span>][<span class="number">1</span>][<span class="number">2</span>] = -prices[<span class="number">0</span>];</span><br><span class="line">    <span class="comment">//状态转移</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; prices.length; i++) &#123;</span><br><span class="line">        <span class="comment">//六种状态</span></span><br><span class="line">        dp[i][<span class="number">0</span>][<span class="number">0</span>] = dp[i - <span class="number">1</span>][<span class="number">0</span>][<span class="number">0</span>];</span><br><span class="line">        dp[i][<span class="number">0</span>][<span class="number">1</span>] = Math.max(dp[i - <span class="number">1</span>][<span class="number">0</span>][<span class="number">1</span>], dp[i - <span class="number">1</span>][<span class="number">1</span>][<span class="number">0</span>] + prices[i]);</span><br><span class="line">        dp[i][<span class="number">0</span>][<span class="number">2</span>] = Math.max(dp[i - <span class="number">1</span>][<span class="number">0</span>][<span class="number">2</span>], dp[i - <span class="number">1</span>][<span class="number">1</span>][<span class="number">1</span>] + prices[i]);</span><br><span class="line">        dp[i][<span class="number">1</span>][<span class="number">0</span>] = Math.max(dp[i - <span class="number">1</span>][<span class="number">1</span>][<span class="number">0</span>], dp[i - <span class="number">1</span>][<span class="number">0</span>][<span class="number">0</span>] - prices[i]);</span><br><span class="line">        dp[i][<span class="number">1</span>][<span class="number">1</span>] = Math.max(dp[i - <span class="number">1</span>][<span class="number">1</span>][<span class="number">1</span>], dp[i - <span class="number">1</span>][<span class="number">0</span>][<span class="number">1</span>] - prices[i]);</span><br><span class="line">        dp[i][<span class="number">1</span>][<span class="number">2</span>] = dp[i - <span class="number">1</span>][<span class="number">1</span>][<span class="number">2</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//最大利润一定是不持股的三种状态之一。</span></span><br><span class="line">    <span class="keyword">return</span> Math.max(dp[prices.length - <span class="number">1</span>][<span class="number">0</span>][<span class="number">2</span>],</span><br><span class="line">                    Math.max(dp[prices.length - <span class="number">1</span>][<span class="number">0</span>][<span class="number">1</span>], dp[prices.length - <span class="number">1</span>][<span class="number">0</span>][<span class="number">0</span>]));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    空间O(n)虽然是三维数组，但2和3是常数。</p>
+<h2 id="NO-188-买卖股票的最佳时机IV-困难"><a href="#NO-188-买卖股票的最佳时机IV-困难" class="headerlink" title="NO.188 买卖股票的最佳时机IV 困难"></a>NO.188 买卖股票的最佳时机IV <font color=#ff0099>困难</font></h2><p><img src="https://s1.ax1x.com/2020/05/21/YbtGLR.png" alt="YbtGLR.png"></p>
+<p><strong><font color=red>思路一：动态规划</font></strong> 在上一题的基础上两次交易，变味了 k 次交易。但是需要考虑的状态，仍然是三个，第 i 天、j 持股状态、k 进行过的交易次数。</p>
+<p>虽然 k 从上一题的常量 2 变为了本题的变量，但是 dp 数组的含义不变。但是本题如果使用三维数组会因为 k 值过大，导致内存超出。</p>
+<p>所以采用两个一维数组 dpi0[k+1] 和 dpi1[k+1] 表示第 i 天持股(1)或不持股(0)时，不同交易次数下的利润。(上一题也可以采用这个方法，进行空间优化)</p>
+<p>实现上，由于本题 k 不是上一题中的常量 2 ，无法手动写死每种情况，所以采用一个 for 循环即可。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="keyword">int</span> k, <span class="keyword">int</span>[] prices)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (k&lt;=<span class="number">0</span>||prices.length&lt;<span class="number">1</span>)<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//最多只能交易 prices.lenght/2 次</span></span><br><span class="line">    <span class="keyword">if</span> (k&gt;prices.length/<span class="number">2</span>) k = prices.length/<span class="number">2</span>;</span><br><span class="line">    <span class="comment">//初始化</span></span><br><span class="line">    <span class="keyword">int</span>[] dpi0 = <span class="keyword">new</span> <span class="keyword">int</span>[k+<span class="number">1</span>];</span><br><span class="line">    <span class="keyword">int</span>[] dpi1 = <span class="keyword">new</span> <span class="keyword">int</span>[k+<span class="number">1</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt; k + <span class="number">1</span>; j++) &#123;</span><br><span class="line">        dpi1[j] = -prices[<span class="number">0</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//状态转移</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; prices.length; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = k; j &gt;= <span class="number">1</span>; j--) &#123;</span><br><span class="line">            <span class="comment">//第i天不持股 = Max(第i-1天不持股,第i-1天持股+第i天出售)</span></span><br><span class="line">            dpi0[j] = Math.max(dpi0[j],dpi1[j]+prices[i]);</span><br><span class="line">            <span class="comment">//第i天持股 = Max(第i-1天持股,第i-1天不持股-第i天买入)</span></span><br><span class="line">            dpi1[j] = Math.max(dpi1[j],dpi0[j-<span class="number">1</span>]-prices[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dpi0[k];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n*k)    n 共n天</p>
+<p>空间复杂度：O(k)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解和学习记录博客:<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">博客</a>、<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>动态规划</tag>
+        <tag>贪心算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——每个元音包含偶数次的最长子字符串</title>
     <url>/2020/05/20/LeetCode%E2%80%94%E2%80%94%E6%AF%8F%E4%B8%AA%E5%85%83%E9%9F%B3%E5%8C%85%E5%90%AB%E5%81%B6%E6%95%B0%E6%AC%A1%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%90%E5%AD%97%E7%AC%A6%E4%B8%B2/</url>
     <content><![CDATA[<h2 id="NO-1371-每个元音包含偶数次的最长子字符串-中等"><a href="#NO-1371-每个元音包含偶数次的最长子字符串-中等" class="headerlink" title="NO.1371 每个元音包含偶数次的最长子字符串 中等 "></a>NO.1371 每个元音包含偶数次的最长子字符串 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/05/20/Yo88u8.png" alt="Yo88u8.png"></p>
@@ -2074,37 +2179,6 @@
       </tags>
   </entry>
   <entry>
-    <title>LeetCode——买卖股票的最佳时机II</title>
-    <url>/2020/04/25/LeetCode%E2%80%94%E2%80%94%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E7%9A%84%E6%9C%80%E4%BD%B3%E6%97%B6%E6%9C%BAII-1/</url>
-    <content><![CDATA[<h2 id="NO-123-买卖股票的最佳时机III-困难"><a href="#NO-123-买卖股票的最佳时机III-困难" class="headerlink" title="NO.123 买卖股票的最佳时机III 困难 "></a>NO.123 买卖股票的最佳时机III <font color=#ff0099>困难</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/25/JsFsEt.png" alt="JsFsEt.png"></p>
-<p><strong><font color=red>思路一：动态规划</font></strong> NO.121是只能买卖一次股票，NO.122是任意买卖股票，而本题是只能买卖股票两次。</p>
-<p>相较于前两题的状态，本题又增加了一个交易次数的状态k。</p>
-<p><strong>dp[i][j][k]的含义</strong>：第i天的利润，j表示持股状态(0不持股，1持股)，k交易次数(卖出次数0~2)。所以每天有六种状态，思路就是从每天的六种状态中找到利润最大的。</p>
-<p><strong>初始化</strong>：<code>dp[0][0][0]=dp[0][0][1]=dp[0][0][2]=0</code>，啥也没干；<code>dp[0][1][0]=dp[0][1][1]=dp[0][1][2]=-prices[0]</code>，第一天持股只有支出。</p>
-<p><strong>状态转移</strong>：<code>dp[i][0][0]=dp[i-1][0][0]</code>，第i天不持股交易次数0，第i-1天一定未持股未交易，维持现状；</p>
-<p><code>dp[i][0][1]=MAX(dp[i-1][0][1],dp[i-1][1][0]+prices[i])</code>，第i天不持股1次交易，维持第i-1天的状态，或者第i-1天持股未交易第i天卖出。</p>
-<p><code>dp[i][0][2]=MAX(dp[i-1][0][2],dp[i-1][1][1]+prices[i])</code>，第i天不持股2次交易，维持第i-1天的状态，或者第i-1天持股1次交易第i天卖出。</p>
-<p><code>dp[i][1][0]=MAX(dp[i-1][1][0],dp[i-1][0][0]-prices[i])</code>，第i天持股未交易，维持第i-1天的状态，或者第i-1天不持股未交易第i天买入。</p>
-<p><code>dp[i][1][1]=MAX(dp[i-1][1][1],dp[i-1][0][1]-prices[i])</code>，第i天持股1次交易，维持第i-1天的状态，或者第i-1天不持股1次交易第i天买入。</p>
-<p><code>dp[i][1][2]=dp[i][1][2]</code>，第i天持股2次交易，已经到达交易限制，但是手中还持股，不需要考虑一定不能利润最大化。</p>
-<p>最终的结果一定是在不持股的三种状态中进行比较。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="keyword">int</span>[] prices)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (prices == <span class="keyword">null</span> || prices.length &lt; <span class="number">2</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//初始化</span></span><br><span class="line">    <span class="keyword">int</span>[][][] dp = <span class="keyword">new</span> <span class="keyword">int</span>[prices.length][<span class="number">2</span>][<span class="number">3</span>];</span><br><span class="line">    dp[<span class="number">0</span>][<span class="number">0</span>][<span class="number">0</span>] = dp[<span class="number">0</span>][<span class="number">0</span>][<span class="number">1</span>] = dp[<span class="number">0</span>][<span class="number">0</span>][<span class="number">2</span>] = <span class="number">0</span>;</span><br><span class="line">    dp[<span class="number">0</span>][<span class="number">1</span>][<span class="number">0</span>] = dp[<span class="number">0</span>][<span class="number">1</span>][<span class="number">1</span>] = dp[<span class="number">0</span>][<span class="number">1</span>][<span class="number">2</span>] = -prices[<span class="number">0</span>];</span><br><span class="line">    <span class="comment">//状态转移</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; prices.length; i++) &#123;</span><br><span class="line">        <span class="comment">//六种状态</span></span><br><span class="line">        dp[i][<span class="number">0</span>][<span class="number">0</span>] = dp[i - <span class="number">1</span>][<span class="number">0</span>][<span class="number">0</span>];</span><br><span class="line">        dp[i][<span class="number">0</span>][<span class="number">1</span>] = Math.max(dp[i - <span class="number">1</span>][<span class="number">0</span>][<span class="number">1</span>], dp[i - <span class="number">1</span>][<span class="number">1</span>][<span class="number">0</span>] + prices[i]);</span><br><span class="line">        dp[i][<span class="number">0</span>][<span class="number">2</span>] = Math.max(dp[i - <span class="number">1</span>][<span class="number">0</span>][<span class="number">2</span>], dp[i - <span class="number">1</span>][<span class="number">1</span>][<span class="number">1</span>] + prices[i]);</span><br><span class="line">        dp[i][<span class="number">1</span>][<span class="number">0</span>] = Math.max(dp[i - <span class="number">1</span>][<span class="number">1</span>][<span class="number">0</span>], dp[i - <span class="number">1</span>][<span class="number">0</span>][<span class="number">0</span>] - prices[i]);</span><br><span class="line">        dp[i][<span class="number">1</span>][<span class="number">1</span>] = Math.max(dp[i - <span class="number">1</span>][<span class="number">1</span>][<span class="number">1</span>], dp[i - <span class="number">1</span>][<span class="number">0</span>][<span class="number">1</span>] - prices[i]);</span><br><span class="line">        dp[i][<span class="number">1</span>][<span class="number">2</span>] = dp[i - <span class="number">1</span>][<span class="number">1</span>][<span class="number">2</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//最大利润一定是不持股的三种状态之一。</span></span><br><span class="line">    <span class="keyword">return</span> Math.max(dp[prices.length - <span class="number">1</span>][<span class="number">0</span>][<span class="number">2</span>],</span><br><span class="line">                    Math.max(dp[prices.length - <span class="number">1</span>][<span class="number">0</span>][<span class="number">1</span>], dp[prices.length - <span class="number">1</span>][<span class="number">0</span>][<span class="number">0</span>]));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>时间复杂度：O(n)    空间O(n)虽然是三维数组，但2和3是常数。</p>
-<hr>
-<p>本人菜鸟，有错误请告知，感激不尽！</p>
-<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
-]]></content>
-      <categories>
-        <category>题解笔记</category>
-      </categories>
-      <tags>
-        <tag>leetcode</tag>
-        <tag>动态规划</tag>
-        <tag>贪心算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>剑指Offer——数组中的逆序对</title>
     <url>/2020/04/24/%E5%89%91%E6%8C%87Offer%E2%80%94%E2%80%94%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%80%86%E5%BA%8F%E5%AF%B9/</url>
     <content><![CDATA[<h2 id="剑指Offer-51-数组中的逆序对-困难"><a href="#剑指Offer-51-数组中的逆序对-困难" class="headerlink" title="剑指Offer.51 数组中的逆序对 困难 "></a>剑指Offer.51 数组中的逆序对 <font color=#ff0099>困难</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/24/JDV7sH.png" alt="JDV7sH.png"></p>
@@ -2133,38 +2207,6 @@
       <tags>
         <tag>分治算法</tag>
         <tag>剑指Offer</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LeetCode——买卖股票的最佳时机II</title>
-    <url>/2020/04/24/LeetCode%E2%80%94%E2%80%94%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E7%9A%84%E6%9C%80%E4%BD%B3%E6%97%B6%E6%9C%BAII/</url>
-    <content><![CDATA[<h2 id="NO-122-买卖股票的最佳时机II-简单"><a href="#NO-122-买卖股票的最佳时机II-简单" class="headerlink" title="NO.122 买卖股票的最佳时机II 简单 "></a>NO.122 买卖股票的最佳时机II <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/24/JBeCGT.png" alt="JBeCGT.png"></p>
-<p><img src="https://s1.ax1x.com/2020/04/24/JBe9iV.png" alt="JBe9iV.png"></p>
-<p><strong><font color=red>思路一：贪心算法</font></strong> 姊妹题NO.121，区别在于NO.121题只允许交易一次(一次买入、一次卖出)，而本题没有交易次数的限制。</p>
-<p>所以想到贪心算法，因为我们是”上帝视角”知道”未来股价”，所以只要赚钱我们每天都进行交易。</p>
-<p>所谓赚钱就是：”明天i+1股价”-“今天i股价”&gt;0，这种情况今天就买入；否则就是赔钱或者不赚钱的情况，不进行交易。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="keyword">int</span>[] prices)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (prices == <span class="keyword">null</span> || prices.length == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> Profit = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; prices.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">        <span class="comment">//今天i买，明天i+1赚钱。就今天买入，明天卖。</span></span><br><span class="line">        <span class="keyword">int</span> sub = prices[i + <span class="number">1</span>] - prices[i];</span><br><span class="line">        <span class="keyword">if</span> (sub &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            Profit += sub;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> Profit;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>时间复杂度：O(n)</p>
-<p><strong><font color=red>思路二：动态规划</font></strong> 贪心算法已经很好地解决了这个问题，但是我们还是要带入一下DP解法，为后序的姊妹题NO.122买卖股票的最佳时机III、以及等等很多其他的XXX买卖股票问题都是基于本题进行变化的，无非是在本题的基础上增加更多的限制条件。</p>
-<p>dp[i][j]的含义：i表示第i天，j表示持股状态(0表示不持股，1表示持股)。dp[i][j]整体就表示第i天持股/不持股时手里的钱。</p>
-<p>初始化：dp[0][0]=0，刚开始不赔不赚；dp[0][1]= -prices[0]，只支出了。</p>
-<p>状态转移：<code>dp[i][0]=Max(dp[i-1][0],dp[i-1][1]+prices[i])</code>，即第i天不持股时手里钱最多为MAX(i-1天不持股i天继续不持股，i-1天持股+i天以当日价格卖掉股票)；</p>
-<p>同理<code>dp[i][1]=Max(dp[i-1][0]-prices[i],dp[i-1][1])</code>，即第i天持股时手里钱最多为MAX(i-1天不持股-i天以当日价格买入股票，i-1天持股i天继续持股)。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="keyword">int</span>[] prices)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (prices == <span class="keyword">null</span> || prices.length &lt; <span class="number">2</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//初始化</span></span><br><span class="line">    <span class="keyword">int</span>[][] dp = <span class="keyword">new</span> <span class="keyword">int</span>[prices.length][<span class="number">2</span>];</span><br><span class="line">    dp[<span class="number">0</span>][<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">    dp[<span class="number">0</span>][<span class="number">1</span>] -= prices[<span class="number">0</span>];</span><br><span class="line">    <span class="comment">//状态转移</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; prices.length; i++) &#123;</span><br><span class="line">        dp[i][<span class="number">0</span>] = Math.max(dp[i - <span class="number">1</span>][<span class="number">0</span>], dp[i - <span class="number">1</span>][<span class="number">1</span>] + prices[i]);</span><br><span class="line">        dp[i][<span class="number">1</span>] = Math.max(dp[i - <span class="number">1</span>][<span class="number">0</span>] - prices[i], dp[i - <span class="number">1</span>][<span class="number">1</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//最后一天一定是不持股的</span></span><br><span class="line">    <span class="keyword">return</span> dp[prices.length - <span class="number">1</span>][<span class="number">0</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>时间复杂度：O(n)</p>
-<hr>
-<p>本人菜鸟，有错误请告知，感激不尽！</p>
-<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
-]]></content>
-      <categories>
-        <category>题解笔记</category>
-      </categories>
-      <tags>
-        <tag>leetcode</tag>
-        <tag>动态规划</tag>
-        <tag>贪心算法</tag>
       </tags>
   </entry>
   <entry>
@@ -8238,37 +8280,6 @@
       </tags>
   </entry>
   <entry>
-    <title>LeetCode——买卖股票的最佳时机</title>
-    <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E7%9A%84%E6%9C%80%E4%BD%B3%E6%97%B6%E6%9C%BA/</url>
-    <content><![CDATA[<h2 id="NO-121-买卖股票的最佳时机-简单"><a href="#NO-121-买卖股票的最佳时机-简单" class="headerlink" title="NO.121 买卖股票的最佳时机 简单 "></a>NO.121 买卖股票的最佳时机 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2020/03/09/3zzoW9.png" alt="3zzoW9.png"></p>
-<p><strong><font color=red>思路一：暴力法</font></strong> 没什么好说的，双重循环计算所有元素两两组合相减的结果，取最大。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="keyword">int</span>[] prices)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> maxProfit=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; prices.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i+<span class="number">1</span>; j &lt; prices.length; j++) &#123;</span><br><span class="line">            maxProfit=Math.max(maxProfit,prices[j]-prices[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> maxProfit;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>时间复杂度：O(n^2)</p>
-<p><strong><font color=red>思路二：优化暴力法到一次遍历</font></strong> 买卖股票从第二天开始我们每天都会”后悔”：后悔没有在之前的最低点进行买入，只有这样我们的收益才会最大化。</p>
-<p>由此可见，我们想要当天利益最大化，只需要在过去的某个最低点买入股票就好。所以我们只需要记录曾经出现过的最低点就好。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="keyword">int</span>[] prices)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> minPoint=Integer.MAX_VALUE,maxProfit=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; prices.length; i++) &#123;</span><br><span class="line">        <span class="comment">//记录曾出现过最低点</span></span><br><span class="line">        minPoint=Math.min(prices[i],minPoint);</span><br><span class="line">        <span class="comment">//当日-曾经的最低</span></span><br><span class="line">        maxProfit=Math.max(maxProfit,prices[i]-minPoint);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> maxProfit;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>时间复杂度：O(n)</p>
-<p>从NO.121题不难看出：<strong><font color=red>买股票的最佳时机是曾经！股市有风险，入股需谨慎！</font></strong>(狗头)</p>
-<p>单纯的解答本题是比较简单的，但是买卖股票可以算作是一个系列的经典问题，在leetcode上就有本题一系列的变种问题：买卖股票的最佳时机、买卖股票的最佳时机II、买卖股票的最佳时机III、买卖股票的最佳时机IV、买卖股票的最佳时机含冷冻期、买卖股票的最佳时机含手续费。</p>
-<p>虽然这些题有难有易，但是既然是一类问题，就有这一些通用的方法。</p>
-<p>这六个问题都是由第四个问题简化变种而来的，第四题相较于本题多了一个参数k，限制只能进行k次交易；第一题也就是本题是只进行一次交易，相当于 k = 1；第二题是不限交易次数，相当于 k = +infinity（正无穷）；第三题是只进行 2 次交易，相当于 k = 2；剩下两道也是不限次数，但是加了交易「冷冻期」和「手续费」的额外条件，其实就是第二题的变种。</p>
-<p>之后记一下笔记总结一下这几个问题。</p>
-<p>目前找到了”labuladong”大佬的公众号写的一篇《一个方法团灭 6 道股票问题》题解，打算先学习在总结。</p>
-<hr>
-<p>本人菜鸟，有错误请告知，感激不尽！</p>
-<p>更多题解和学习记录博客:<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">博客</a>、<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
-]]></content>
-      <categories>
-        <category>题解笔记</category>
-      </categories>
-      <tags>
-        <tag>leetcode</tag>
-        <tag>贪心算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>LeetCode——Pow(x,n)</title>
     <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20Pow(x,n)/</url>
     <content><![CDATA[<h2 id="NO-50-Pow-x-n-中等"><a href="#NO-50-Pow-x-n-中等" class="headerlink" title="NO.50 Pow(x,n) 中等 "></a>NO.50 Pow(x,n) <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2020/02/07/1gKljg.png" alt="1gKljg.png"></p>
@@ -9879,28 +9890,6 @@
       <tags>
         <tag>leetcode</tag>
         <tag>数组</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LeetCode——旋转链表</title>
-    <url>/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%E6%97%8B%E8%BD%AC%E9%93%BE%E8%A1%A8/</url>
-    <content><![CDATA[<h2 id="NO-61-旋转链表-中等"><a href="#NO-61-旋转链表-中等" class="headerlink" title="NO.61 旋转链表 中等 "></a>NO.61 旋转链表 <font color=orange>中等</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2020/03/09/3zzHQ1.png" alt="3zzHQ1.png"></p>
-<p><strong><font color=red>思路一：成环再断</font></strong> 先将链表首尾相连形成环，然后找到旋转后的新链表的新头节点和尾节点，从两者之间断开形成需要的结果。</p>
-<p><img src="https://s2.ax1x.com/2020/03/09/8prla4.png" alt="8prla4.png"></p>
-<p><img src="https://s2.ax1x.com/2020/03/09/8prurT.png" alt="8prurT.png"></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">rotateRight</span><span class="params">(ListNode head, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(head==<span class="keyword">null</span>||head.next==<span class="keyword">null</span>)<span class="keyword">return</span> head;</span><br><span class="line">    <span class="comment">//标记初始链表的结尾，n记录节点数</span></span><br><span class="line">    ListNode oldTail=head;</span><br><span class="line">    <span class="keyword">int</span> n=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (oldTail.next!=<span class="keyword">null</span>)&#123;</span><br><span class="line">        oldTail=oldTail.next;</span><br><span class="line">        n++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//链表成环</span></span><br><span class="line">    oldTail.next=head;</span><br><span class="line">    <span class="comment">//旋转之后的新结尾</span></span><br><span class="line">    ListNode newTail=head;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n - k % n; i++) &#123;</span><br><span class="line">        newTail=newTail.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//新头节点</span></span><br><span class="line">    ListNode newHead=newTail.next;</span><br><span class="line">    <span class="comment">//新尾节点和新头节点之间断开</span></span><br><span class="line">    newTail.next=<span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">return</span> newHead;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>时间复杂度：O(n)</p>
-<hr>
-<p>本人菜鸟，有错误请告知，感激不尽！</p>
-<p>更多题解和学习记录博客:<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">博客</a>、<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
-]]></content>
-      <categories>
-        <category>题解笔记</category>
-      </categories>
-      <tags>
-        <tag>leetcode</tag>
-        <tag>链表</tag>
       </tags>
   </entry>
   <entry>
