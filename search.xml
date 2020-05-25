@@ -1,6 +1,210 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>TCP指北</title>
+    <url>/2020/05/25/TCP%E6%8C%87%E5%8C%97/</url>
+    <content><![CDATA[<p>运输层是面向通信部分的最高层，同时也是用户应用功能中的最底层，主要是向下封装通信部分、对接应用层完成<strong>分用</strong>和<strong>复用</strong>这两个主要功能，运输层是通常开发中接触到的最底层。在 <strong>TCP/IP</strong> 协议栈中有两种重要的运输层协议 <strong>UDP</strong> 和 <strong>TCP</strong>，同时 TCP 也是应用层 HTTP 协议的基础。</p>
+<p><strong>本篇以面试问题为导向，用通俗易懂的语言进行总结回答。</strong></p>
+<p><strong>温故而知新，可以为师矣。</strong><a id="more"></a></p>
+<p>本篇文字较多：先收藏，不迷路哦！有帮助的话，别忘了点赞！</p>
+<p><strong>上一篇：</strong><a href="https://blog.csdn.net/qq_42758551/article/details/106265138" target="_blank" rel="noopener">《面试必考问题一文搞定：HTTP和HTTPS？TLS的工作流程？》</a></p>
+<p>插个题外话，推荐一本书《图解HTTP》，作为一名菜鸟觉得这本书<strong>非常有趣</strong>，哪怕是作为睡前读物也是可以的。不得不吐槽一下学校用的谢希仁第七版的计网教材，真的<strong>又臭又硬</strong>。(当然了之后的深入学习还是要沉下心来去细啃一下)</p>
+<h2 id="热身一下：说说-TCP-和-UDP-的区别？"><a href="#热身一下：说说-TCP-和-UDP-的区别？" class="headerlink" title="热身一下：说说 TCP 和 UDP 的区别？"></a>热身一下：说说 TCP 和 UDP 的区别？</h2><p><strong>TCP(传输控制协议)</strong>：面向连接以字节流的方式进行传输，提供可靠服务，适用于文件传输、邮件传输、聊天消息等需要可靠传输的常见，首部 20~60 字节。通信双方需要经过三次握手后才能建立 TCP 连接进行通信，通信完成后还需要四次挥手断开连接。并且 TCP 不支持多播和广播服务。</p>
+<p><strong>UDP(用户数据报协议)</strong>：无连接以数据报文段的方式进行传输，提供非可靠传输服务，但是传输速度比 TCP 协议快，占用资源比 TCP 协议少，适用于要求通信速度的场景如域名转换、视频流、直播流等等，首部 8 字节。仅仅提供了校验和来保证报文的完整性，如果校验失败，直接丢弃，不做任何处理。</p>
+<h2 id="关于-TCP-连接的建立和关闭有了解过么？"><a href="#关于-TCP-连接的建立和关闭有了解过么？" class="headerlink" title="关于 TCP 连接的建立和关闭有了解过么？"></a>关于 TCP 连接的建立和关闭有了解过么？</h2><p>TCP 协议为了保证通信服务的可靠性，采用三次握手的策略来建立可靠的通信信道，数据传输完成后通过四次挥手的策略来关闭连接。</p>
+<h3 id="为什么需要三次握手才能建立连接？"><a href="#为什么需要三次握手才能建立连接？" class="headerlink" title="为什么需要三次握手才能建立连接？"></a>为什么需要三次握手才能建立连接？</h3><p>言归正传，三次握手大致如下图：</p>
+<p><img src="https://s1.ax1x.com/2020/05/22/YXx8zQ.png" alt="YXx8zQ.png"></p>
+<blockquote>
+<p>出自《图解HTTP》    PS：下文用客户端和服务端来表述上图中的发送端和接收端。</p>
+</blockquote>
+<ol>
+<li>第一次握手：发送端(客户端)发送带有 SYN 标志的数据包给接收端(服务端)，接收端接收到这个数据包之后，<font color=red>服务端</font>知道了<strong>客户端</strong>的<u>发送功能正常</u>，同时也知道了<strong>服务端</strong>的<u>接收功能正常</u>。</li>
+<li>第二次握手：服务端发送带有 SYN/ACK 标志的数据包给客户端，客户端接收到这个数据包之后，<font color=red>客户端</font>就知道了<strong>客户端</strong>的<u>发送、接受功能都正常</u>，<strong>服务端</strong>的<u>发送、接受功能都正常</u>。</li>
+<li>第三次握手：客户端发送带有 ACK 标志的数据包给服务端，服务端接收到这个数据包后，<font color=red>服务端</font>知道了<strong>客户端</strong>的<u>发送、接受功能都正常</u>，<strong>服务端</strong>的<u>发送、接受功能都正常</u>。</li>
+</ol>
+<p>至此，三次握手完成，此时的客户端和服务端都确认了：<strong>双方的收发功能全部正常</strong>。</p>
+<p>缺少任何一步，都不能使双方成功相互确认收发功能。</p>
+<h3 id="为什么不是两次握手呢？为什么客户端还要最终确认一次呢？"><a href="#为什么不是两次握手呢？为什么客户端还要最终确认一次呢？" class="headerlink" title="为什么不是两次握手呢？为什么客户端还要最终确认一次呢？"></a>为什么不是两次握手呢？为什么客户端还要最终确认一次呢？</h3><p> <strong>为了防止已经失效的连接请求报文突然又传送到了服务器，从而产生错误连接</strong>。如果是两次握手，举例如下：</p>
+<p>客户端发送了第一个 SYN 标志的连接请求，但是在网络中阻塞滞留了，客户端一直到超时都没有等到来自服务端的确认请求，于是重发了一个 SYN 标志的连接请求，这次顺利完成两次握手建立了连接、传输数据、关闭连接。一切风平浪静了。。。这时！第一个连接请求姗姗来迟，到达了服务器，经过两次握手建立了一个并不需要的连接，浪费了资源还可能导致不必要的错误。</p>
+<p>如果是三次握手策略，当第一个被阻塞滞留报文传送到服务端，虽然服务端对这条无效报文回复了对应的 SYN-ACK 确认报文，但是客户端不会再次发出 ACK 报文，从而让服务器知道客户端并不需要建立这个连接。</p>
+<h3 id="服务端为什么要回传-SYN-ACK-应答标志？而不是-ACK-标志？"><a href="#服务端为什么要回传-SYN-ACK-应答标志？而不是-ACK-标志？" class="headerlink" title="服务端为什么要回传 SYN-ACK 应答标志？而不是 ACK 标志？"></a>服务端为什么要回传 SYN-ACK 应答标志？而不是 ACK 标志？</h3><p>SYN 是客户端发出的一个握手信号，服务端接收后回传是为了告诉客户端，我要应答的握手信息确实就是你所发送的。</p>
+<h3 id="说说四次挥手的过程？"><a href="#说说四次挥手的过程？" class="headerlink" title="说说四次挥手的过程？"></a>说说四次挥手的过程？</h3><p>打字好累，我相信看字也不轻松，换换脑子，来画个图吧！</p>
+<p><img src="https://s1.ax1x.com/2020/05/23/Yvvdv4.png" alt="Yvvdv4.png"></p>
+<ol>
+<li><p>第一次挥手：客户端进入 FIN-WAIT-1 阶段，客户端就不再向服务端传输数据了，但是依然可以接受服务端的数据。</p>
+</li>
+<li><p>第二次挥手：服务端收到客户端发来的 FIN 标志的关闭连接报文，通知上层应用后向客户端发送 ACK 标志的确认报文，进入 CLOSE-WAIT 阶段。</p>
+<p>客户端收到这个确认报文后，进入 FIN-WAIT-2 阶段，继续接收服务端传输的数据，并等待服务端发送 FIN 标志的关闭连接报文。</p>
+</li>
+<li><p>第三次挥手：服务端传输完最后的数据，向客户端发送 FIN 标志的关闭连接报文，并进入 LAST-ACK 阶段，等待客户端最后的确认。</p>
+</li>
+<li><p>第四次握手：客户端收到服务端的关闭连接报文后，发出最后的 ACK 标志的确认报文，并进入 TIME-WAIT 阶段，这个阶段会在等待 2MSL(报文最大生存时间) 后释放客户端 TCB(传输控制块) 进入 CLOSED 状态，真正完成关闭连接。</p>
+<p>而服务端收到客户端发来的 ACK 标志的确认报文后，立刻释放服务端 TCB 进入 CLOSED 状态，完成连接关闭。</p>
+</li>
+</ol>
+<p><strong>服务器完全关闭 TCP 连接的时间要比客户端早一些。</strong> </p>
+<h3 id="客户端完成确认完成后为什么不能立刻释放资源关闭连接？还要等待-2MSL？"><a href="#客户端完成确认完成后为什么不能立刻释放资源关闭连接？还要等待-2MSL？" class="headerlink" title="客户端完成确认完成后为什么不能立刻释放资源关闭连接？还要等待 2MSL？"></a>客户端完成确认完成后为什么不能立刻释放资源关闭连接？还要等待 2MSL？</h3><p>等待 2MSL(报文最大生存时间) 是为了确保客户端发送的 ACK 标志的确认报文能够正确到达服务端，如果这个确认报文因为各种问题导致没有到达服务端，服务器会在定时器到期后，重新发送 FIN+ACK 标志的连接关闭报文，而客户端在这个等待的 2MSL 的时间段内可以收到这个服务端重传的报文，从而重新发送 ACK 确认报文，并且重启 2MSL 时间的计时器。</p>
+<h3 id="为什么三次握手就可以建立连接，而关闭连接却需要四次挥手呢？"><a href="#为什么三次握手就可以建立连接，而关闭连接却需要四次挥手呢？" class="headerlink" title="为什么三次握手就可以建立连接，而关闭连接却需要四次挥手呢？"></a>为什么三次握手就可以建立连接，而关闭连接却需要四次挥手呢？</h3><p><strong>建立连接</strong>的时候，服务端监听到建立连接的 SYN 报文后，将 ACK 和 SYN 一起发送给客户端，就可以让客户端知道服务端收到了自己的请求，并且已经做好了建立连接的准备。</p>
+<p><strong>关闭连接</strong>的时候，服务端收到客户端发来的 FIN 报文后，知道客户端不再发送消息了，于是服务端可以立刻回应一个 ACK 报文，但是服务端此时可能还需要继续发送完最后的数据，只有当服务端发送完最后的数据，才能够向客户端发出自己的 FIN 报文。<u>正是因为关闭连接时 ACK 和 FIN 标志的报文需要分开发送，所以导致关闭连接时需要多发送一次报文。</u></p>
+<h2 id="如果建立连接之后，客户端出现故障了怎么处理的？"><a href="#如果建立连接之后，客户端出现故障了怎么处理的？" class="headerlink" title="如果建立连接之后，客户端出现故障了怎么处理的？"></a>如果建立连接之后，客户端出现故障了怎么处理的？</h2><p>为了防止服务器一直等待从而白白浪费资源，TCP 设置了一个保活计时器，服务端每次收到客户端请求之后就会重置保活计时器，如果计时器到期仍没有收到来自客户端的数据，服务器会主动地每隔 75 秒发送一个探测报文，如果连续发送 10 个探测报文客户端仍然没有动静，服务器就会释放资源关闭连接。</p>
+<h2 id="除了刚才说的握手挥手，还有其他保证TCP可靠传输的机制么？"><a href="#除了刚才说的握手挥手，还有其他保证TCP可靠传输的机制么？" class="headerlink" title="除了刚才说的握手挥手，还有其他保证TCP可靠传输的机制么？"></a>除了刚才说的握手挥手，还有其他保证TCP可靠传输的机制么？</h2><blockquote>
+<p>接下来部分文字摘自谢希仁的《计算机网络》第七版</p>
+</blockquote>
+<p> <a href="https://imgchr.com/i/tSPuFJ" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/05/24/tSPuFJ.th.png" alt="tSPuFJ.th.png"></a></p>
+<h3 id="检验和"><a href="#检验和" class="headerlink" title="检验和"></a>检验和</h3><p>TCP 报文首部的检验和字段，目的用来校验首部和数据两部分在传输过程中的正确性，如果接收端收到报文后通过检验和计算发现出了差错，TCP 协议会将这个出错的报文段直接丢弃，并且不会进行相应的确认。</p>
+<h3 id="ARQ协议"><a href="#ARQ协议" class="headerlink" title="ARQ协议"></a>ARQ协议</h3><p>自动重传请求(ARQ)是 OSI 七层模型中<strong>数据链路层</strong>和<strong>传输层</strong>的一个错误纠正协议，有<strong>确认</strong>和<strong>超时</strong>两个主要机制，可以在不可靠的传输网络上实现可靠的通信。<u>如果发送方发送消息一段时间后没有收到对应的确认帧，发送方会重新发送这条消息。</u> </p>
+<h4 id="停止等待ARQ协议"><a href="#停止等待ARQ协议" class="headerlink" title="停止等待ARQ协议"></a>停止等待ARQ协议</h4><p>发送方每发完一个分组就停止发送(暂时保留已发送分组的副本)，等待接收方的 ACK 确认帧。如果等待计时器超时后，还没收到 ACK 确认，说明消息没有成功发送，需要重新发送，直至收到对应的确认帧再发送下一个分组。</p>
+<p>分组和分组的确认都必须进行编号，这样才能明确哪一个发送出去的分组收到了确认，而且可以检测到重复的分组，重复的分组需要丢弃，但还是需要发送确认。</p>
+<p>这么做的优点是协议简单，缺点是信道利用率低、等待时间长。</p>
+<h4 id="连续ARQ协议"><a href="#连续ARQ协议" class="headerlink" title="连续ARQ协议"></a>连续ARQ协议</h4><p>发送方维持一个发送窗口，所有在发送窗口内的分组都可以连续发送出去，不需要停止等待接收方的确认帧。接收方采用累计确认，对按序到达的最后一个分组发送确认，表明到这个分组为止的所有分组都已经正确收到了。</p>
+<p>这么做的优点是信道利用率高、容易实现，即使分组丢失也不必立刻重传。</p>
+<p><u>缺点是不能向发送方反映出接收方已经确认收到的所有分组信息。</u>例如：发送方发送了 5 个分组，中间的第 3 个分组丢失了，这时接收方只能对前两个分组发出确认收到，发送方无法知道后面三个分组的情况，只好把后面的三个分组都重传一次，这个过程叫做 Go-Back-N(回退 N)，表示需要回退回来，重传已经发送过的 N 个分组。</p>
+<p>所以当通信线路质量不好时，连续 ARQ 协议会带来负面影响。</p>
+<h3 id="流量控制"><a href="#流量控制" class="headerlink" title="流量控制"></a>流量控制</h3><p>TCP 使用可变滑动窗口实现流量控制，就是让发送方的发送速率不要太快，要让接收方来得及接受。接收方发送的确认报文中的窗口字段用来控制发送方窗口的大小，从而影响发送方的发送速率。当窗口字段设置为 0 时，发送方不能发送数据。</p>
+<p>流量控制往往是点到点通信量的控制，是一个端到端的问题。</p>
+<h3 id="拥塞控制"><a href="#拥塞控制" class="headerlink" title="拥塞控制"></a>拥塞控制</h3><p>拥塞控制就是为了防止过多的数据注入到网络中，这样就可以是网络中的路由器或链路不至于过载。拥塞控制是一个全局性的过程，涉及到所有的主机，所有的路由器，以及与降低网络传输性能有关的所有因素。</p>
+<p>拥塞控制依然是利用发送方维持的一个<strong>拥塞窗口(cwnd)</strong> 的状态变量。拥塞控制窗口的大小取决于网络的拥塞程度，并且动态变化。发送方的发送窗口取为拥塞窗口和接收方的接受窗口中较小的一个。</p>
+<p>在网络层也可以使路由器采用合适的分组丢弃策略，例如 AQM(主动队列管理) 等，以减少网络拥塞的发生。</p>
+<p>TCP 拥塞控制主要涉及四种算法：<strong>慢开始、拥塞避免、快重传、快恢复。</strong> </p>
+<h4 id="慢开始"><a href="#慢开始" class="headerlink" title="慢开始"></a>慢开始</h4><p>当最开始发送数据时，因为不知道网络的情况，所以不能立即注入大量的数据到网络中，不然可能会引起网络拥塞。较好的方法是先探测一下，由小到大逐渐增加发送窗口的大小，cwnd 的初始值是 1 ，没经过一个传播轮次，cwnd 就翻倍。</p>
+<h4 id="拥塞避免"><a href="#拥塞避免" class="headerlink" title="拥塞避免"></a>拥塞避免</h4><p>拥塞避免听名字就很”谨慎”，当窗口大小达到一定的门限值/阈值 (ssthresh) 后，就让拥塞窗口 cwnd 缓慢增大，每经过一个往返时间 RTT 就把发送方的 cwnd 增加 1 。</p>
+<h4 id="快重传、快恢复"><a href="#快重传、快恢复" class="headerlink" title="快重传、快恢复"></a>快重传、快恢复</h4><p>主要作用就是快速恢复丢失的数据包。没有 FRR(快速重传和恢复) ，如果数据包丢失了，TCP 会使用定时器来要求传输暂停；有了 FRR ，如果接收方收到一个不按顺序的数据段，他会立刻给发送方发送一个重复确认，如果发送方连续收到<strong>三个重复确认</strong>，它会认为重复确认指出的数据段丢失了，并立即重传这些丢失的数据段，并且不会因为重传而要求传输暂停。</p>
+<p>每当发生<strong>三次重复确认</strong>，就认为当前为本网络设置的拥塞避免门限值太大了，于是 ssthresh 就重新设定为<code>当前窗口的一半</code>，同时当前窗口大小也减半后，继续执行拥塞避免算法。</p>
+<p>如果网络中发生发送方没有及时接收到 ACK 确认，也就是<strong>超时</strong>的情况，则认为在本网络中当前发送窗口过大了，于是 ssthresh 重新设定为<code>当前窗口的一半</code>，同时当前窗口大小降为 1 ，并执行慢开始算法。</p>
+<p><img src="https://s1.ax1x.com/2020/05/24/tSqwge.png" alt="tSqwge.png"></p>
+<blockquote>
+<p>图片出自谢希仁的《计算机网络》第七版</p>
+</blockquote>
+<p>当有单独的数据包丢失时 FRR 能最有效地工作，如果短时间有很多数据包丢失 FRR 并不是很有效。(原因见上文连续 ARQ 协议)</p>
+<h2 id="附加题：浏览器输入一个URL之后显示主页的过程？"><a href="#附加题：浏览器输入一个URL之后显示主页的过程？" class="headerlink" title="附加题：浏览器输入一个URL之后显示主页的过程？"></a>附加题：浏览器输入一个URL之后显示主页的过程？</h2><p><strong>PS：这是一个经典面试题，甚至在学校的计网考试中最后一道简答题也是这个。。。</strong></p>
+<p><img src="https://s1.ax1x.com/2020/05/24/tSqd3D.jpg" alt="tSqd3D.jpg"></p>
+<blockquote>
+<p>出自《图解HTTP》</p>
+</blockquote>
+<ol>
+<li><p>先从<strong>本地缓存</strong>中查找 URL 对应的 IP 地址，如果本地缓存没有，会使用 DNS 协议，先从当地的<strong>根域名服务器</strong>查找对应的 IP 地址，如果没有则去对应的<strong>顶级 DNS 服务器</strong>查找，如果还没有则会去<strong>权威 DNS 服务器</strong>查找。</p>
+<p>一般具体的查询顺序是( 浏览器缓存，系统缓存，路由器缓存，IPS服务器缓存，根域名服务器缓存，顶级域名服务器缓存，权威域名服务器缓存 )</p>
+</li>
+<li><p>三次握手建立 TCP 连接。（如果需要使用 HTTPS 协议，还需要进行 TLS 四次握手协商加密套件和会话秘钥用来实现之后的加密通信）</p>
+</li>
+<li><p>客户端通过已经建立的 TCP 连接，向服务器指定端口(HTTP 80/HTTPS 443)发送 HTTP 请求。</p>
+</li>
+<li><p>服务器接受处理客户端发来的 HTTP 请求，并返回 HTTP 响应报文。</p>
+</li>
+<li><p>客户端根据服务端响应来的各种数据，边解析边渲染构建 DOM 树、构建渲染树等等。。。并将其绘制到屏幕上。</p>
+</li>
+<li><p>关闭之前建立的连接。</p>
+</li>
+</ol>
+<hr>
+<p>最后再卑微的啰嗦一句：码字不易，如果有帮助到你请<strong>点赞关注+收藏</strong>哦！</p>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解源码和学习笔记：<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> 、<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">CSDN</a> 、<a href="http://www.m1ng.top/">M1ng</a> </p>
+]]></content>
+      <categories>
+        <category>计算机网络</category>
+      </categories>
+      <tags>
+        <tag>计算机网络</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>单周速通《剑指Offer》I</title>
+    <url>/2020/05/25/%E5%8D%95%E5%91%A8%E9%80%9F%E9%80%9A%E3%80%8A%E5%89%91%E6%8C%87Offer%E3%80%8BI/</url>
+    <content><![CDATA[<p>*<em>数组中重复的数字 <font color=green>简单</font> 、二维数组中的查找 <font color=green>简单</font> 、替换空格 <font color=green>简单</font> 、从尾到头打印链表 <font color=green>简单</font> 、重建二叉树  <font color=orange>中等</font>  、用两个栈实现队列 <font color=green>简单</font> 、斐波那契数列 <font color=green>简单</font>、青蛙跳台阶 <font color=green>简单</font>  旋转数组的最小数字 <font color=green>简单</font> 、矩阵中的路径  <font color=orange>中等</font> *</em> <a id="more"></a></p>
+<p>刷了有二百多道 LeetCode 了，听说找实习必刷《剑指Offer》，于是每天花一点时间把这套题速刷一遍。</p>
+<p>如果有和我一样的菜鸟，咱们可以一起组队刷题，相互监督打卡哦！！干就完了！！！奥利给！！！！！</p>
+<p><img src="https://s1.ax1x.com/2020/05/25/tpItiD.png" alt="tpItiD.png"></p>
+<h2 id="剑指Offer-03-数组中重复的数字-简单"><a href="#剑指Offer-03-数组中重复的数字-简单" class="headerlink" title="剑指Offer.03 数组中重复的数字 简单"></a>剑指Offer.03 数组中重复的数字 <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/24/tSjOoR.png" alt="tSjOoR.png"></p>
+<p><strong><font color=red>思路一：HashTable</font></strong> 简单直白，遍历数组，用 HashSet 保存遇到过的元素，遇到重复就返回。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//时间复杂度：O(n)    空间复杂度：O(n)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findRepeatNumber</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    Set&lt;Integer&gt; set = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> num : nums) &#123;</span><br><span class="line">        <span class="keyword">if</span> (set.contains(num)) &#123;</span><br><span class="line">            <span class="keyword">return</span> num;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            set.add(num);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong><font color=red>思路二：抽屉定理</font></strong>  本文数组元素都小于数组长度，一个萝卜一个坑，将元素都放回自己的位置，期间遇到重复的元素就返回。类似于 <a href="http://www.m1ng.top/2020/03/14/[LeetCode]%E2%80%94%E2%80%94%E7%BC%BA%E5%A4%B1%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%AD%A3%E6%95%B0/">LeetCode 41 题——缺失的第一个正数</a> 。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//时间复杂度：O(n)    空间复杂度：O(1)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findRepeatNumber</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">        <span class="keyword">while</span> (nums[i] != i) &#123;</span><br><span class="line">            <span class="keyword">if</span> (nums[i] == nums[nums[i]]) <span class="keyword">return</span> nums[i];</span><br><span class="line">            <span class="keyword">int</span> temp = nums[i];</span><br><span class="line">            nums[i] = nums[temp];</span><br><span class="line">            nums[temp] = temp;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="剑指Offer-04-二维数组中的查找-简单"><a href="#剑指Offer-04-二维数组中的查找-简单" class="headerlink" title="剑指Offer.04 二维数组中的查找 简单"></a>剑指Offer.04 二维数组中的查找 <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/24/tSjjF1.png" alt="tSjjF1.png"></p>
+<p><strong><font color=red>思路一：双指针法，每次排除一行或一列</font></strong> 从<strong>左下角</strong>开始遍历 i 表示行坐标、j 表示列坐标，如果遇到等于 target 则返回 true，如果遍历元素大于 target ，因为每一行都是增序所以 i– 排除当前行，如果遍历元素小于 target ，因为每一列也都是从上到下增序的，所以 j++ 排除当前列。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//时间复杂度：O(m+n) m行，n列    空间复杂度：O(1)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">findNumberIn2DArray</span><span class="params">(<span class="keyword">int</span>[][] matrix, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (matrix.length == <span class="number">0</span>) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">int</span> m = matrix.length, n = matrix[<span class="number">0</span>].length;</span><br><span class="line">    <span class="keyword">int</span> i = m - <span class="number">1</span>, j = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &gt;= <span class="number">0</span> &amp;&amp; j &lt; n) &#123;</span><br><span class="line">        <span class="keyword">if</span> (matrix[i][j] &lt; target) &#123;</span><br><span class="line">            j++;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (matrix[i][j] &gt; target) &#123;</span><br><span class="line">            i--;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (matrix[i][j] == target) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="剑指Offer-05-替换空格-简单"><a href="#剑指Offer-05-替换空格-简单" class="headerlink" title="剑指Offer.05 替换空格 简单"></a>剑指Offer.05 替换空格 <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/24/tSjvJx.png" alt="tSjvJx.png"></p>
+<p><strong><font color=red>思路一：直接遍历替换</font></strong> 没什么好说的遍历就完了！</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//时间复杂度：O(n)    空间复杂度：O(n)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">replaceSpace</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    StringBuilder res = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">char</span> c : s.toCharArray()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (c != <span class="string">' '</span>) &#123;</span><br><span class="line">            res.append(c);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            res.append(<span class="string">"%20"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="剑指Offer-06-从尾到头打印链表-简单"><a href="#剑指Offer-06-从尾到头打印链表-简单" class="headerlink" title="剑指Offer.06 从尾到头打印链表 简单"></a>剑指Offer.06 从尾到头打印链表 <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/24/tSjxW6.png" alt="tSjxW6.png"></p>
+<p><strong><font color=red>思路一：利用栈</font></strong>  逆序打印，那就是遍历节点入栈，再依次出栈，利用栈先进后出的特点。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//时间复杂度：O(n)    空间复杂度：O(n)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] reversePrint(ListNode head) &#123;</span><br><span class="line">    Deque&lt;ListNode&gt; stack = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">    <span class="keyword">while</span> (head != <span class="keyword">null</span>) &#123;</span><br><span class="line">        stack.push(head);</span><br><span class="line">        head = head.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span>[] res = <span class="keyword">new</span> <span class="keyword">int</span>[stack.size()];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; res.length; i++) &#123;</span><br><span class="line">        res[i] = stack.pop().val;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong><font color=red>思路二：递归，利用方法调用栈</font></strong>  可以不用手动创建一个栈，直接利用递归压栈，触底返回就好了。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//时间复杂度：O(n)    空间复杂度：O(n)</span></span><br><span class="line">ArrayList&lt;Integer&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] reversePrint(ListNode head) &#123;</span><br><span class="line">    recusion(head);</span><br><span class="line">    <span class="keyword">int</span>[] res = <span class="keyword">new</span> <span class="keyword">int</span>[list.size()];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; res.length; i++) &#123;</span><br><span class="line">        res[i] = list.get(i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">recusion</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head == <span class="keyword">null</span>) <span class="keyword">return</span>;</span><br><span class="line">    recusion(head.next);</span><br><span class="line">    list.add(head.val);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="剑指Offer-07-重建二叉树-中等"><a href="#剑指Offer-07-重建二叉树-中等" class="headerlink" title="剑指Offer.07 重建二叉树 中等"></a>剑指Offer.07 重建二叉树 <font color=orange>中等</font></h2><p><img src="https://s1.ax1x.com/2020/05/24/tSjLw9.png" alt="tSjLw9.png"></p>
+<p><strong><font color=red>思路一：先序找根，中序找到根的左右子树区间</font></strong>  </p>
+<p>回想了一下学校老师上课讲的如何根据两个遍历序列还原出二叉树的：</p>
+<ol>
+<li>根据前序序列的第一个字符确定树的根，示例中的3。</li>
+<li>知道了3这个根，根据中序序列确定左右子树[9]是左子树、[15,20,7]是右子树。</li>
+<li>根据左子树前序序列第一个字符确定树的根：9。9的左右子树为null，左子树完毕。</li>
+<li>根据右子树前序序列第一个字符确定树的根：20。</li>
+<li>知道了20这个根，根据中序序列确定左右子树[15]是左子树、[7]是右子树。</li>
+<li>根据左子树前序序列第一个字符确定树的根：15。15的左右子树为null，左子树完毕。</li>
+<li>根据右子树前序序列第一个字符确定树的根：7。7的左右子树为null，左子树完毕。</li>
+</ol>
+<p>这个过程就是在利用：前序序列[根左右]根在开头确定根、中序遍历[左根右]确定根的左右子树。</p>
+<p>实现的过程其实就是：先根据前序序列确定根，再根据中序序列确定根的左子树or右子树，再将左子树or右子树对应的前序序列区间和中序序列区间重复前两步。。。。</p>
+<p>明显是个递归结构，递归出口是：前序或中序序列的区间为空。</p>
+<p><strong>可以用一个 Map 保存每个中序序列元素的下标，方便直接找到根节点在中序序列的位置，从而计算出左右子树的区间。如果不用 Map 每次都需要遍历一下中序序列的区间，才能找到根节点的位置。</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//时间复杂度：O(n)    空间复杂度：O(n)</span></span><br><span class="line">HashMap&lt;Integer, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">buildTree</span><span class="params">(<span class="keyword">int</span>[] preorder, <span class="keyword">int</span>[] inorder)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (preorder.length != inorder.length) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; inorder.length; i++) &#123;</span><br><span class="line">        map.put(inorder[i], i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> build(preorder, <span class="number">0</span>, preorder.length - <span class="number">1</span>, inorder, <span class="number">0</span>, inorder.length - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> TreeNode <span class="title">build</span><span class="params">(<span class="keyword">int</span>[] preorder, <span class="keyword">int</span> pstart, <span class="keyword">int</span> pend, <span class="keyword">int</span>[] inorder, <span class="keyword">int</span> istart, <span class="keyword">int</span> iend)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (pstart &gt; pend || istart &gt; iend) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (pstart == pend) <span class="keyword">return</span> <span class="keyword">new</span> TreeNode(preorder[pstart]);</span><br><span class="line">    TreeNode root = <span class="keyword">new</span> TreeNode(preorder[pstart]);</span><br><span class="line">    <span class="keyword">int</span> rootIdx = map.get(preorder[pstart]);</span><br><span class="line">    <span class="keyword">int</span> leftOffset = rootIdx - istart, rightOffset = iend - rootIdx;</span><br><span class="line">    root.left = build(preorder, pstart + <span class="number">1</span>, pstart + leftOffset, inorder, istart, rootIdx - <span class="number">1</span>);</span><br><span class="line">    root.right = build(preorder, pend - rightOffset + <span class="number">1</span>, pend, inorder, rootIdx + <span class="number">1</span>, iend);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="剑指Offer-09-用两个栈实现队列-简单"><a href="#剑指Offer-09-用两个栈实现队列-简单" class="headerlink" title="剑指Offer.09 用两个栈实现队列 简单"></a>剑指Offer.09 用两个栈实现队列 <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/24/tSvSSK.png" alt="tSvSSK.png"></p>
+<p><strong><font color=red>思路一：保持主栈的顺序</font></strong>  每次入栈前都先将主栈(A)中的所有元素都出栈再入栈到辅助栈(B)中，然后新元素就能放到 A栈 的底部，新元素入栈之后再将 B栈 中的元素都出栈再入栈回 A栈。这样就能保证 A栈 中新入栈的元素都在栈底，最早的元素在栈顶。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CQueue</span> </span>&#123;</span><br><span class="line">    Deque&lt;Integer&gt; stackA, stackB;</span><br><span class="line">    <span class="keyword">int</span> size;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CQueue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.stackA = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">        <span class="keyword">this</span>.stackB = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">        <span class="keyword">this</span>.size = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//时间复杂度：O(n)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">appendTail</span><span class="params">(<span class="keyword">int</span> value)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (!stackA.isEmpty()) &#123;</span><br><span class="line">            stackB.push(stackA.pop());</span><br><span class="line">        &#125;</span><br><span class="line">        stackA.push(value);</span><br><span class="line">        <span class="keyword">while</span> (!stackB.isEmpty()) &#123;</span><br><span class="line">            stackA.push(stackB.pop());</span><br><span class="line">        &#125;</span><br><span class="line">        size++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//时间复杂度：O(1)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">deleteHead</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (size == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        size--;</span><br><span class="line">        <span class="keyword">return</span> stackA.pop();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="剑指Offer-10-I-斐波那契数列-简单"><a href="#剑指Offer-10-I-斐波那契数列-简单" class="headerlink" title="剑指Offer.10_I 斐波那契数列 简单"></a>剑指Offer.10_I 斐波那契数列 <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/24/tSv9yD.png" alt="tSv9yD.png"></p>
+<p><strong><font color=red>思路一：动态规划</font></strong>   学习 DP 的经典入门例题，一般会从暴力递归到记忆化递归最终到 DP，因为本文只是一个菜鸟的速通日记，介于篇幅就不展开了，直接给出空间压缩后的 DP 解法，下一题给出 DP 思考过程。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//时间复杂度：O(n)    空间复杂度：O(1)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">fib</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a = <span class="number">0</span>, b = <span class="number">1</span>, sum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        sum = (a + b) % <span class="number">1000000007</span>;</span><br><span class="line">        a = b;</span><br><span class="line">        b = sum;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="剑指Offer-10-II-青蛙跳台阶-简单"><a href="#剑指Offer-10-II-青蛙跳台阶-简单" class="headerlink" title="剑指Offer.10_II 青蛙跳台阶 简单"></a>剑指Offer.10_II 青蛙跳台阶 <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/24/tSvpQO.png" alt="tSvpQO.png"></p>
+<p><strong><font color=red>思路一：动态规划</font></strong>   和斐波契数列一样，区别是斐波那契数列是从 0,1,1,2,3。。。开始的，而本题的数列是从 1,1,2,3。。。开始的。</p>
+<p>dp数组含义：dp[i]表示i阶有多少中走法。</p>
+<p>初始化：dp[0]=1、dp[1]=1，即 0 阶 和 1阶都只有一种走法。</p>
+<p>状态转移：dp[i]=dp[i-1]+dp[i-2]，第i阶是从i-1阶一次走一步上来和i-2阶一次走两步上来这两情况组成的。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//时间复杂度：O(n)    空间复杂度：O(n)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">climbStairs</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>[] dp=<span class="keyword">new</span> <span class="keyword">int</span>[n+<span class="number">1</span>];</span><br><span class="line">    dp[<span class="number">0</span>]=dp[<span class="number">1</span>]=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        dp[i]=dp[i-<span class="number">1</span>]+dp[i-<span class="number">2</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[n];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为计算 dp[i] 的时候，只考虑 dp[i-1] 和 dp[i-2] 所以用两个变量记录这两个值即可。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//时间复杂度：O(n)    空间复杂度：O(n)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">numWays</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a = <span class="number">1</span>, b = <span class="number">1</span>, sum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        sum = (a + b) % <span class="number">1000000007</span>;</span><br><span class="line">        a = b;</span><br><span class="line">        b = sum;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="剑指Offer-11-旋转数组的最小数字-简单"><a href="#剑指Offer-11-旋转数组的最小数字-简单" class="headerlink" title="剑指Offer.11 旋转数组的最小数字 简单"></a>剑指Offer.11 旋转数组的最小数字 <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/24/tSvCOe.png" alt="tSvCOe.png"></p>
+<p><strong><font color=red>思路一：二分法</font></strong>   重点在于如何判断 mid 的条件？</p>
+<p>用 nums[mid] 和 nums[right] 进行比较 ，如果 <code>nums[mid] &gt; nums[right]</code> ，说明 mid 的左边部分一定是一个严格升序区间，那么最小值一定在 mid 右边的部分；反之 <code>nums[mid] &lt; nums[right]</code> 说明 mid 的右边是一个严格升序全进，最小值一定在 mid 的左边部分；如果 <code>nums[mid] = nums[right]</code> ，说明发生重复，right– 跳过这个重复的值，继续判断。</p>
+<p>搜索的时候，搜索区间不断地向存在最小值的那一边收缩，搜索区间选择左闭右闭区间，搜索停止条件是搜索区间内只剩下一个元素。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//最坏时间复杂度：O(n) 元素全部相同，退化到 O(n)</span></span><br><span class="line"><span class="comment">//平均时间复杂度：O(logn)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minArray</span><span class="params">(<span class="keyword">int</span>[] numbers)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> left = <span class="number">0</span>, right = numbers.length - <span class="number">1</span>;</span><br><span class="line">    <span class="comment">//left == right 时停止搜索,此时左闭右闭区间内剩余一个元素</span></span><br><span class="line">    <span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = left + (right - left) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (numbers[mid] == numbers[right]) &#123;</span><br><span class="line">            <span class="comment">//跳过重复</span></span><br><span class="line">            right--;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (numbers[mid] &gt; numbers[right]) &#123;</span><br><span class="line">            <span class="comment">//此时 mid 一定不是最小值,所以从搜索区间内删除</span></span><br><span class="line">            left = mid + <span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (numbers[mid] &lt; numbers[right]) &#123;</span><br><span class="line">            right = mid;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> numbers[left];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="剑指Offer-12-矩阵中的路径-中等"><a href="#剑指Offer-12-矩阵中的路径-中等" class="headerlink" title="剑指Offer.12 矩阵中的路径 中等"></a>剑指Offer.12 矩阵中的路径 <font color=orange>中等</font></h2><p><img src="https://s1.ax1x.com/2020/05/24/tSvieH.png" alt="tSvieH.png"></p>
+<p><strong><font color=red>思路一：深搜回溯</font></strong> 遍历board找到等于word第一个字符的元素。然后以这个元素为开始，向四个方向上分别进行递归深搜，如果某个方向上成功匹配整个word则返回true，如果某个元素四个方向都不能匹配成功word的对应字符则返回false。</p>
+<p>因为字符不能重复使用，所以需要一个标记数组对每个字符的使用情况进行标记。也可以采用NO.695岛屿最大面积中的”沉岛思想”，将用过的字符直接修改为’.’。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//是否成功搜索word</span></span><br><span class="line"><span class="keyword">boolean</span> finished = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">exist</span><span class="params">(<span class="keyword">char</span>[][] board, String word)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//遍历</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; board.length; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; board[<span class="number">0</span>].length; j++) &#123;</span><br><span class="line">            <span class="comment">//如果等于word第一个字符的元素，以i j 开始进行四个方向深搜</span></span><br><span class="line">            <span class="keyword">if</span> (board[i][j] == word.charAt(<span class="number">0</span>) &amp;&amp; dfs(board, word, i, j, <span class="number">0</span>)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">dfs</span><span class="params">(<span class="keyword">char</span>[][] board, String word, <span class="keyword">int</span> i, <span class="keyword">int</span> j, <span class="keyword">int</span> curr)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//匹配成功的长度等于word长度，成功搜索</span></span><br><span class="line">    <span class="keyword">if</span> (curr == word.length()) &#123;</span><br><span class="line">        finished = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//如果到的边界或者字符不匹配</span></span><br><span class="line">    <span class="keyword">if</span> (i &lt; <span class="number">0</span> || i &gt;= board.length || j &lt; <span class="number">0</span> || j &gt;= board[<span class="number">0</span>].length ||</span><br><span class="line">        board[i][j] != word.charAt(curr)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//当前未完成匹配，继续四个方向深搜</span></span><br><span class="line">    <span class="keyword">if</span> (!finished) &#123;</span><br><span class="line">        <span class="keyword">char</span> c = board[i][j];<span class="comment">//保存当前字符，回溯的时候重新填写回去</span></span><br><span class="line">        board[i][j] = <span class="string">'.'</span>;<span class="comment">//沉岛</span></span><br><span class="line">        <span class="keyword">boolean</span> down = dfs(board, word, i + <span class="number">1</span>, j, curr + <span class="number">1</span>);<span class="comment">//向下搜</span></span><br><span class="line">        <span class="keyword">boolean</span> right = dfs(board, word, i, j + <span class="number">1</span>, curr + <span class="number">1</span>);<span class="comment">//向右搜</span></span><br><span class="line">        <span class="keyword">boolean</span> up = dfs(board, word, i - <span class="number">1</span>, j, curr + <span class="number">1</span>);<span class="comment">//向上搜</span></span><br><span class="line">        <span class="keyword">boolean</span> left = dfs(board, word, i, j - <span class="number">1</span>, curr + <span class="number">1</span>);<span class="comment">//向左搜</span></span><br><span class="line">        board[i][j] = c;<span class="comment">//回溯重新将字符填回去</span></span><br><span class="line">        <span class="keyword">return</span> down || right || up || left;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;<span class="comment">//已完成</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(mn*3^K) 最坏情况：有m*n个起点，每个起点都要遍历一个 word长度k的方案，除去上一个字符，还有 3 个方向</p>
+<p>空间复杂度：O(k)递归调用栈不超过 k 层深度</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解源码和学习笔记：<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> 、<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">CSDN</a> 、<a href="http://www.m1ng.top/">M1ng</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>动态规划</tag>
+        <tag>栈</tag>
+        <tag>字符串</tag>
+        <tag>DFS</tag>
+        <tag>BFS</tag>
+        <tag>数组</tag>
+        <tag>剑指Offer</tag>
+        <tag>二叉树</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode——打家劫舍</title>
     <url>/2020/05/23/LeetCode%E2%80%94%E2%80%94%E6%89%93%E5%AE%B6%E5%8A%AB%E8%88%8D/</url>
     <content><![CDATA[<p><strong>NO.198 打家劫舍 <font color=green>简单</font> 、 NO.213 打家劫舍II <font color=orange>中等</font>、 NO.337 打家劫舍III <font color=orange>中等</font></strong> <a id="more"></a></p>
