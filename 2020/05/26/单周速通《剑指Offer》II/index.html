@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<script type="text/javascript" src="//libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png">
+  <link rel="mask-icon" href="https://s1.ax1x.com/2020/03/14/8MZuZD.png" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/blue/pace-theme-minimal.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.m1ng.top","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="*矩阵中的路径  中等 、剑指Offer.14_I 剪绳子 中等 、剑指Offer.14_II 剪绳子II 中等  、剑指Offer.15 二进制中 1 的个数 简单 、剑指Offer.16 数值的整数次方 中等 、剑指Offer.17 打印从 1 到最大的 n 位数 简单 、剑指Offer.18 删除链表的节点 简单 、剑指Offer.19 正则表达式匹配  困难 、剑指Offer.20 表示数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="单周速通《剑指Offer》II">
+<meta property="og:url" content="http://www.m1ng.top/2020/05/26/%E5%8D%95%E5%91%A8%E9%80%9F%E9%80%9A%E3%80%8A%E5%89%91%E6%8C%87Offer%E3%80%8BII/index.html">
+<meta property="og:site_name" content="M1ng&amp;Q1ng">
+<meta property="og:description" content="*矩阵中的路径  中等 、剑指Offer.14_I 剪绳子 中等 、剑指Offer.14_II 剪绳子II 中等  、剑指Offer.15 二进制中 1 的个数 简单 、剑指Offer.16 数值的整数次方 中等 、剑指Offer.17 打印从 1 到最大的 n 位数 简单 、剑指Offer.18 删除链表的节点 简单 、剑指Offer.19 正则表达式匹配  困难 、剑指Offer.20 表示数">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/26/tPhpc9.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/26/tPfzp4.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/25/t92XTg.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/26/tPhS1J.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/26/tPfjtU.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/26/tPfvhF.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/26/tPh9XR.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/26/tPhPn1.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/26/tPhF76.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/26/tPhi0x.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/26/tPhAAK.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/26/tPhEtO.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/26/tPhVhD.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/26/tPhe9e.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/26/tPhm1H.png">
+<meta property="article:published_time" content="2020-05-26T09:41:43.000Z">
+<meta property="article:modified_time" content="2020-05-26T09:42:43.120Z">
+<meta property="article:author" content="M1ng">
+<meta property="article:tag" content="剑指Offer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s1.ax1x.com/2020/05/26/tPhpc9.png">
+
+<link rel="canonical" href="http://www.m1ng.top/2020/05/26/%E5%8D%95%E5%91%A8%E9%80%9F%E9%80%9A%E3%80%8A%E5%89%91%E6%8C%87Offer%E3%80%8BII/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>单周速通《剑指Offer》II | M1ng&Q1ng</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	<a href="https://github.com/Jerrymouse1998" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">M1ng&Q1ng</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">回忆有时是一种消极逃避的表现。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.m1ng.top/2020/05/26/%E5%8D%95%E5%91%A8%E9%80%9F%E9%80%9A%E3%80%8A%E5%89%91%E6%8C%87Offer%E3%80%8BII/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
+      <meta itemprop="name" content="M1ng">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M1ng&Q1ng">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          单周速通《剑指Offer》II
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-05-26 17:41:43 / 修改时间：17:42:43" itemprop="dateCreated datePublished" datetime="2020-05-26T17:41:43+08:00">2020-05-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%A2%98%E8%A7%A3%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">题解笔记</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/05/26/%E5%8D%95%E5%91%A8%E9%80%9F%E9%80%9A%E3%80%8A%E5%89%91%E6%8C%87Offer%E3%80%8BII/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/05/26/%E5%8D%95%E5%91%A8%E9%80%9F%E9%80%9A%E3%80%8A%E5%89%91%E6%8C%87Offer%E3%80%8BII/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.8k</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>*<em>矩阵中的路径  <font color=orange>中等</font> 、剑指Offer.14_I 剪绳子 <font color=orange>中等</font> 、剑指Offer.14_II 剪绳子II <font color=orange>中等</font>  、剑指Offer.15 二进制中 1 的个数 <font color=green>简单</font> 、剑指Offer.16 数值的整数次方 <font color=orange>中等</font> 、剑指Offer.17 打印从 1 到最大的 n 位数 <font color=green>简单</font> 、剑指Offer.18 删除链表的节点 <font color=green>简单</font> 、剑指Offer.19 正则表达式匹配  <font color=#ff0099>困难</font> 、剑指Offer.20 表示数值的字符串 <font color=orange>中等</font>  、剑指Offer.21 调整数组顺序使奇数位于偶数前面 <font color=green>简单</font> 、剑指Offer.22 链表中倒数第 k 个节点 <font color=green>简单</font> 、剑指Offer.24 翻转链表 <font color=green>简单</font> 、剑指Offer.25 合并两个排序的链表 <font color=green>简单</font> <a id="more"></a> *</em> </p>
+<h2 id="剑指Offer-13-机器人的运动范围-中等"><a href="#剑指Offer-13-机器人的运动范围-中等" class="headerlink" title="剑指Offer.13 机器人的运动范围 中等"></a>剑指Offer.13 机器人的运动范围 <font color=orange>中等</font></h2><p><img src="https://s1.ax1x.com/2020/05/26/tPhpc9.png" alt="tPhpc9.png"></p>
+<p>题目中有一个计算横纵坐标数位之和的操作，这不是题目的关键点，将这个计算数位之和的方法封装起来不要干扰主要的解题逻辑。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">sums</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ans=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (x != <span class="number">0</span>) &#123;</span><br><span class="line">        ans+=x%<span class="number">10</span>;</span><br><span class="line">        x/=<span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (y != <span class="number">0</span>) &#123;</span><br><span class="line">        ans+=y%<span class="number">10</span>;</span><br><span class="line">        y/=<span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="思路一：深搜"><a href="#思路一：深搜" class="headerlink" title="思路一：深搜"></a><strong><font color=red>思路一：深搜</font></strong></h3><p>想法比较直接，就是从起点开始用深搜的方式遍历矩阵，控制深搜边界的同时判断当前访问的位置数位和是否小于等于k，并且需要一个标记数组记录每个位置的访问情况，防止重复计算。</p>
+<p>虽然题目说是上下左右都可以移动，但是我们从左上角作为起点开始只能向右或者向下移动，如果发生向左或者向上那一定是重复的搜索。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> m,n,k;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">movingCount</span><span class="params">(<span class="keyword">int</span> m, <span class="keyword">int</span> n, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.m=m;</span><br><span class="line">    <span class="keyword">this</span>.n=n;</span><br><span class="line">    <span class="keyword">this</span>.k=k;</span><br><span class="line">    <span class="comment">//标记访问过的位置</span></span><br><span class="line">    <span class="keyword">boolean</span>[][] visited=<span class="keyword">new</span> <span class="keyword">boolean</span>[m][n];</span><br><span class="line">    <span class="keyword">return</span> dfs(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,visited);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 深搜</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> i 横坐标</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> j 纵坐标</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> sum   坐标数位和</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> visited   标记数组</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j, <span class="keyword">int</span> sum, <span class="keyword">boolean</span>[][] visited)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//如果 坐标越界 或者 数位和大于k 或者 已经访问过，则停止当前方向的深搜</span></span><br><span class="line">    <span class="keyword">if</span> (i==m||j==n||sum&gt;k||visited[i][j])<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//标记为已访问</span></span><br><span class="line">    visited[i][j]=<span class="keyword">true</span>;</span><br><span class="line">    <span class="comment">//向下或者向右深搜</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>+dfs(i+<span class="number">1</span>,j,sums(i+<span class="number">1</span>,j),visited)+dfs(i,j+<span class="number">1</span>,sums(i,j+<span class="number">1</span>),visited);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//计算数位和</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">sums</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ans=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (x != <span class="number">0</span>) &#123;</span><br><span class="line">        ans+=x%<span class="number">10</span>;</span><br><span class="line">        x/=<span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (y != <span class="number">0</span>) &#123;</span><br><span class="line">        ans+=y%<span class="number">10</span>;</span><br><span class="line">        y/=<span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(mn)    最坏情况，遍历矩阵。</p>
+<p>空间复杂度：O(mn)</p>
+<h3 id="思路二：广搜"><a href="#思路二：广搜" class="headerlink" title="思路二：广搜"></a><strong><font color=red>思路二：广搜</font></strong></h3><p>其实和深搜的思路一样，只是换了一个搜索的方式，采用广搜的方式寻找符合要求的位置。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//时间复杂度：O(mn)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">movingCount</span><span class="params">(<span class="keyword">int</span> m, <span class="keyword">int</span> n, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//队列保存坐标</span></span><br><span class="line">    Queue&lt;<span class="keyword">int</span>[]&gt; queue=<span class="keyword">new</span> ArrayDeque&lt;&gt;();</span><br><span class="line">    <span class="comment">//标记数组</span></span><br><span class="line">    <span class="keyword">boolean</span>[][] visited=<span class="keyword">new</span> <span class="keyword">boolean</span>[m][n];</span><br><span class="line">    <span class="comment">//广搜</span></span><br><span class="line">    queue.add(<span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">0</span>,<span class="number">0</span>&#125;);</span><br><span class="line">    <span class="keyword">int</span> count=<span class="number">0</span>;</span><br><span class="line">    visited[<span class="number">0</span>][<span class="number">0</span>]=<span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">while</span> (!queue.isEmpty()) &#123;</span><br><span class="line">        <span class="keyword">int</span>[] poll = queue.poll();</span><br><span class="line">        count++;</span><br><span class="line">        <span class="comment">//向下、向右寻找符合要求的位置入队并标记访问状态</span></span><br><span class="line">        <span class="comment">//不越界 并且 数位和小于等于k 并且 未访问过</span></span><br><span class="line">        <span class="keyword">if</span> (poll[<span class="number">0</span>] + <span class="number">1</span> &lt; m</span><br><span class="line">            &amp;&amp; sums(poll[<span class="number">0</span>] + <span class="number">1</span>, poll[<span class="number">1</span>]) &lt;= k</span><br><span class="line">            &amp;&amp;!visited[poll[<span class="number">0</span>]+<span class="number">1</span>][poll[<span class="number">1</span>]])&#123;</span><br><span class="line">            queue.add(<span class="keyword">new</span> <span class="keyword">int</span>[]&#123;poll[<span class="number">0</span>]+<span class="number">1</span>,poll[<span class="number">1</span>]&#125;);</span><br><span class="line">            visited[poll[<span class="number">0</span>]+<span class="number">1</span>][poll[<span class="number">1</span>]]=<span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (poll[<span class="number">1</span>] + <span class="number">1</span> &lt; n</span><br><span class="line">            &amp;&amp; sums(poll[<span class="number">0</span>], poll[<span class="number">1</span>] + <span class="number">1</span>) &lt;= k</span><br><span class="line">            &amp;&amp;!visited[poll[<span class="number">0</span>]][poll[<span class="number">1</span>] + <span class="number">1</span>])&#123;</span><br><span class="line">            queue.add(<span class="keyword">new</span> <span class="keyword">int</span>[]&#123;poll[<span class="number">0</span>],poll[<span class="number">1</span>]+<span class="number">1</span>&#125;);</span><br><span class="line">            visited[poll[<span class="number">0</span>]][poll[<span class="number">1</span>]+<span class="number">1</span>]=<span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//计算数位和</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">sums</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ans=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (x != <span class="number">0</span>) &#123;</span><br><span class="line">        ans+=x%<span class="number">10</span>;</span><br><span class="line">        x/=<span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (y != <span class="number">0</span>) &#123;</span><br><span class="line">        ans+=y%<span class="number">10</span>;</span><br><span class="line">        y/=<span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(mn)    最坏情况，遍历矩阵。</p>
+<p>空间复杂度：O(mn)</p>
+<h2 id="剑指Offer-14-I-剪绳子-中等"><a href="#剑指Offer-14-I-剪绳子-中等" class="headerlink" title="剑指Offer.14_I 剪绳子 中等"></a>剑指Offer.14_I 剪绳子 <font color=orange>中等</font></h2><p><img src="https://s1.ax1x.com/2020/05/26/tPfzp4.png" alt="tPfzp4.png"></p>
+<p><strong><font color=red>思路一：动态规划</font></strong> dp[i]数组的含义：长度为 i 的绳子剪断后可以得到的最大乘积。</p>
+<p>初始化：dp[1]=dp[2]=1，即长度为 1 和 2 的绳子最大乘积是 1 。</p>
+<p>状态转移：<code>dp[i] = Max(dp[i],Max((i-j)*j,dp[i-j]*j))</code>，遍历 [3,n] 长度的绳子，每种绳子都有j∈[0,i) 个位置可以进行剪断，剪断分为两种方式：1. 只在 j 位置剪断一次，得到乘积 <code>(i-j)*j</code> 。2. 将剪断后的部分 (i-j) 继续剪断，并选择可以形成最大的乘积方法 dp[i-j] ，所以是 <code>dp[i-j]*j</code> 。从两种方式里选最大的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//时间复杂度：O(n^2)  空间复杂度：O(n)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">cuttingRope</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>[] dp = <span class="keyword">new</span> <span class="keyword">int</span>[n + <span class="number">1</span>];</span><br><span class="line">    <span class="comment">//初始化</span></span><br><span class="line">    dp[<span class="number">1</span>]=dp[<span class="number">2</span>]=<span class="number">1</span>;</span><br><span class="line">    <span class="comment">//[3,n] 种不通长度的绳子</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">3</span>; i &lt; n + <span class="number">1</span>; i++) &#123;</span><br><span class="line">        <span class="comment">//每个绳子有 [0,i) 个可剪断的位置</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; i; j++) &#123;</span><br><span class="line">            dp[i] = Math.max(dp[i],Math.max((i-j)*j,j*dp[i-j]));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[n];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong><font color=red>优化动态规划</font></strong>  学习自 <a href="https://leetcode-cn.com/u/jyd/" target="_blank" rel="noopener">@Krahets</a> 的题解中（我并没有购买这本神书）。</p>
+<p>为使乘积最大，只有长度为 2 和 3 的绳子不应再切分，且 3 比 2 更优 （详情见下表）</p>
+<p><img src="https://s1.ax1x.com/2020/05/25/t92XTg.png" alt="t92XTg.png"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//时间复杂度：O(n)  空间复杂度：O(n)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">cuttingRope</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt; <span class="number">4</span>) <span class="keyword">return</span> n - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span>[] dp = <span class="keyword">new</span> <span class="keyword">int</span>[n + <span class="number">1</span>];</span><br><span class="line">    dp[<span class="number">2</span>] = <span class="number">2</span>;</span><br><span class="line">    dp[<span class="number">3</span>] = <span class="number">3</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">4</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        dp[i] = Math.max(<span class="number">2</span> * dp[i - <span class="number">2</span>], <span class="number">3</span> * dp[i - <span class="number">3</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[n];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="剑指Offer-14-II-剪绳子II-中等"><a href="#剑指Offer-14-II-剪绳子II-中等" class="headerlink" title="剑指Offer.14_II 剪绳子II 中等"></a>剑指Offer.14_II 剪绳子II <font color=orange>中等</font></h2><p><img src="https://s1.ax1x.com/2020/05/26/tPhS1J.png" alt="tPhS1J.png"></p>
+<p>（一个更简单的办法，直接使用 BigDecimal 大数类型，方法不变和上一题一样。）</p>
+<p>上题的优化解法，已经基本给出了本题的思路。本题的变化在于 n 的取值更大，可能出现整形溢出的情况。</p>
+<p><strong><font color=red>思路一：贪心算法</font></strong> 我们首先考虑对于一段长n的绳子，我们可以切出的结果包含什么？</p>
+<p>1 会包含吗？ 不会，因为 1 * (k - 1) &lt; k , 只要把 1 和任何一个其他的片段组合在一起就有个更大的值</p>
+<p>2 可以</p>
+<p>3 可以</p>
+<p>4 可以吗？ 它拆成两个 2 的效果和本身一样，因此也不考虑</p>
+<p>5 以上可以吗？ 不可以，这些绳子必须拆，因为总有一种拆法比不拆更优，比如拆成 k / 2 和 k - k / 2</p>
+<p>综上, 最后的结果只包含 2 和 3 (当然当总长度为 2 和 3 时单独处理), 那么很显然 n &gt;= 5 时， 3*(n - 3) &gt;= 2 * (n - 2) ，因此我们优先拆成 3 ，最后剩余的拆成 2 。最后的结果一定是由若干个 3 和 1 或 2 个 2 组成。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//时间复杂度：O(logn) 空间复杂度：O(1)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">cuttingRope</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n&lt;<span class="number">4</span>) <span class="keyword">return</span> n-<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">long</span> res = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (n &gt; <span class="number">4</span>) &#123;</span><br><span class="line">        res *= <span class="number">3</span>;</span><br><span class="line">        res %= <span class="number">1000000007</span>;</span><br><span class="line">        n -= <span class="number">3</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//别忘了最后一段绳子，长度 n</span></span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">int</span>) (res*n%<span class="number">1000000007</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="剑指Offer-15-二进制中-1-的个数-简单"><a href="#剑指Offer-15-二进制中-1-的个数-简单" class="headerlink" title="剑指Offer.15 二进制中 1 的个数 简单"></a>剑指Offer.15 二进制中 1 的个数 <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/26/tPfjtU.png" alt="tPfjtU.png"></p>
+<p><strong><font color=red>思路一：逐位统计</font></strong> 用 &amp; 运算得到最后一位是 1 还是 0，每次统计完将 n 用 &gt;&gt;&gt; 无符号右移 1 位。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hammingWeight</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">32</span>; i++) &#123;</span><br><span class="line">        count += n &amp; <span class="number">1</span>;</span><br><span class="line">        n &gt;&gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong><font color=red>思路二：减 1 统计</font></strong> 看例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">n &#x3D; 11010001</span><br><span class="line">n &#x3D; (n - 1)&amp;n &#x3D; 11010000 &amp; 11010001 &#x3D; 11010000</span><br><span class="line">n &#x3D; (n - 1)&amp;n &#x3D; 11001110 &amp; 11010000 &#x3D; 11000000</span><br><span class="line">n &#x3D; (n - 1)&amp;n &#x3D; 10111111 &amp; 11000000 &#x3D; 10000000</span><br><span class="line">n &#x3D; (n - 1)&amp;n &#x3D; 01111111 &amp; 10000000 &#x3D; 00000000 &#x3D; 0</span><br><span class="line">共计算了 4 次，得到结果：有 4 个 1 。</span><br></pre></td></tr></table></figure>
+
+<p>实现这个方式，每次计算之后计数器 +1 ，直至 n 变为 0，则统计完成。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hammingWeight</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (n != <span class="number">0</span>) &#123;</span><br><span class="line">        count++;</span><br><span class="line">        n &amp;= (n - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="剑指Offer-16-数值的整数次方-中等"><a href="#剑指Offer-16-数值的整数次方-中等" class="headerlink" title="剑指Offer.16 数值的整数次方 中等"></a>剑指Offer.16 数值的整数次方 <font color=orange>中等</font></h2><p><img src="https://s1.ax1x.com/2020/05/26/tPfvhF.png" alt="tPfvhF.png"></p>
+<p><strong><font color=red>思路一：暴力法</font></strong> 这道题暴力法是不能通过leetcode判题机，会得到一个t。但是方法本身是可以得到正确答案的，所以我们需要对他进行优化。暴力法的想法很简单的：2^3=2*2*2。</p>
+<p>如果n为负，则n=-n同时x=1/x，例如2^(-3)=1/2*1/2*1/2。但是这里要注意n的取值范围，主要是 正整数和负整数的不同范围限制 。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">myPow</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (x==<span class="number">0</span>)<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (n==<span class="number">0</span>)<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">double</span> ans=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">long</span> N=n;</span><br><span class="line">    <span class="keyword">if</span> (N&lt;<span class="number">0</span>)&#123;</span><br><span class="line">        N=-N;</span><br><span class="line">        x=<span class="number">1</span>/x;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;N;i++)&#123;</span><br><span class="line">        ans*=x;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)</p>
+<p><strong><font color=red>思路二：二分法</font></strong> 当我们得到x^(n/2)的时候，我们不需要再去乘上n/2个x了，而是x^(n/2)*x^(n/2)=x^n。</p>
+<p>这个想法用递归很容易实现，但是需要注意的是n的奇偶性，如果n为奇数则需要再乘上一个x。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">myPow</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (n)&#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>:<span class="keyword">return</span> x;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">0</span>:<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">case</span> -<span class="number">1</span>:<span class="keyword">return</span> <span class="number">1</span>/x;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">double</span> half=myPow(x,n/<span class="number">2</span>);</span><br><span class="line">    <span class="comment">//奇偶性处理</span></span><br><span class="line">    <span class="keyword">double</span> rest=myPow(x,n%<span class="number">2</span>);</span><br><span class="line">    <span class="keyword">return</span> half*half*rest;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(logn)</p>
+<h2 id="剑指Offer-17-打印从-1-到最大的-n-位数-简单"><a href="#剑指Offer-17-打印从-1-到最大的-n-位数-简单" class="headerlink" title="剑指Offer.17 打印从 1 到最大的 n 位数 简单"></a>剑指Offer.17 打印从 1 到最大的 n 位数 <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/26/tPh9XR.png" alt="tPh9XR.png"></p>
+<p><strong><font color=red>思路一：幂运算</font></strong> 上一题刚搞过幂运算，直接拿来用。n 位数的需要申请 <code>10^n-1</code> 大小的数组。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//时间复杂度：O(10^n)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] printNumbers(<span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">int</span> size = myPow(<span class="number">10</span>, n);</span><br><span class="line">    <span class="keyword">int</span>[] res = <span class="keyword">new</span> <span class="keyword">int</span>[size - <span class="number">1</span>];</span><br><span class="line">    <span class="comment">//打印从 1 到 10^n-1</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; res.length; i++) &#123;</span><br><span class="line">        res[i] = i + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">myPow</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (n) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">return</span> x;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">case</span> -<span class="number">1</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span> / x;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> half = myPow(x, n / <span class="number">2</span>);</span><br><span class="line">    <span class="keyword">int</span> rest = myPow(x, n % <span class="number">2</span>);</span><br><span class="line">    <span class="keyword">return</span> half * half * rest;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="剑指Offer-18-删除链表的节点-简单"><a href="#剑指Offer-18-删除链表的节点-简单" class="headerlink" title="剑指Offer.18 删除链表的节点 简单"></a>剑指Offer.18 删除链表的节点 <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/26/tPhPn1.png" alt="tPhPn1.png"></p>
+<p><strong><font color=red>思路一：遍历</font></strong> cur 指针遍历链表，同时用一个 pre 指针指向 cur 节点的前驱， cur 指针找到 val 节点之后，删除 cur 节点即可。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//时间复杂度：O(n)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">deleteNode</span><span class="params">(ListNode head, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head == <span class="keyword">null</span>) <span class="keyword">return</span> head;</span><br><span class="line">    <span class="keyword">if</span> (head.val == val) <span class="keyword">return</span> head.next;</span><br><span class="line">    ListNode cur = head.next, pre = head;</span><br><span class="line">    <span class="keyword">while</span> (cur != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (cur.val != val) &#123;</span><br><span class="line">            cur = cur.next;</span><br><span class="line">            pre = pre.next;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            pre.next = cur.next;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> head;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="剑指Offer-19-正则表达式匹配-困难"><a href="#剑指Offer-19-正则表达式匹配-困难" class="headerlink" title="剑指Offer.19 正则表达式匹配  困难"></a>剑指Offer.19 正则表达式匹配  <font color=#ff0099>困难</font></h2><p><img src="https://s1.ax1x.com/2020/05/26/tPhF76.png" alt="tPhF76.png"></p>
+<p><img src="https://s1.ax1x.com/2020/05/26/tPhi0x.png" alt="tPhi0x.png"></p>
+<p><strong><font color=red>思路一：回溯法</font></strong> 这种匹配思路其实就是不断地减掉s和p的可以匹配首部，直至一个或两个字符串被减为空的时候，根据最终情况来得出结论。</p>
+<p>如果只是两个普通字符串进行匹配，按序遍历比较即可：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>( s.charAt(i) == p.charAt(i) )</span><br></pre></td></tr></table></figure>
+
+<p>如果正则表达式字符串p只有一种”.”一种特殊标记，依然是按序遍历比较即可 ：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>( s.charAt(i) == p.charAt(i) || p.charAt(i) == <span class="string">'.'</span> )</span><br></pre></td></tr></table></figure>
+
+<p>上述两种情况实现时还需要判断字符串长度和字符串判空的操作。</p>
+<p>但是，”*“这个特殊字符需要特殊处理，<u>当p的第i个元素的下一个元素是星号时</u>会有两种情况：</p>
+<ol>
+<li>i元素需要出现0次，<u>我们就保持s不变，将p的减掉两个元素，调用isMatch。</u>例如s：bc、p：a<em>bc，我们就保持s不变，减掉p的”a\</em>“，调用isMatch(s:bc,p:bc)。</li>
+<li>i元素需要出现一次或更多次，<u>先比较i元素和s首元素，相等则保持p不变，s减掉首元素，调用isMatch。</u>例如s：aabb、p：a<em>bb，就保持p不变，减掉s的首元素，调用isMatch(s:abb,p:a\</em>bb)。</li>
+</ol>
+<p>此时存在一些需要思考的情况，例如s：abb、p：a*abb，会用两种方式处理：</p>
+<ol>
+<li>按照上述第二种情况比较i元素和s首元素，发现相等就会减掉s的首字符，调用isMatch(s:bb,p:a*abb)。在按照上述第一种情况减去p的两个元素，调用isMatch(s:bb,p:abb)，最终导致false。</li>
+<li>直接按照上述第一种情况减去p的两个元素，调用isMatch(s:abb,p:abb)，最终导致true。</li>
+</ol>
+<p>所以说这算是一种暴力方法，会将所有的情况走一边，看看是否存在可以匹配的情况。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//如果正则串p为空字符串s也为空这匹配成功，如果正则串p为空但是s不是空则说明匹配失败</span></span><br><span class="line">    <span class="keyword">if</span> (p.isEmpty())<span class="keyword">return</span> s.isEmpty();</span><br><span class="line">    <span class="comment">//判断s和p的首字符是否匹配，注意要先判断s不为空</span></span><br><span class="line">    <span class="keyword">boolean</span> headMatched=!s.isEmpty()&amp;&amp;(s.charAt(<span class="number">0</span>)==p.charAt(<span class="number">0</span>)||p.charAt(<span class="number">0</span>)==<span class="string">'.'</span>);</span><br><span class="line">    <span class="keyword">if</span> (p.length()&gt;=<span class="number">2</span>&amp;&amp;p.charAt(<span class="number">1</span>)==<span class="string">'*'</span>)&#123;<span class="comment">//如果p的第一个元素的下一个元素是*</span></span><br><span class="line">        <span class="comment">//则分别对两种情况进行判断</span></span><br><span class="line">        <span class="keyword">return</span> isMatch(s,p.substring(<span class="number">2</span>))||</span><br><span class="line">            (headMatched&amp;&amp;isMatch(s.substring(<span class="number">1</span>),p));</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span> (headMatched)&#123;<span class="comment">//否则，如果s和p的首字符相等</span></span><br><span class="line">        <span class="keyword">return</span> isMatch(s.substring(<span class="number">1</span>),p.substring(<span class="number">1</span>));</span><br><span class="line">    &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O((n+m)*2^(n+m/2)) n和m分别是s和p的长度</p>
+<p><strong><font color=red>思路二：动态规划法</font></strong> 本题的dp数组的含义就是：dp[i][j]就是s的前i个元素是否可以被p的前j个元素所匹配。</p>
+<p>我们知道了dp数组的含义之后就知道了dp数组的几个细节：</p>
+<ol>
+<li>dp[0][0]一定是true，因为s为空且p也为空的时候一定是匹配的；dp[1][0]一定是false，因为s有一个字符但是p为空的时候一定是不匹配的。</li>
+<li>这个boolean类型的dp数组的大小应该是dp[s.length+1][p.length+1]，因为我们不仅仅要分别取出s和p的所有元素，还要表示分别取s和p的0个元素时候(都为空)的情况。</li>
+<li>当写到dp[s.length][p.length]的时候，我们就得到了最终s和p的匹配情况。</li>
+<li>dp[1][0]~dp[s.length][0]这一列都是false，因为s不为空但是p为空一定不能匹配。</li>
+</ol>
+<p>所以创建好dp数组之后，初始化dp[0][0]=true、dp[0][1]=false、dp[1][0]~dp[s.length][0]都是false。然后将第一行即dp[0][2]到dp[0][p.length]的元素初始化。</p>
+<p>第一行初始化思路：如果不为空的p想要匹配上为空的s，因为此时p已经不为空，则需要p是”a*“、”b*“、”c*“。。。这种形式的才能匹配上。</p>
+<p>然后填写数组的其余部分，这个过程中如果p.charAt(j)==’*&#39;依然是遵循上题中的两种情况；否则就判断两个字符串的i和j号字符是否相等，相等则分别减除当前字符继续判断，不相等则直接等于false。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMatch</span><span class="params">(String s, String p)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//需要分别取出s和p为空的情况，所以dp数组大小+1</span></span><br><span class="line">    <span class="keyword">boolean</span>[][] dp=<span class="keyword">new</span> <span class="keyword">boolean</span>[s.length()+<span class="number">1</span>][p.length()+<span class="number">1</span>];</span><br><span class="line">    <span class="comment">//初始化dp[0][0]=true,dp[0][1]和dp[1][0]~dp[s.length][0]默认值为false所以不需要显式初始化</span></span><br><span class="line">    dp[<span class="number">0</span>][<span class="number">0</span>]=<span class="keyword">true</span>;</span><br><span class="line">    <span class="comment">//填写第一行dp[0][2]~dp[0][p.length]</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> k=<span class="number">2</span>;k&lt;=p.length();k++)&#123;</span><br><span class="line">        <span class="comment">//p字符串的第2个字符是否等于'*',此时j元素需要0个，所以s不变p减除两个字符</span></span><br><span class="line">        dp[<span class="number">0</span>][k]=p.charAt(k-<span class="number">1</span>)==<span class="string">'*'</span>&amp;&amp;dp[<span class="number">0</span>][k-<span class="number">2</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//填写dp数组剩余部分</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;s.length();i++)&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;p.length();j++)&#123;</span><br><span class="line">            <span class="comment">//p第j个字符是否为*</span></span><br><span class="line">            <span class="keyword">if</span> (p.charAt(j)==<span class="string">'*'</span>)&#123;</span><br><span class="line">                <span class="comment">//两种情况:1.s不变[i+1],p移除两个元素[j+1-2]。</span></span><br><span class="line">                <span class="comment">// 2.比较s的i元素和p的j-1(因为此时j元素为*)元素,相等则移除首元素[i+1-1],p不变。</span></span><br><span class="line">                dp[i+<span class="number">1</span>][j+<span class="number">1</span>]=dp[i+<span class="number">1</span>][j-<span class="number">1</span>]||</span><br><span class="line">                    (dp[i][j+<span class="number">1</span>]&amp;&amp;headMatched(s,p,i,j-<span class="number">1</span>));</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">//s的i元素和p的j元素是否相等,相等则移除s的i元素[i+1-1]和p的j元素[j+1-1]</span></span><br><span class="line">                dp[i+<span class="number">1</span>][j+<span class="number">1</span>]=dp[i][j]&amp;&amp;headMatched(s,p,i,j);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[s.length()][p.length()];</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//判断s第i个字符和p第j个字符是否匹配</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">headMatched</span><span class="params">(String s,String p,<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> s.charAt(i)==p.charAt(j)||p.charAt(j)==<span class="string">'.'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n*m) n和m分别是s和p的长度</p>
+<p>有了第一题总结的”经验”之后，这道题逻辑上不难理解，但是细节上尤其各种下标值非常的恶心。</p>
+<h2 id="剑指Offer-20-表示数值的字符串-中等"><a href="#剑指Offer-20-表示数值的字符串-中等" class="headerlink" title="剑指Offer.20 表示数值的字符串 中等"></a>剑指Offer.20 表示数值的字符串 <font color=orange>中等</font></h2><p><img src="https://s1.ax1x.com/2020/05/26/tPhAAK.png" alt="tPhAAK.png"></p>
+<p>碍于篇幅，就赘述这种恶心人的题目了！</p>
+<p>之前写过一篇博文专门记录过这道题：<a href="https://blog.csdn.net/qq_42758551/article/details/104863460" target="_blank" rel="noopener">[LeetCode No.65]——什么是面向测试编程？看看本这道题就知道了！口区</a></p>
+<h2 id="剑指Offer-21-调整数组顺序使奇数位于偶数前面-简单"><a href="#剑指Offer-21-调整数组顺序使奇数位于偶数前面-简单" class="headerlink" title="剑指Offer.21 调整数组顺序使奇数位于偶数前面 简单"></a>剑指Offer.21 调整数组顺序使奇数位于偶数前面 <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/26/tPhEtO.png" alt="tPhEtO.png"></p>
+<p><strong><font color=red>思路一：双指针，快排变形</font></strong> 是 <a href="http://www.m1ng.top/2020/03/23/LeetCode%E2%80%94%E2%80%94%E9%A2%9C%E8%89%B2%E5%88%86%E7%B1%BB/">LeetCode NO.75 颜色分类</a> 中变形三路快排思路的简化版。双指针，分别找顺序第一个偶数，和逆序第一个奇数，然后交换，一次遍历即可完成交换。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//时间复杂度：O(n)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] exchange(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>, j = nums.length - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; j) &#123;</span><br><span class="line">        <span class="comment">//顺序找第一个偶数</span></span><br><span class="line">        <span class="keyword">while</span> (i&lt;j&amp;&amp;(nums[i]&amp;<span class="number">1</span>)==<span class="number">1</span>)i++;</span><br><span class="line">        <span class="comment">//逆序找第一个奇数</span></span><br><span class="line">        <span class="keyword">while</span> (i&lt;j&amp;&amp;(nums[j]&amp;<span class="number">1</span>)==<span class="number">0</span>)j--;</span><br><span class="line">        <span class="comment">//交换位置</span></span><br><span class="line">        <span class="keyword">int</span> temp = nums[i];</span><br><span class="line">        nums[i] = nums[j];</span><br><span class="line">        nums[j] = temp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> nums;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="剑指Offer-22-链表中倒数第-k-个节点-简单"><a href="#剑指Offer-22-链表中倒数第-k-个节点-简单" class="headerlink" title="剑指Offer.22 链表中倒数第 k 个节点 简单"></a>剑指Offer.22 链表中倒数第 k 个节点 <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/26/tPhVhD.png" alt="tPhVhD.png"></p>
+<ol>
+<li>用两个指针 slow、fast 分别指向链表的开头(哑节点)。</li>
+<li>先让 fast 指针逐步移动到距离 slow 指针 k 的位置上，也就是上 slow 指针和 fast 指针 n 个间隔。</li>
+<li>让 slow 指针和 fast 指针同时向后移动，直至 fast 指针为 null。</li>
+<li>此时 slow 指针指向的就是倒数第 k 个节点。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//时间复杂度：O(n)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">getKthFromEnd</span><span class="params">(ListNode head, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    ListNode fast = head, slow = head;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= k; i++) &#123;</span><br><span class="line">        fast = fast.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (fast != <span class="keyword">null</span>) &#123;</span><br><span class="line">        fast = fast.next;</span><br><span class="line">        slow = slow.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> slow;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="剑指Offer-24-翻转链表-简单"><a href="#剑指Offer-24-翻转链表-简单" class="headerlink" title="剑指Offer.24 翻转链表 简单"></a>剑指Offer.24 翻转链表 <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/26/tPhe9e.png" alt="tPhe9e.png"></p>
+<p><strong><font color=red>思路一：三指针迭代</font></strong> curr 指向当前待翻转的节点、pre 指向前驱、next 记录后继。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//时间复杂度：O(N)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">reverseList</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">    ListNode curr = head, pre = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">while</span> (curr != <span class="keyword">null</span>) &#123;</span><br><span class="line">        ListNode next = curr.next;</span><br><span class="line">        curr.next = pre;</span><br><span class="line">        pre = curr;</span><br><span class="line">        curr = next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pre;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="剑指Offer-25-合并两个排序的链表-简单"><a href="#剑指Offer-25-合并两个排序的链表-简单" class="headerlink" title="剑指Offer.25 合并两个排序的链表 简单"></a>剑指Offer.25 合并两个排序的链表 <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/26/tPhm1H.png" alt="tPhm1H.png"></p>
+<p><strong><font color=red>思路一：遍历</font></strong> 遍历比较每个节点，根据节点大小，连接成一个新链表。最后不要忘了，较长链表的剩余部分直接拼接在新链表尾部。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//时间复杂度：O(n)    较短的那个链表长度为 n</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">mergeTwoLists</span><span class="params">(ListNode l1, ListNode l2)</span> </span>&#123;</span><br><span class="line">    ListNode dummy = <span class="keyword">new</span> ListNode(-<span class="number">1</span>);</span><br><span class="line">    ListNode p = dummy;</span><br><span class="line">    <span class="keyword">while</span> (l1 != <span class="keyword">null</span> &amp;&amp; l2 != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (l1.val &lt;= l2.val) &#123;</span><br><span class="line">            p.next = l1;</span><br><span class="line">            l1 = l1.next;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            p.next = l2;</span><br><span class="line">            l2 = l2.next;</span><br><span class="line">        &#125;</span><br><span class="line">        p = p.next;</span><br><span class="line">    &#125;</span><br><span class="line">    p.next = l1 != <span class="keyword">null</span> ? l1 : l2;</span><br><span class="line">    <span class="keyword">return</span> dummy.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解源码和学习笔记：<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> 、<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">CSDN</a> 、<a href="http://www.m1ng.top/">M1ng</a> </p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/%E5%89%91%E6%8C%87Offer/" rel="tag"><i class="fa fa-tag"></i> 剑指Offer</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/26/LeetCode%E2%80%94%E2%80%94%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8%E9%97%AE%E9%A2%98/" rel="prev" title="LeetCode——环形链表I&II">
+      <i class="fa fa-chevron-left"></i> LeetCode——环形链表I&II
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#剑指Offer-13-机器人的运动范围-中等"><span class="nav-number">1.</span> <span class="nav-text">剑指Offer.13 机器人的运动范围 中等</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#思路一：深搜"><span class="nav-number">1.1.</span> <span class="nav-text">思路一：深搜</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#思路二：广搜"><span class="nav-number">1.2.</span> <span class="nav-text">思路二：广搜</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#剑指Offer-14-I-剪绳子-中等"><span class="nav-number">2.</span> <span class="nav-text">剑指Offer.14_I 剪绳子 中等</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#剑指Offer-14-II-剪绳子II-中等"><span class="nav-number">3.</span> <span class="nav-text">剑指Offer.14_II 剪绳子II 中等</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#剑指Offer-15-二进制中-1-的个数-简单"><span class="nav-number">4.</span> <span class="nav-text">剑指Offer.15 二进制中 1 的个数 简单</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#剑指Offer-16-数值的整数次方-中等"><span class="nav-number">5.</span> <span class="nav-text">剑指Offer.16 数值的整数次方 中等</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#剑指Offer-17-打印从-1-到最大的-n-位数-简单"><span class="nav-number">6.</span> <span class="nav-text">剑指Offer.17 打印从 1 到最大的 n 位数 简单</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#剑指Offer-18-删除链表的节点-简单"><span class="nav-number">7.</span> <span class="nav-text">剑指Offer.18 删除链表的节点 简单</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#剑指Offer-19-正则表达式匹配-困难"><span class="nav-number">8.</span> <span class="nav-text">剑指Offer.19 正则表达式匹配  困难</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#剑指Offer-20-表示数值的字符串-中等"><span class="nav-number">9.</span> <span class="nav-text">剑指Offer.20 表示数值的字符串 中等</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#剑指Offer-21-调整数组顺序使奇数位于偶数前面-简单"><span class="nav-number">10.</span> <span class="nav-text">剑指Offer.21 调整数组顺序使奇数位于偶数前面 简单</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#剑指Offer-22-链表中倒数第-k-个节点-简单"><span class="nav-number">11.</span> <span class="nav-text">剑指Offer.22 链表中倒数第 k 个节点 简单</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#剑指Offer-24-翻转链表-简单"><span class="nav-number">12.</span> <span class="nav-text">剑指Offer.24 翻转链表 简单</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#剑指Offer-25-合并两个排序的链表-简单"><span class="nav-number">13.</span> <span class="nav-text">剑指Offer.25 合并两个排序的链表 简单</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="M1ng"
+      src="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
+  <p class="site-author-name" itemprop="name">M1ng</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">249</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">75</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Jerrymouse1998" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Jerrymouse1998" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:577373789@qq.com" title="E-Mail → mailto:577373789@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-handshake-o"></i>
+      ↓交换友链QQ:577373789↓
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://jerrymouse1998.github.io/" title="https:&#x2F;&#x2F;jerrymouse1998.github.io&#x2F;" rel="noopener" target="_blank">M1ng&Q1ng</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+	  
+	  <!--添加标签云-->
+        
+          <script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+          <script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+          <div class="widget-wrap">
+            <!--<div>标签云</div>-->
+            <div id="myCanvasContainer" class="widget tagcloud">
+              <canvas width="250" height="250" id="resCanvas" style="width=100%">
+              <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BFS/" rel="tag">BFS</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DFS/" rel="tag">DFS</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Fibonacci/" rel="tag">Fibonacci</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Floyd%E7%AE%97%E6%B3%95/" rel="tag">Floyd算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HashTable/" rel="tag">HashTable</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/" rel="tag">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java8/" rel="tag">Java8</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KMP%E7%AE%97%E6%B3%95/" rel="tag">KMP算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LCP/" rel="tag">LCP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LCS/" rel="tag">LCS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Manacher%E7%AE%97%E6%B3%95/" rel="tag">Manacher算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">20</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sunday%E7%AE%97%E6%B3%95/" rel="tag">Sunday算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TreeSet/" rel="tag">TreeSet</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a><span class="tag-list-count">194</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AD%E5%BF%83%E6%89%A9%E5%B1%95/" rel="tag">中心扩展</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E5%88%86%E6%B3%95/" rel="tag">二分法</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91/" rel="tag">二叉搜索树</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E5%8F%89%E6%A0%91/" rel="tag">二叉树</a><span class="tag-list-count">24</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BD%8D%E5%9B%BE/" rel="tag">位图</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BD%8D%E8%BF%90%E7%AE%97/" rel="tag">位运算</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F/" rel="tag">冒泡排序</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E6%B2%BB%E7%AE%97%E6%B3%95/" rel="tag">分治算法</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%91%E6%8C%87Offer/" rel="tag">剑指Offer</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag">动态规划</a><span class="tag-list-count">29</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%A1%E5%A1%94%E5%85%B0%E6%95%B0/" rel="tag">卡塔兰数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8E%84%E6%8B%89%E5%A4%9A%E5%A1%9E%E7%AD%9B/" rel="tag">厄拉多塞筛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8C%E6%8C%87%E9%92%88/" rel="tag">双指针</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E6%BA%AF/" rel="tag">回溯</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BE/" rel="tag">图</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F/" rel="tag">基数排序</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A0%86/" rel="tag">堆</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A0%86%E6%8E%92%E5%BA%8F/" rel="tag">堆排序</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="tag">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BB%A7%E6%89%BF/" rel="tag">多继承</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E5%85%B8%E6%A0%91/" rel="tag">字典树</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="tag">字符串</a><span class="tag-list-count">33</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F/" rel="tag">希尔排序</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80%E5%BC%8F/" rel="tag">康托展开式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F/" rel="tag">归并排序</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BF%AB%E6%85%A2%E6%8C%87%E9%92%88/" rel="tag">快慢指针</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/" rel="tag">快速排序</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F/" rel="tag">拓扑排序</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F/" rel="tag">插入排序</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%91%A9%E5%B0%94%E6%8A%95%E7%A5%A8%E7%AE%97%E6%B3%95/" rel="tag">摩尔投票算法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E7%BB%84/" rel="tag">数组</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A5%E6%9C%9F%E7%B1%BB/" rel="tag">日期类</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A0%88/" rel="tag">栈</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A1%B6%E6%8E%92%E5%BA%8F/" rel="tag">桶排序</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E7%AE%97%E6%B3%95/" rel="tag">欧几里得算法</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B5%81%E5%BC%8F%E8%AF%AD%E6%B3%95/" rel="tag">流式语法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%BA%90%E7%A0%81/" rel="tag">源码</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/" rel="tag">滑动窗口</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E9%A1%BF%E8%BF%AD%E4%BB%A3%E6%B3%95/" rel="tag">牛顿迭代法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A1%AE%E5%AE%9A%E6%9C%89%E9%99%90%E8%87%AA%E5%8A%A8%E6%9C%BA/" rel="tag">确定有限自动机</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A8%8B%E5%BA%8F%E5%91%98%E9%9D%A2%E8%AF%95%E9%87%91%E5%85%B8/" rel="tag">程序员面试金典</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%9C%AF%E5%9F%BA%E6%9C%AC%E5%AE%9A%E7%90%86%E6%B3%95/" rel="tag">算术基本定理法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A3%B4%E8%9C%80%E5%AE%9A%E7%90%86/" rel="tag">裴蜀定理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F/" rel="tag">计数排序</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F/" rel="tag">责任链模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95/" rel="tag">贪心算法</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag">转载</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F/" rel="tag">选择排序</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%93%BE%E8%A1%A8/" rel="tag">链表</a><span class="tag-list-count">23</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%9F%E5%88%97/" rel="tag">队列</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9B%86%E5%90%88/" rel="tag">集合</a><span class="tag-list-count">2</span></li></ul>
+              </canvas>
+            </div>
+         </div>
+        
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">M1ng</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">230k</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-nest@1/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdnjs.cloudflare.com/ajax/libs/valine/1.3.10/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : true,
+      notify     : true,
+      appId      : 'qeADb7jtYMKlsXEEryXe2Grg-gzGzoHsz',
+      appKey     : 'WGN1y5zOMgAbEHXpunlL2THf',
+      placeholder: "欢迎留言、纠错、交朋友 ^.^ 请注意文明哦！",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+  
+  <!-- 樱花特效 -->
+  <script type="text/javascript">
+    var windowWidth = $(window).width();
+    <!-- if (windowWidth > 480) { -->
+      document.write('<script type="text/javascript" src="/js/sakura.js"><\/script>');
+    <!-- } -->
+  </script>
+
+</body>
+</html>
