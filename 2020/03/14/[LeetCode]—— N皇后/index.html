@@ -40,8 +40,8 @@
 <meta property="article:modified_time" content="2020-03-16T06:50:57.703Z">
 <meta property="article:author" content="M1ng">
 <meta property="article:tag" content="leetcode">
-<meta property="article:tag" content="回溯">
 <meta property="article:tag" content="数组">
+<meta property="article:tag" content="回溯">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://s2.ax1x.com/2020/02/28/3BxeVe.png">
 
@@ -290,7 +290,7 @@
         <h2 id="NO-51-N皇后-困难"><a href="#NO-51-N皇后-困难" class="headerlink" title="NO.51 N皇后 困难 "></a>NO.51 N皇后 <font color=#ff0099>困难</font> <a id="more"></a></h2><p><img src="https://s2.ax1x.com/2020/02/28/3BxeVe.png" alt="3BxeVe.png"></p>
 <p><img src="https://s2.ax1x.com/2020/02/28/3Bxn5d.png" alt="3Bxn5d.png"></p>
 <p>ps：皇后可以攻击同一行、同一列以及左上角、右上角、左下角、右下角这些角度方向上的任意单位。</p>
-<p><strong><font color=red>思路一：回溯法</font></strong> 这道题使用回溯法的思路和<a href="http://www.m1ng.top/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%E8%A7%A3%E6%95%B0%E7%8B%AC/" target="_blank" rel="noopener">NO.37解数独</a>类似，每次填入一个元素就会导致增加后序填写时的约束条件。尝试依次填写的过程中无法继续时，就回溯并继续尝试另一种填写序列。</p>
+<p><strong><font color=red>思路一：回溯法</font></strong> 这道题使用回溯法的思路和<a href="http://www.m1ng.top/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%E8%A7%A3%E6%95%B0%E7%8B%AC/">NO.37解数独</a>类似，每次填入一个元素就会导致增加后序填写时的约束条件。尝试依次填写的过程中无法继续时，就回溯并继续尝试另一种填写序列。</p>
 <p>本题深度遍历回溯方法的骨架：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">void dfs(棋盘board,当前行row,n)&#123;</span><br><span class="line">	if(终止条件)&#123;</span><br><span class="line">		保存当前序列;</span><br><span class="line">		return;</span><br><span class="line">	&#125;</span><br><span class="line">	for(int i&#x3D;0;i&lt;n;i++)&#123;</span><br><span class="line">    	if(board[row][i]可以填写)&#123;</span><br><span class="line">    		当前格子board[row][i]&#x3D;1;</span><br><span class="line">    		填写下一行dfs(board,row+1,n);</span><br><span class="line">    		擦除填写，验证下一个序列board[row][i]&#x3D;0;</span><br><span class="line">    	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -314,8 +314,8 @@
           
           <div class="post-tags">
               <a href="/tags/leetcode/" rel="tag"><i class="fa fa-tag"></i> leetcode</a>
-              <a href="/tags/%E5%9B%9E%E6%BA%AF/" rel="tag"><i class="fa fa-tag"></i> 回溯</a>
               <a href="/tags/%E6%95%B0%E7%BB%84/" rel="tag"><i class="fa fa-tag"></i> 数组</a>
+              <a href="/tags/%E5%9B%9E%E6%BA%AF/" rel="tag"><i class="fa fa-tag"></i> 回溯</a>
           </div>
 
         
@@ -324,12 +324,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%E4%B8%8D%E5%90%8C%E8%B7%AF%E5%BE%84/" rel="prev" title="LeetCode——不同路径">
-      <i class="fa fa-chevron-left"></i> LeetCode——不同路径
+    <a href="/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20N%E7%9A%87%E5%90%8EII/" rel="prev" title="LeetCode——N皇后II">
+      <i class="fa fa-chevron-left"></i> LeetCode——N皇后II
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2/" rel="next" title="LeetCode——最长回文子串">
-      LeetCode——最长回文子串 <i class="fa fa-chevron-right"></i>
+    <a href="/2020/03/14/%5BLeetCode%5D%E2%80%94%E2%80%94%20%20%E6%9C%89%E6%95%88%E6%8B%AC%E5%8F%B7/" rel="next" title="LeetCode——有效括号">
+      LeetCode——有效括号 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>

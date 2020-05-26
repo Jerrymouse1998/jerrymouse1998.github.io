@@ -196,7 +196,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://www.m1ng.top/2020/03/15/Java%E5%A4%9A%E7%BB%A7%E6%89%BF%E9%97%AE%E9%A2%98/">
+    <link itemprop="mainEntityOfPage" href="http://www.m1ng.top/2020/03/15/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
@@ -210,7 +210,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2020/03/15/Java%E5%A4%9A%E7%BB%A7%E6%89%BF%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">Java多继承问题</a>
+            <a href="/2020/03/15/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1/" class="post-title-link" itemprop="url">Java多线程</a>
         </h1>
 
         <div class="post-meta">
@@ -227,7 +227,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-16 16:05:55" itemprop="dateModified" datetime="2020-03-16T16:05:55+08:00">2020-03-16</time>
+                <time title="修改时间：2020-03-18 00:15:49" itemprop="dateModified" datetime="2020-03-18T00:15:49+08:00">2020-03-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -248,8 +248,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2020/03/15/Java%E5%A4%9A%E7%BB%A7%E6%89%BF%E9%97%AE%E9%A2%98/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/15/Java%E5%A4%9A%E7%BB%A7%E6%89%BF%E9%97%AE%E9%A2%98/" itemprop="commentCount"></span>
+    <a title="valine" href="/2020/03/15/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/15/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -259,7 +259,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.1k</span>
+              <span>11k</span>
             </span>
 
         </div>
@@ -271,215 +271,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>长期被诟病的多继承，不仅仅是Java语言所头疼的问题。多继承是一个较为复杂的设计问题，使用中很容易出现致命的问题。像Goto语句一样，利弊交织。
+          <h2 id="进程和线程的概念："><a href="#进程和线程的概念：" class="headerlink" title="进程和线程的概念："></a>进程和线程的概念：
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2020/03/15/Java%E5%A4%9A%E7%BB%A7%E6%89%BF%E9%97%AE%E9%A2%98/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://www.m1ng.top/2020/03/15/java.util.Date%E5%92%8Cjava.sql.Date%E5%8C%BA%E5%88%AB/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
-      <meta itemprop="name" content="M1ng">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="M1ng&Q1ng">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/15/java.util.Date%E5%92%8Cjava.sql.Date%E5%8C%BA%E5%88%AB/" class="post-title-link" itemprop="url">java.util.Date和java.sql.Date区别</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-15 17:11:26" itemprop="dateCreated datePublished" datetime="2020-03-15T17:11:26+08:00">2020-03-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-16 16:06:07" itemprop="dateModified" datetime="2020-03-16T16:06:07+08:00">2020-03-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Java学习笔记</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/03/15/java.util.Date%E5%92%8Cjava.sql.Date%E5%8C%BA%E5%88%AB/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/15/java.util.Date%E5%92%8Cjava.sql.Date%E5%8C%BA%E5%88%AB/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>356</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <ol>
-<li><p>java.util.Date是在除了SQL语句的情况下面使用的。java.sql.Date是针对SQL语句使用的。
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/15/java.util.Date%E5%92%8Cjava.sql.Date%E5%8C%BA%E5%88%AB/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://www.m1ng.top/2020/03/15/Maven%E5%86%8D%E4%BD%93%E9%AA%8C_CRUD/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
-      <meta itemprop="name" content="M1ng">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="M1ng&Q1ng">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/15/Maven%E5%86%8D%E4%BD%93%E9%AA%8C_CRUD/" class="post-title-link" itemprop="url">初识Maven(三)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-15 17:11:26" itemprop="dateCreated datePublished" datetime="2020-03-15T17:11:26+08:00">2020-03-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-16 16:31:10" itemprop="dateModified" datetime="2020-03-16T16:31:10+08:00">2020-03-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Maven/" itemprop="url" rel="index"><span itemprop="name">Maven</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/03/15/Maven%E5%86%8D%E4%BD%93%E9%AA%8C_CRUD/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/15/Maven%E5%86%8D%E4%BD%93%E9%AA%8C_CRUD/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>2k</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>前两篇文章已经介绍了Maven基本结构、功能和命令，并且搭建了最基本的SSM整合框架并调通。
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/15/Maven%E5%86%8D%E4%BD%93%E9%AA%8C_CRUD/#more" rel="contents">
+              <a class="btn" href="/2020/03/15/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -582,6 +377,108 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/03/15/Maven%E4%BB%8B%E7%BB%8D%E7%AF%87_%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86%E5%92%8C%E4%B8%80%E9%94%AE%E6%9E%84%E5%BB%BA%E6%80%BB%E7%BB%93/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.m1ng.top/2020/03/15/Maven%E5%86%8D%E4%BD%93%E9%AA%8C_CRUD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
+      <meta itemprop="name" content="M1ng">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M1ng&Q1ng">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/15/Maven%E5%86%8D%E4%BD%93%E9%AA%8C_CRUD/" class="post-title-link" itemprop="url">初识Maven(三)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-15 17:11:26" itemprop="dateCreated datePublished" datetime="2020-03-15T17:11:26+08:00">2020-03-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-16 16:31:10" itemprop="dateModified" datetime="2020-03-16T16:31:10+08:00">2020-03-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Maven/" itemprop="url" rel="index"><span itemprop="name">Maven</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/03/15/Maven%E5%86%8D%E4%BD%93%E9%AA%8C_CRUD/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/15/Maven%E5%86%8D%E4%BD%93%E9%AA%8C_CRUD/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2k</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>前两篇文章已经介绍了Maven基本结构、功能和命令，并且搭建了最基本的SSM整合框架并调通。
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/15/Maven%E5%86%8D%E4%BD%93%E9%AA%8C_CRUD/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -786,6 +683,108 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/03/15/NULL%E5%8F%AF%E4%BB%A5%E8%A2%AB%E8%BD%AC%E6%8D%A2%E4%B8%BA%E4%BB%BB%E6%84%8F%E7%B1%BB%E5%9E%8B%EF%BC%9F/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.m1ng.top/2020/03/15/Postman%E5%88%9D%E4%BD%93%E9%AA%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/05/28/Vnk7jg.jpg">
+      <meta itemprop="name" content="M1ng">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M1ng&Q1ng">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/15/Postman%E5%88%9D%E4%BD%93%E9%AA%8C/" class="post-title-link" itemprop="url">Postman接口调试工具</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-15 17:11:26" itemprop="dateCreated datePublished" datetime="2020-03-15T17:11:26+08:00">2020-03-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-16 16:31:44" itemprop="dateModified" datetime="2020-03-16T16:31:44+08:00">2020-03-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B7%A5%E5%85%B7%E7%8E%AF%E5%A2%83/" itemprop="url" rel="index"><span itemprop="name">工具环境</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/03/15/Postman%E5%88%9D%E4%BD%93%E9%AA%8C/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/15/Postman%E5%88%9D%E4%BD%93%E9%AA%8C/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.5k</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Postman可以直接作为浏览器插件安装使用，也可以下载独立的应用程序。介于Postman插件版在2017年已经停止维护了，我还是果断选择学习使用app版的。
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/15/Postman%E5%88%9D%E4%BD%93%E9%AA%8C/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
