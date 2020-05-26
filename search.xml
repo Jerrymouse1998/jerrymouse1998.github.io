@@ -1,6 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>LeetCode——环形链表I&amp;II</title>
+    <url>/2020/05/26/LeetCode%E2%80%94%E2%80%94%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p><strong>NO.141 环形链表 <font color=green>简单</font>、NO.142 环形链表II <font color=orange>中等</font> 、NO.202 快乐数 <font color=green>简单</font> 、NO.287 寻找重复数 <font color=orange>中等 </font> <a id="more"></a></strong></p>
+<h2 id="NO-141-环形链表-简单"><a href="#NO-141-环形链表-简单" class="headerlink" title="NO.141 环形链表 简单"></a>NO.141 环形链表 <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/03/JzeHZd.png" alt="JzeHZd.png"></p>
+<p><img src="https://s1.ax1x.com/2020/05/03/Jzeose.png" alt="Jzeose.png"></p>
+<p>在<strong>NO.202快乐数</strong>中也有对以下两个思路相同的应用。</p>
+<p><strong><font color=red>思路一：HashSet</font></strong> p指针遍历链表，将每个节点存入 set ，如果访问的节点 set 中存在，说明有环。</p>
+<p>时间复杂度：O(n)    空间复杂度：O(n)</p>
+<p><strong><font color=red>思路二：快慢指针</font></strong> 其实就是 Floyd 算法，如果快指针走到了结尾，说明不是环形链表；如果是环形链表快慢指针一定会相遇，因为入环之后每次移动快慢指针，就相当于让两个指针的距离 -1 。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasCycle</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head == <span class="keyword">null</span> || head.next == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    ListNode fast = head.next, slow = head;</span><br><span class="line">    <span class="keyword">while</span> (fast != <span class="keyword">null</span> &amp;&amp; fast.next != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">//相遇说明有环</span></span><br><span class="line">        <span class="keyword">if</span> (fast == slow) <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        fast = fast.next.next;</span><br><span class="line">        slow = slow.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    空间复杂度：O(1)</p>
+<h2 id="NO-142-环形链表II-中等"><a href="#NO-142-环形链表II-中等" class="headerlink" title="NO.142 环形链表II 中等"></a>NO.142 环形链表II <font color=orange>中等</font></h2><p><img src="https://s1.ax1x.com/2020/05/03/JzebdA.png" alt="JzebdA.png"></p>
+<p><img src="https://s1.ax1x.com/2020/05/03/JzeTqH.png" alt="JzeTqH.png"></p>
+<p>和其姊妹题NO.141的解题思路一样，稍微一些调整变化。</p>
+<p><strong><font color=red>思路一：HashSet</font></strong> p指针遍历链表，将每个节点存入 set ，如果访问的节点 set 中存在，说明有环并返回此时的节点p。线性遍历，第一次重复一定是入环的第一个节点。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">detectCycle</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head == <span class="keyword">null</span> || head.next == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    HashSet&lt;ListNode&gt; set = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">    ListNode p = head;</span><br><span class="line">    <span class="keyword">while</span> (p != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (set.contains(p)) &#123;</span><br><span class="line">            <span class="keyword">return</span> p;</span><br><span class="line">        &#125;</span><br><span class="line">        set.add(p);</span><br><span class="line">        p = p.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    空间复杂度：O(n)</p>
+<p><strong><font color=red>思路二：快慢指针</font></strong> 快慢指针如何进行不在赘述。重点在于如何找到入环的第一个节点。</p>
+<p>先看一下最终实现：如果快指针遍历完成，没有环；</p>
+<p>如果有环，当快慢指针第一次相遇后，慢指针原地不动，重置快指针回到表头节点，此时快慢指针都保持每次移动一个节点，当快慢指针第二次相遇的时候，此时相遇节点就是入环的第一个节点。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">detectCycle</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">    ListNode fast = head, slow = head;</span><br><span class="line">    <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">        <span class="comment">//无环</span></span><br><span class="line">        <span class="keyword">if</span> (fast == <span class="keyword">null</span> || fast.next == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        fast = fast.next.next;</span><br><span class="line">        slow = slow.next;</span><br><span class="line">        <span class="comment">//第一次相遇</span></span><br><span class="line">        <span class="keyword">if</span> (slow == fast) <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//重置fast</span></span><br><span class="line">    fast = head;</span><br><span class="line">    <span class="comment">//第二次相遇</span></span><br><span class="line">    <span class="keyword">while</span> (slow != fast) &#123;</span><br><span class="line">        slow = slow.next;</span><br><span class="line">        fast = fast.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> slow;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)  空间复杂度：O(1)</p>
+<p><strong>为什么两次相遇一定是入环的第一个节点？</strong></p>
+<p>设链表有环，且链表共有 a+b 个节点，其中 链表头部到链表入口 有 a 个节点（不计链表入口节点）， 链表环 有 b 个节点；设两指针分别走了 f，s 步，则有：</p>
+<ol>
+<li><code>fast</code> 走的步数是<code>slow</code>步数的 2 倍，即 f = 2s ；</li>
+<li><code>fast</code> 比 <code>slow</code>多走了 n 个环的长度，即 f = s + nb ； ( 双指针都走过一次非环的部分 a 步，然后在环内绕圈直到重合，重合时 <code>fast</code> 比 <code>slow</code> 多走 <strong>环的长度整数倍</strong> n )</li>
+<li>以上两式相减得：f = 2nb，s = nb，即<code>fast</code>和<code>slow</code> 指针分别走了 2n，n 个 <strong>环的周长</strong> 。</li>
+</ol>
+<p>如果一个指针 k 遍历这个有环链表一次需要走 k = a + nb 步 (此时 n=1)，此时 k 会回到入环节点。</p>
+<p> 而目前，<code>slow</code> 指针走过的步数为 nb 步。因此，我们只要想办法让 <code>slow</code> 再走 a 步停下来，就可以到环的入口节点。</p>
+<p>但是此时我们并不知道参数链表的 a 是多少！</p>
+<p>所以让 <code>fast</code> 和 <code>slow</code> 第一次相遇后(此时 s = nb)，<code>fast</code> 从头节点开始每次走一步，同时 <code>slow</code> 也在环内每次走一步，当 <code>fast</code> 走 a 步到达入环节点时，<code>slow</code> 共走了 s = a + nb 步，即 <code>slow</code> 也到达入环节点。</p>
+<p>所以只需要第二次 <code>fast</code> 和 <code>slow</code> 相遇即可，此时一定是在入环节点。</p>
+<h2 id="NO-202-快乐数-简单"><a href="#NO-202-快乐数-简单" class="headerlink" title="NO.202 快乐数 简单"></a>NO.202 快乐数 <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/04/30/JLPcin.png" alt="JLPcin.png"></p>
+<p><strong><font color=red>思路一：HashTable</font></strong> 用一个 HashSet 对每一个数字的每一位求平方相加，结果 num 如果是 1 则说明 n 是快乐数；如果不是 1，判断 HashSet 中是否已经存在相同的 num，如果存在说明出现闭环，不存在则结果放入 Set 并继续按位平方求和，判断结果。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isHappy</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    HashSet&lt;Integer&gt; set = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">    <span class="comment">//还没有证明n是快乐数,也没有发生循环</span></span><br><span class="line">    <span class="keyword">while</span> (n != <span class="number">1</span> &amp;&amp; !set.contains(n)) &#123;</span><br><span class="line">        set.add(n);</span><br><span class="line">        n = helper(n);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> n == <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//按位平方求和</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">helper</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> num = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (n &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> temp = n%<span class="number">10</span>;</span><br><span class="line">        num+=temp*temp;</span><br><span class="line">        n/=<span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> num;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不需要考虑平方求和之后的结果num超出范围，因为 999 的结果是 243 、9999 的结果  324 、、、 9999999999999  的结果  1053 。。。发现，三位数最大的按位平方求和结果还是个三位数，所以无论怎么求下去，都是三位数。</p>
+<p>时间复杂度：O(logn)    空间复杂度：O(n)</p>
+<p><strong><font color=red>思路二：快慢指针</font></strong> 不断地生成 num ，num 生成下一个 num ，这是一种链式的递减，如果链上的某个节点出现了 1 ，说明 n 是快乐数，如果链上出现了环，说明 n 不是快乐数。</p>
+<p>这种思路下，本问题就转换成了判断链表是否有环的问题，在判断的途中顺便检测是否有节点为 1 。</p>
+<p>慢指针一次走一个节点，快指针一次走两个节点，如果存在循环，那么快慢一定会相遇。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isHappy</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> slow = n, fast = helper(n);</span><br><span class="line">    <span class="keyword">while</span> (fast != <span class="number">1</span> &amp;&amp; slow != fast) &#123;</span><br><span class="line">        slow = helper(slow);</span><br><span class="line">        fast = helper(helper(fast));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> fast == <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//按位平方求和</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">helper</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> num = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (n &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> temp = n % <span class="number">10</span>;</span><br><span class="line">        num += temp * temp;</span><br><span class="line">        n /= <span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> num;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(logn)    空间复杂度：O(1)</p>
+<h2 id="NO-287-寻找重复数-中等"><a href="#NO-287-寻找重复数-中等" class="headerlink" title="NO.287 寻找重复数 中等 "></a>NO.287 寻找重复数 <font color=orange>中等 </font></h2><p><img src="https://s1.ax1x.com/2020/05/26/tPM12t.png" alt="tPM12t.png"></p>
+<p><strong><font color=red>思路一：快慢指针</font></strong> 读完题并不能立刻想到判环问题。如果将数组建图，下标位置 i 都有一个连接 nums[i] 的边。本题说有且只有一个重复元素 num，那么 num 这个位置至少有两条边指向他，所以图里一定有环，而这个重复元素 num 就是环的入口。</p>
+<p>问题变成了找环的入口问题，就变成了上面的 <strong>NO.142 环形链表 II</strong>。区别仅在于本题是数组而已。</p>
+<p>依然快慢指针，虽然本题不是一个链表，但是根据前面所说的建图后有了链表的性质(下标 i -&gt; nums[i])，所以移动一步就是 <code>slow = nums[slow]</code>，同样的走两步就是 <code>fast = nums[nums[fast]]</code> 。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findDuplicate</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> slow = <span class="number">0</span>, fast = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">        slow = nums[slow];</span><br><span class="line">        fast = nums[nums[fast]];</span><br><span class="line">        <span class="comment">//第一次相遇</span></span><br><span class="line">        <span class="keyword">if</span> (slow == fast) <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//重置一个指针,快慢指针都每次一个步长</span></span><br><span class="line">    slow = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (slow != fast) &#123;</span><br><span class="line">        slow = nums[slow];</span><br><span class="line">        fast = nums[fast];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//第二次相遇就是环入口</span></span><br><span class="line">    <span class="keyword">return</span> slow;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    空间复杂度：O(1)</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解源码和学习笔记：<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> 、<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">CSDN</a> 、<a href="http://www.m1ng.top/">M1ng</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>链表</tag>
+        <tag>数组</tag>
+        <tag>快慢指针</tag>
+        <tag>Floyd算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode——翻转二叉树</title>
+    <url>/2020/05/26/LeetCode%E2%80%94%E2%80%94%E7%BF%BB%E8%BD%AC%E4%BA%8C%E5%8F%89%E6%A0%91/</url>
+    <content><![CDATA[<h2 id="NO-141-环形链表-简单"><a href="#NO-141-环形链表-简单" class="headerlink" title="NO.141 环形链表 简单 "></a>NO.141 环形链表 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/05/26/tPs8ts.png" alt="tPs8ts.png"></p>
+<p>震惊！著名软件 Homebrew 的作者 Max Howell 在 面试 Google 被拒，竟然是因为不会这个！</p>
+<p><img src="https://s1.ax1x.com/2020/05/26/tPyvM6.png" alt="tPyvM6.png"></p>
+<p> Google：我们 90% 的工程师都用你写的软件（Homebrew），但你没法在白板上翻转二叉树，所以滚蛋吧 </p>
+<p><strong><font color=red>思路一：深度优先遍历</font></strong> 从根节点开始，交换左右子树，然后递归的交换左右子树的左右子树。终止条件是子树节点为空。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">invertTree</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//节点为空终止</span></span><br><span class="line">    <span class="keyword">if</span> (root ==<span class="keyword">null</span>) <span class="keyword">return</span> root;</span><br><span class="line">    <span class="comment">//交换根节点的左右子树</span></span><br><span class="line">    TreeNode temp = root.right;</span><br><span class="line">    root.right = root.left;</span><br><span class="line">    root.left = temp;</span><br><span class="line">    <span class="comment">//分别交换左右子树的左右子树</span></span><br><span class="line">    invertTree(root.right);</span><br><span class="line">    invertTree(root.left);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)    空间复杂度：O(h)    h 是树高</p>
+<p><strong><font color=red>思路二：广度优先遍历</font></strong>  广搜二叉树，并且遍历过程中交换树中所有节点的左子树和右子树 。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">invertTree</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> root;</span><br><span class="line">        Queue&lt;TreeNode&gt; queue = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">        queue.offer(root);</span><br><span class="line">        <span class="keyword">while</span> (!queue.isEmpty()) &#123;</span><br><span class="line">            TreeNode poll = queue.poll();</span><br><span class="line">            <span class="comment">//交换左右子树</span></span><br><span class="line">            TreeNode temp = poll.right;</span><br><span class="line">            poll.right = poll.left;</span><br><span class="line">            poll.left = temp;</span><br><span class="line">            <span class="comment">//左右子树不空，则入队</span></span><br><span class="line">            <span class="keyword">if</span> (poll.left != <span class="keyword">null</span>) queue.offer(poll.left);</span><br><span class="line">            <span class="keyword">if</span> (poll.right != <span class="keyword">null</span>) queue.offer(poll.right);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> root;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度：O(n)  空间复杂度：O(w)    树的最大宽度 w</p>
+<hr>
+<p>本人菜鸟，有错误请告知，感激不尽！</p>
+<p>更多题解源码和学习笔记：<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> 、<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">CSDN</a> 、<a href="http://www.m1ng.top/">M1ng</a> </p>
+]]></content>
+      <categories>
+        <category>题解笔记</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>二叉树</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>TCP指北</title>
     <url>/2020/05/25/TCP%E6%8C%87%E5%8C%97/</url>
     <content><![CDATA[<p>运输层是面向通信部分的最高层，同时也是用户应用功能中的最底层，主要是向下封装通信部分、对接应用层完成<strong>分用</strong>和<strong>复用</strong>这两个主要功能，运输层是通常开发中接触到的最底层。在 <strong>TCP/IP</strong> 协议栈中有两种重要的运输层协议 <strong>UDP</strong> 和 <strong>TCP</strong>，同时 TCP 也是应用层 HTTP 协议的基础。</p>
@@ -1813,57 +1912,6 @@
       </tags>
   </entry>
   <entry>
-    <title>LeetCode——环形链表I&amp;II</title>
-    <url>/2020/05/03/LeetCode%E2%80%94%E2%80%94%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8I-II/</url>
-    <content><![CDATA[<p><strong>环形链表 <font color=green>简单</font>、环形链表II <font color=orange>中等</font></strong> <a id="more"></a></p>
-<h2 id="NO-141-环形链表-简单"><a href="#NO-141-环形链表-简单" class="headerlink" title="NO.141 环形链表 简单"></a>NO.141 环形链表 <font color=green>简单</font></h2><p><img src="https://s1.ax1x.com/2020/05/03/JzeHZd.png" alt="JzeHZd.png"></p>
-<p><img src="https://s1.ax1x.com/2020/05/03/Jzeose.png" alt="Jzeose.png"></p>
-<p>在<strong>NO.202快乐数</strong>中也有对以下两个思路相同的应用。</p>
-<p><strong><font color=red>思路一：HashSet</font></strong> p指针遍历链表，将每个节点存入 set ，如果访问的节点 set 中存在，说明有环。</p>
-<p>时间复杂度：O(n)    空间复杂度：O(n)</p>
-<p><strong><font color=red>思路二：快慢指针</font></strong> 如果快指针走到了结尾，说明不是环形链表；如果是环形链表快慢指针一定会相遇，因为入环之后每次移动快慢指针，就相当于让两个指针的距离 -1 。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasCycle</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head == <span class="keyword">null</span> || head.next == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    ListNode fast = head.next, slow = head;</span><br><span class="line">    <span class="keyword">while</span> (fast != <span class="keyword">null</span> &amp;&amp; fast.next != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">//相遇说明有环</span></span><br><span class="line">        <span class="keyword">if</span> (fast == slow) <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        fast = fast.next.next;</span><br><span class="line">        slow = slow.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>时间复杂度：O(n)    空间复杂度：O(1)</p>
-<h2 id="NO-142-环形链表II-中等"><a href="#NO-142-环形链表II-中等" class="headerlink" title="NO.142 环形链表II 中等"></a>NO.142 环形链表II <font color=orange>中等</font></h2><p><img src="https://s1.ax1x.com/2020/05/03/JzebdA.png" alt="JzebdA.png"></p>
-<p><img src="https://s1.ax1x.com/2020/05/03/JzeTqH.png" alt="JzeTqH.png"></p>
-<p>和其姊妹题NO.141的解题思路一样，稍微一些调整变化。</p>
-<p><strong><font color=red>思路一：HashSet</font></strong> p指针遍历链表，将每个节点存入 set ，如果访问的节点 set 中存在，说明有环并返回此时的节点p。线性遍历，第一次重复一定是入环的第一个节点。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">detectCycle</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head == <span class="keyword">null</span> || head.next == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    HashSet&lt;ListNode&gt; set = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">    ListNode p = head;</span><br><span class="line">    <span class="keyword">while</span> (p != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (set.contains(p)) &#123;</span><br><span class="line">            <span class="keyword">return</span> p;</span><br><span class="line">        &#125;</span><br><span class="line">        set.add(p);</span><br><span class="line">        p = p.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>时间复杂度：O(n)    空间复杂度：O(n)</p>
-<p><strong><font color=red>思路二：快慢指针</font></strong> 快慢指针如何进行不在赘述。重点在于如何找到入环的第一个节点。</p>
-<p>先看一下最终实现：如果快指针遍历完成，没有环；</p>
-<p>如果有环，当快慢指针第一次相遇后，慢指针原地不动，重置快指针回到表头节点，此时快慢指针都保持每次移动一个节点，当快慢指针第二次相遇的时候，此时相遇节点就是入环的第一个节点。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">detectCycle</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">    ListNode fast = head, slow = head;</span><br><span class="line">    <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">        <span class="comment">//无环</span></span><br><span class="line">        <span class="keyword">if</span> (fast == <span class="keyword">null</span> || fast.next == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        fast = fast.next.next;</span><br><span class="line">        slow = slow.next;</span><br><span class="line">        <span class="comment">//第一次相遇</span></span><br><span class="line">        <span class="keyword">if</span> (slow == fast) <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//重置fast</span></span><br><span class="line">    fast = head;</span><br><span class="line">    <span class="comment">//第二次相遇</span></span><br><span class="line">    <span class="keyword">while</span> (slow != fast) &#123;</span><br><span class="line">        slow = slow.next;</span><br><span class="line">        fast = fast.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> slow;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>时间复杂度：O(n)  空间复杂度：O(1)</p>
-<p><strong>为什么两次相遇一定是入环的第一个节点？</strong></p>
-<p>设链表有环，且链表共有 a+b 个节点，其中 链表头部到链表入口 有 a 个节点（不计链表入口节点）， 链表环 有 b 个节点；设两指针分别走了 f，s 步，则有：</p>
-<ol>
-<li><code>fast</code> 走的步数是<code>slow</code>步数的 2 倍，即 f = 2s ；</li>
-<li><code>fast</code> 比 <code>slow</code>多走了 n 个环的长度，即 f = s + nb ； ( 双指针都走过一次非环的部分 a 步，然后在环内绕圈直到重合，重合时 <code>fast</code> 比 <code>slow</code> 多走 <strong>环的长度整数倍</strong> n )</li>
-<li>以上两式相减得：f = 2nb，s = nb，即<code>fast</code>和<code>slow</code> 指针分别走了 2n，n 个 <strong>环的周长</strong> 。</li>
-</ol>
-<p>如果一个指针 k 遍历这个有环链表一次需要走 k = a + nb 步 (此时 n=1)，此时 k 会回到入环节点。</p>
-<p> 而目前，<code>slow</code> 指针走过的步数为 nb 步。因此，我们只要想办法让 <code>slow</code> 再走 a 步停下来，就可以到环的入口节点。</p>
-<p>但是此时我们并不知道参数链表的 a 是多少！</p>
-<p>所以让 <code>fast</code> 和 <code>slow</code> 第一次相遇后(此时 s = nb)，<code>fast</code> 从头节点开始每次走一步，同时 <code>slow</code> 也在环内每次走一步，当 <code>fast</code> 走 a 步到达入环节点时，<code>slow</code> 共走了 s = a + nb 步，即 <code>slow</code> 也到达入环节点。</p>
-<p>所以只需要第二次 <code>fast</code> 和 <code>slow</code> 相遇即可，此时一定是在入环节点。</p>
-<hr>
-<p>本人菜鸟，有错误请告知，感激不尽！</p>
-<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
-]]></content>
-      <categories>
-        <category>题解笔记</category>
-      </categories>
-      <tags>
-        <tag>leetcode</tag>
-        <tag>链表</tag>
-        <tag>快慢指针</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>LeetCode——单词拆分I&amp;II</title>
     <url>/2020/05/02/LeetCode%E2%80%94%E2%80%94%E5%8D%95%E8%AF%8D%E6%8B%86%E5%88%86I-II/</url>
     <content><![CDATA[<p><strong>单词拆分 <font color=orange>中等</font>、单词拆分II <font color=#ff0099>困难</font></strong> <a id="more"></a></p>
@@ -2014,35 +2062,6 @@
       <tags>
         <tag>leetcode</tag>
         <tag>位运算</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LeetCode——快乐数</title>
-    <url>/2020/05/01/LeetCode%E2%80%94%E2%80%94%E5%BF%AB%E4%B9%90%E6%95%B0/</url>
-    <content><![CDATA[<h2 id="NO-202-快乐数-简单"><a href="#NO-202-快乐数-简单" class="headerlink" title="NO.202 快乐数 简单 "></a>NO.202 快乐数 <font color=green>简单</font> <a id="more"></a></h2><p><img src="https://s1.ax1x.com/2020/04/30/JLPcin.png" alt="JLPcin.png"></p>
-<p>读完题很懵逼，无法认清自己，又找到一个盲点类型。看了一下相同类型的题目，判断一个链表是否有环，再看看题解。。。哦？找循环点！先算作找循环类型口巴。</p>
-<p><strong><font color=red>思路一：HashTable</font></strong> 用一个 HashSet 对每一个数字的每一位求平方相加，结果 num 如果是 1 则说明 n 是快乐数；如果不是 1，判断 HashSet 中是否已经存在相同的 num，如果存在说明出现闭环，不存在则结果放入 Set 并继续按位平方求和，判断结果。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isHappy</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    HashSet&lt;Integer&gt; set = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">    <span class="comment">//还没有证明n是快乐数,也没有发生循环</span></span><br><span class="line">    <span class="keyword">while</span> (n != <span class="number">1</span> &amp;&amp; !set.contains(n)) &#123;</span><br><span class="line">        set.add(n);</span><br><span class="line">        n = helper(n);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> n == <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//按位平方求和</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">helper</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> num = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (n &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> temp = n%<span class="number">10</span>;</span><br><span class="line">        num+=temp*temp;</span><br><span class="line">        n/=<span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> num;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>不需要考虑平方求和之后的结果num超出范围，因为 999 的结果是 243 、9999 的结果  324 、、、 9999999999999  的结果  1053 。。。发现，三位数最大的按位平方求和结果还是个三位数，所以无论怎么求下去，都是三位数。</p>
-<p>时间复杂度：O(logn)</p>
-<p><strong><font color=red>思路二：快慢指针</font></strong> 不断地生成 num ，num 生成下一个 num ，这是一种链式的递减，如果链上的某个节点出现了 1 ，说明 n 是快乐数，如果链上出现了环，说明 n 不是快乐数。</p>
-<p>这种思路下，本问题就转换成了判断链表是否有环的问题，在判断的途中顺便检测是否有节点为 1 。</p>
-<p>慢指针一次走一个节点，快指针一次走两个节点，如果存在循环，那么快慢一定会相遇。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isHappy</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> slow = n, fast = helper(n);</span><br><span class="line">    <span class="keyword">while</span> (fast != <span class="number">1</span> &amp;&amp; slow != fast) &#123;</span><br><span class="line">        slow = helper(slow);</span><br><span class="line">        fast = helper(helper(fast));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> fast == <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//按位平方求和</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">helper</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> num = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (n &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> temp = n % <span class="number">10</span>;</span><br><span class="line">        num += temp * temp;</span><br><span class="line">        n /= <span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> num;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>时间复杂度：O(logn)</p>
-<hr>
-<p>本人菜鸟，有错误请告知，感激不尽！</p>
-<p>更多题解和源码:<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> </p>
-]]></content>
-      <categories>
-        <category>题解笔记</category>
-      </categories>
-      <tags>
-        <tag>leetcode</tag>
-        <tag>HashTable</tag>
-        <tag>快慢指针</tag>
       </tags>
   </entry>
   <entry>
