@@ -1,6 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>MySQL报错Column &#39;xxxx&#39; in xxxx clause is ambiguous</title>
+    <url>/2020/06/28/MySQL%E6%8A%A5%E9%94%99Column%20&#39;xxxx&#39;%20in%20xxxx%20clause%20is%20ambiguous/</url>
+    <content><![CDATA[<p>虽然是一个常见的 SQL 报错缺陷，但是仍要记录一下解决的过程。</p>
+<p>因为开始实习后好长时间不写学习记录了，这篇算是之后的学习记录再出发的起一个起点！<a id="more"></a></p>
+<h2 id="错误出现"><a href="#错误出现" class="headerlink" title="错误出现"></a>错误出现</h2><p>接口 500，本地 debug 轻松地发现了问题：是 Mapper 中的一条 SQL 有问题，<code>Column &#39;short_name&#39; in order clause is ambiguous</code></p>
+<p>SQL并不复杂，数据库结构就不赘述了，四张表连接查询。直接看问题 SQL：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	p.*,</span><br><span class="line">	lt.NAME AS province_name,</span><br><span class="line">	t.NAME country_name </span><br><span class="line">	FROM</span><br><span class="line">		sm_basic_province p</span><br><span class="line">		LEFT JOIN sm_basic_country bc ON p.country &#x3D; bc.country_id</span><br><span class="line">		LEFT JOIN sm_basic_lang_tag t ON bc.NAME &#x3D; t.tag_id </span><br><span class="line">		AND t.lang &#x3D; 1 </span><br><span class="line">		AND t.tenant_id &#x3D; &#39;keycai&#39;</span><br><span class="line">		LEFT JOIN sm_basic_lang_tag lt ON p.NAME &#x3D; lt.tag_id </span><br><span class="line">		AND lt.lang &#x3D; 1 </span><br><span class="line">		AND lt.tenant_id &#x3D; &#39;keycai&#39; </span><br><span class="line">	WHERE</span><br><span class="line">		p.tenant_id &#x3D; &#39;keycai&#39; </span><br><span class="line">		AND bc.tenant_id &#x3D; &#39;keycai&#39; </span><br><span class="line">ORDER BY CONVERT ( short_name USING gbk ) DESC</span><br></pre></td></tr></table></figure>
+
+<p>问题很明显、很常见，short_name 字段名不明确。</p>
+<h2 id="错误解决"><a href="#错误解决" class="headerlink" title="错误解决"></a>错误解决</h2><p>常规方法 ORDER BY 之前的查询结果加括号：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(SELECT</span><br><span class="line">	p.*,</span><br><span class="line">	lt.NAME AS province_name,</span><br><span class="line">	t.NAME country_name </span><br><span class="line">	FROM</span><br><span class="line">		sm_basic_province p</span><br><span class="line">		LEFT JOIN sm_basic_country bc ON p.country &#x3D; bc.country_id</span><br><span class="line">		LEFT JOIN sm_basic_lang_tag t ON bc.NAME &#x3D; t.tag_id </span><br><span class="line">		AND t.lang &#x3D; 1 </span><br><span class="line">		AND t.tenant_id &#x3D; &#39;keycai&#39;</span><br><span class="line">		LEFT JOIN sm_basic_lang_tag lt ON p.NAME &#x3D; lt.tag_id </span><br><span class="line">		AND lt.lang &#x3D; 1 </span><br><span class="line">		AND lt.tenant_id &#x3D; &#39;keycai&#39; </span><br><span class="line">	WHERE</span><br><span class="line">		p.tenant_id &#x3D; &#39;keycai&#39; </span><br><span class="line">		AND bc.tenant_id &#x3D; &#39;keycai&#39;)</span><br><span class="line">ORDER BY CONVERT ( short_name USING gbk ) DESC</span><br></pre></td></tr></table></figure>
+
+<p>错误依旧，SELECT * (…) t 生成中间表 t，再根据 t 表的 short_name 字段进行排序：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SELECT * FROM (SELECT</span><br><span class="line">	p.*,</span><br><span class="line">	lt.NAME AS province_name,</span><br><span class="line">	t.NAME country_name </span><br><span class="line">	FROM</span><br><span class="line">		sm_basic_province p</span><br><span class="line">		LEFT JOIN sm_basic_country bc ON p.country &#x3D; bc.country_id</span><br><span class="line">		LEFT JOIN sm_basic_lang_tag t ON bc.NAME &#x3D; t.tag_id </span><br><span class="line">		AND t.lang &#x3D; 1 </span><br><span class="line">		AND t.tenant_id &#x3D; &#39;keycai&#39;</span><br><span class="line">		LEFT JOIN sm_basic_lang_tag lt ON p.NAME &#x3D; lt.tag_id </span><br><span class="line">		AND lt.lang &#x3D; 1 </span><br><span class="line">		AND lt.tenant_id &#x3D; &#39;keycai&#39; </span><br><span class="line">	WHERE</span><br><span class="line">		p.tenant_id &#x3D; &#39;keycai&#39; </span><br><span class="line">		AND bc.tenant_id &#x3D; &#39;keycai&#39;) t</span><br><span class="line">ORDER BY CONVERT ( short_name USING gbk ) DESC</span><br></pre></td></tr></table></figure>
+
+<p>至此，问题解决。</p>
+<h2 id="错误分析"><a href="#错误分析" class="headerlink" title="错误分析"></a>错误分析</h2><p>可以去回看一下最开始出问题的 SQL，根据 SELECT 后面的字段，不该出现 short_name 不明确的问题。</p>
+<p>虽然在 <code>sm_basic_province</code> 和 <code>sm_basic_country</code> 两张表中都存在 short_name 字段，但是只查询了 <code>sm_basic_province</code> 中的 short_name 字段。</p>
+<p>删掉 CONVERT() 函数，尝试执行：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	p.*,</span><br><span class="line">	lt.NAME AS province_name,</span><br><span class="line">	t.NAME country_name </span><br><span class="line">	FROM</span><br><span class="line">		sm_basic_province p</span><br><span class="line">		LEFT JOIN sm_basic_country bc ON p.country &#x3D; bc.country_id</span><br><span class="line">		LEFT JOIN sm_basic_lang_tag t ON bc.NAME &#x3D; t.tag_id </span><br><span class="line">		AND t.lang &#x3D; 1 </span><br><span class="line">		AND t.tenant_id &#x3D; &#39;keycai&#39;</span><br><span class="line">		LEFT JOIN sm_basic_lang_tag lt ON p.NAME &#x3D; lt.tag_id </span><br><span class="line">		AND lt.lang &#x3D; 1 </span><br><span class="line">		AND lt.tenant_id &#x3D; &#39;keycai&#39; </span><br><span class="line">	WHERE</span><br><span class="line">		p.tenant_id &#x3D; &#39;keycai&#39; </span><br><span class="line">		AND bc.tenant_id &#x3D; &#39;keycai&#39; </span><br><span class="line">ORDER BY short_name DESC</span><br></pre></td></tr></table></figure>
+
+<p>正确执行。</p>
+<p>正常来讲一条 SQL 的执行顺序是：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">FROM -&gt; WHERE -&gt; GROUP BY -&gt; HAVING -&gt; SELECT -&gt; ORDER BY -&gt; LIMIT</span><br><span class="line">每步执行都会产生一个虚表，作为当前执行步骤的输出和下一步执行时的输入，只有当最后一步执行完后这个虚表才会作为这条被执行 SQL 的最终结果。</span><br></pre></td></tr></table></figure>
+
+<p>按照这个执行顺序，<code>CONVERT()</code> 执行的时候应该已经没有重复的列了，<u>说明这个函数是在 SELECT 之前就执行了，因为这时候的虚表中存在相同名称的列，所以报了 ambiguous 错误</u>。</p>
+<p>至此解决了问题，但是原理层面仅停留在猜测，并没有找到权威的材料证明，也没有想到什么好的验证方法。</p>
+<p>如果有知道原因的大神，还望赐教！</p>
+<p>本篇未完待续。。。。</p>
+<hr>
+<p>菜鸟本菜，不吝赐教，感激不尽！</p>
+<p>更多题解源码和学习笔记：<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> 、<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">CSDN</a> 、<a href="http://www.m1ng.top/">M1ng</a> </p>
+]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>一次实习面试中关于数据库的问题</title>
     <url>/2020/06/14/%E4%B8%80%E6%AC%A1%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E4%B8%AD%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[<p>2020年6月5日，某互联网公司的 <strong>Java开发实习生</strong> ，技术面二面。</p>
