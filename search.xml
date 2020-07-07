@@ -1,6 +1,2166 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Camunda工作流引擎一</title>
+    <url>/2020/07/07/Camunda%E5%B7%A5%E4%BD%9C%E6%B5%81%E5%BC%95%E6%93%8E%E4%B8%80/</url>
+    <content><![CDATA[<p>实习工作中需要用到工作流引擎，去实现业务审批流的功能模块，由于 Flowable 不支持 MariaDB (重要原因之一)，所以项目中选择了 Camunda 工作流引擎。</p>
+<p>由于没有接触过工作流引擎，所以打算借此机会详细记录一下这个从 0 到 1 到学习过程。</p>
+<p><strong><u>本篇直接从应用开始，通过切实的使用感受来达到由浅入深的效果。</u></strong></p>
+<blockquote>
+<p>Camunda 官网文档： <a href="https://docs.camunda.org/get-started/spring-boot/project-setup/" target="_blank" rel="noopener">https://docs.camunda.org/get-started/spring-boot/project-setup/</a> <a id="more"></a></p>
+</blockquote>
+<p>网上关于 Camunda 的中文学习资料少之又少，但是可以先学习 Activiti(教程比较多)，曲线学习 Camunda。</p>
+<p>关于工作流的一些概念和术语就不再本篇的范围了(网上很多)。</p>
+<h2 id="启动-Camunda"><a href="#启动-Camunda" class="headerlink" title="启动 Camunda"></a>启动 Camunda</h2><p>创建一个 SpringBoot 项目除了要用到的 ORM框架、数据库驱动等等，还要导入 Camunda 相关依赖：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- https://mvnrepository.com/artifact/org.camunda.bpm.springboot/camunda-bpm-spring-boot-starter-webapp --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.camunda.bpm.springboot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>camunda-bpm-spring-boot-starter-webapp<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.4.4<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- https://mvnrepository.com/artifact/org.camunda.bpm.springboot/camunda-bpm-spring-boot-starter-rest --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.camunda.bpm.springboot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>camunda-bpm-spring-boot-starter-rest<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.4.4<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>application.yml 部分配置：</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">camunda-demo</span></span><br><span class="line">  <span class="attr">jackson:</span></span><br><span class="line">    <span class="comment">#设置返回前端的参数为驼峰的转换形式</span></span><br><span class="line">    <span class="attr">property-naming-strategy:</span> <span class="string">SNAKE_CASE</span></span><br><span class="line">    <span class="comment">#日期格式化</span></span><br><span class="line">    <span class="attr">date-format:</span> <span class="string">yyyy-MM-dd</span> <span class="string">HH:mm:ss</span></span><br><span class="line">    <span class="attr">time-zone:</span> <span class="string">GMT+8</span></span><br><span class="line"> <span class="comment">#数据源配置</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://127.0.0.1:3306/camunda?serverTimezone=Asia/Shanghai</span></span><br><span class="line">    <span class="attr">driver-class-name:</span> <span class="string">com.mysql.cj.jdbc.Driver</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">password:</span> <span class="number">1234</span></span><br><span class="line"></span><br><span class="line"><span class="attr">mybatis:</span></span><br><span class="line">  <span class="attr">configuration:</span></span><br><span class="line">    <span class="attr">map-underscore-to-camel-case:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">log-impl:</span> <span class="string">org.apache.ibatis.logging.stdout.StdOutImpl</span></span><br><span class="line"></span><br><span class="line"><span class="attr">camunda:</span></span><br><span class="line">  <span class="attr">bpm:</span></span><br><span class="line">    <span class="comment">#配置账户密码来访问Camunda自带的管理界面</span></span><br><span class="line">    <span class="attr">admin-user:</span></span><br><span class="line">      <span class="attr">id:</span> <span class="string">admin</span></span><br><span class="line">      <span class="attr">password:</span> <span class="string">admin</span></span><br><span class="line">      <span class="attr">first-name:</span> <span class="string">admin</span></span><br><span class="line">    <span class="attr">filter:</span></span><br><span class="line">      <span class="attr">create:</span> <span class="string">All</span> <span class="string">tasks</span></span><br><span class="line">    <span class="comment">#指定数据库类型</span></span><br><span class="line"><span class="comment">#    database:</span></span><br><span class="line"><span class="comment">#      type: mysql</span></span><br><span class="line">    <span class="comment">#禁止自动部署resources下面的bpmn文件</span></span><br><span class="line">    <span class="attr">auto-deployment-enabled:</span> <span class="literal">false</span></span><br><span class="line">    <span class="comment">#禁止index跳转到Camunda自带的管理界面，默认true</span></span><br><span class="line"><span class="comment">#    webapp:</span></span><br><span class="line"><span class="comment">#      index-redirect-enabled: false</span></span><br></pre></td></tr></table></figure>
+
+<p>启动应用，访问 <a href="http://localhost:8080" target="_blank" rel="noopener">http://localhost:8080</a> (或者其他端口) 就可以看到管理界面，使用配置的账户密码登录：</p>
+<p><a href="https://imgchr.com/i/UAhgJA" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/07/07/UAhgJA.md.png" alt="UAhgJA.md.png"></a></p>
+<p>到这里就算是踏出了重要的第一步！</p>
+<h2 id="相关表结构介绍"><a href="#相关表结构介绍" class="headerlink" title="相关表结构介绍"></a>相关表结构介绍</h2><p>在成功启动 Camunda 之后，可以到数据库中看到其自动创建的 47 张表，之后每条流程实例的相关信息就会存放到这些表中！</p>
+<p><img src="https://s1.ax1x.com/2020/07/07/UA5SjP.png" alt="UA5SjP.png"></p>
+<h3 id="act-ge-bytearray-资源（二进制数据）表"><a href="#act-ge-bytearray-资源（二进制数据）表" class="headerlink" title="act_ge_bytearray 资源（二进制数据）表"></a>act_ge_bytearray 资源（二进制数据）表</h3><table>
+<thead>
+<tr>
+<th align="center">列名</th>
+<th align="center">类型</th>
+<th align="center">长度</th>
+<th align="center">小数点</th>
+<th align="center">不是null</th>
+<th align="center">主键</th>
+<th align="center">注释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">TRUE</td>
+<td align="center">资源ID</td>
+</tr>
+<tr>
+<td align="center">rev_</td>
+<td align="center">int4</td>
+<td align="center">32</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">版本</td>
+</tr>
+<tr>
+<td align="center">name_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">资源名称</td>
+</tr>
+<tr>
+<td align="center">deployment_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">部署ID</td>
+</tr>
+<tr>
+<td align="center">bytes_</td>
+<td align="center">bytea</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">文件内容</td>
+</tr>
+<tr>
+<td align="center">generated_</td>
+<td align="center">bool</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">tenant_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">租户ID</td>
+</tr>
+<tr>
+<td align="center">type_</td>
+<td align="center">int4</td>
+<td align="center">32</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">文件类型</td>
+</tr>
+<tr>
+<td align="center">create_time_</td>
+<td align="center">timestamp</td>
+<td align="center">6</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">创建时间</td>
+</tr>
+<tr>
+<td align="center">root_proc_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">根流程实例ID</td>
+</tr>
+<tr>
+<td align="center">removal_time_</td>
+<td align="center">timestamp</td>
+<td align="center">6</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">调动时间</td>
+</tr>
+</tbody></table>
+<h3 id="act-re-deployment-流程部署表"><a href="#act-re-deployment-流程部署表" class="headerlink" title="act_re_deployment 流程部署表"></a>act_re_deployment 流程部署表</h3><table>
+<thead>
+<tr>
+<th align="center">列名</th>
+<th align="center">类型</th>
+<th align="center">长度</th>
+<th align="center">小数点</th>
+<th align="center">不是null</th>
+<th align="center">主键</th>
+<th align="center">注释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">TRUE</td>
+<td align="center">部署ID</td>
+</tr>
+<tr>
+<td align="center">name_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">部署名称</td>
+</tr>
+<tr>
+<td align="center">deploy_time_</td>
+<td align="center">timestamp</td>
+<td align="center">6</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">部署时间</td>
+</tr>
+<tr>
+<td align="center">source_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">资源</td>
+</tr>
+<tr>
+<td align="center">tenant_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">租户ID</td>
+</tr>
+</tbody></table>
+<h3 id="act-re-procdef-流程定义表"><a href="#act-re-procdef-流程定义表" class="headerlink" title="act_re_procdef 流程定义表"></a>act_re_procdef 流程定义表</h3><table>
+<thead>
+<tr>
+<th align="center">列名</th>
+<th align="center">类型</th>
+<th align="center">长度</th>
+<th align="center">小数点</th>
+<th align="center">不是null</th>
+<th align="center">主键</th>
+<th align="center">注释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">TRUE</td>
+<td align="center">流程定义ID</td>
+</tr>
+<tr>
+<td align="center">rev_</td>
+<td align="center">int4</td>
+<td align="center">32</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">流程定义版本（同一个流程同一个标识）</td>
+</tr>
+<tr>
+<td align="center">category_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">流程定义分类</td>
+</tr>
+<tr>
+<td align="center">name_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">流程定义名称</td>
+</tr>
+<tr>
+<td align="center">key_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center"></td>
+<td align="center">流程定义KEY</td>
+</tr>
+<tr>
+<td align="center">version_</td>
+<td align="center">int4</td>
+<td align="center">32</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center"></td>
+<td align="center">流程定义版本（同一个流程不同的版本）</td>
+</tr>
+<tr>
+<td align="center">deployment_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">流程部署ID</td>
+</tr>
+<tr>
+<td align="center">resource_name_</td>
+<td align="center">varchar</td>
+<td align="center">4000</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">资源名称</td>
+</tr>
+<tr>
+<td align="center">dgrm_resource_name_</td>
+<td align="center">varchar</td>
+<td align="center">4000</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">流程图资源名称</td>
+</tr>
+<tr>
+<td align="center">has_start_form_key_</td>
+<td align="center">bool</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">是否包含启动表单KEY（t:true;f:false）</td>
+</tr>
+<tr>
+<td align="center">suspension_state_</td>
+<td align="center">int4</td>
+<td align="center">32</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">流程定义状态（激活：1/挂起：2）</td>
+</tr>
+<tr>
+<td align="center">tenant_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">租户ID</td>
+</tr>
+<tr>
+<td align="center">version_tag_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">版本标签</td>
+</tr>
+<tr>
+<td align="center">history_ttl_</td>
+<td align="center">int4</td>
+<td align="center">32</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">startable_</td>
+<td align="center">bool</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<h3 id="act-ru-execution-运行时流程实例-执行流-表"><a href="#act-ru-execution-运行时流程实例-执行流-表" class="headerlink" title="act_ru_execution 运行时流程实例(执行流)表"></a>act_ru_execution 运行时流程实例(执行流)表</h3><table>
+<thead>
+<tr>
+<th align="center">名</th>
+<th align="center">类型</th>
+<th align="center">长度</th>
+<th align="center">小数点</th>
+<th align="center">不是null</th>
+<th align="center">键</th>
+<th align="center">注释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">TRUE</td>
+<td align="center">执行流ID</td>
+</tr>
+<tr>
+<td align="center">rev_</td>
+<td align="center">int4</td>
+<td align="center">32</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">版本</td>
+</tr>
+<tr>
+<td align="center">root_proc_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">根流程实例ID</td>
+</tr>
+<tr>
+<td align="center">proc_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">流程实例ID</td>
+</tr>
+<tr>
+<td align="center">business_key_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">业务KEY</td>
+</tr>
+<tr>
+<td align="center">parent_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">父ID</td>
+</tr>
+<tr>
+<td align="center">proc_def_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">流程定义ID</td>
+</tr>
+<tr>
+<td align="center">super_exec_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">super_case_exec_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">case_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">act_id_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">节点定义ID</td>
+</tr>
+<tr>
+<td align="center">act_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">节点实例ID</td>
+</tr>
+<tr>
+<td align="center">is_active_</td>
+<td align="center">bool</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">是否可执行状态</td>
+</tr>
+<tr>
+<td align="center">is_concurrent_</td>
+<td align="center">bool</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">is_scope_</td>
+<td align="center">bool</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">is_event_scope_</td>
+<td align="center">bool</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">suspension_state_</td>
+<td align="center">int4</td>
+<td align="center">32</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">实例状态（激活：1；挂起：2）</td>
+</tr>
+<tr>
+<td align="center">cached_ent_state_</td>
+<td align="center">int4</td>
+<td align="center">32</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">sequence_counter_</td>
+<td align="center">int8</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">顺序计数器</td>
+</tr>
+<tr>
+<td align="center">tenant_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">租户ID</td>
+</tr>
+</tbody></table>
+<h3 id="act-ru-identitylink-流程与身份关系表-执行流"><a href="#act-ru-identitylink-流程与身份关系表-执行流" class="headerlink" title="act_ru_identitylink 流程与身份关系表(执行流)"></a>act_ru_identitylink 流程与身份关系表(执行流)</h3><p>运行时流程人员表，主要存储任务节点和参与者的相关信息。还有与其相对的 <code>act_hi_identitylink</code> 历史流程人员表。</p>
+<table>
+<thead>
+<tr>
+<th align="center">名</th>
+<th align="center">类型</th>
+<th align="center">长度</th>
+<th align="center">小数点</th>
+<th align="center">不是null</th>
+<th align="center">键</th>
+<th align="center">注释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">TRUE</td>
+<td align="center">任务参与ID</td>
+</tr>
+<tr>
+<td align="center">rev_</td>
+<td align="center">int4</td>
+<td align="center">32</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">版本</td>
+</tr>
+<tr>
+<td align="center">group_id_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">角色/组ID</td>
+</tr>
+<tr>
+<td align="center">type_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">类型（候选人：candidate；代理人：delegation）</td>
+</tr>
+<tr>
+<td align="center">user_id_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">用户ID</td>
+</tr>
+<tr>
+<td align="center">task_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">任务ID</td>
+</tr>
+<tr>
+<td align="center">proc_def_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">流程定义ID</td>
+</tr>
+<tr>
+<td align="center">tenant_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">租户ID</td>
+</tr>
+</tbody></table>
+<h3 id="act-ru-task-运行时流程任务-节点-表-执行流"><a href="#act-ru-task-运行时流程任务-节点-表-执行流" class="headerlink" title="act_ru_task 运行时流程任务(节点)表(执行流)"></a>act_ru_task 运行时流程任务(节点)表(执行流)</h3><table>
+<thead>
+<tr>
+<th align="center">名</th>
+<th align="center">类型</th>
+<th align="center">长度</th>
+<th align="center">小数点</th>
+<th align="center">不是null</th>
+<th align="center">键</th>
+<th align="center">注释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">TRUE</td>
+<td align="center">执行任务ID</td>
+</tr>
+<tr>
+<td align="center">rev_</td>
+<td align="center">int4</td>
+<td align="center">32</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">版本</td>
+</tr>
+<tr>
+<td align="center">execution_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">执行ID</td>
+</tr>
+<tr>
+<td align="center">proc_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">流程实例ID</td>
+</tr>
+<tr>
+<td align="center">proc_def_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">流程定义ID</td>
+</tr>
+<tr>
+<td align="center">case_execution_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">case_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">case_def_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">name_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">执行任务名称</td>
+</tr>
+<tr>
+<td align="center">parent_task_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">父级任务ID</td>
+</tr>
+<tr>
+<td align="center">description_</td>
+<td align="center">varchar</td>
+<td align="center">4000</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">任务描述</td>
+</tr>
+<tr>
+<td align="center">task_def_key_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">任务定义KEY</td>
+</tr>
+<tr>
+<td align="center">owner_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">assignee_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">签收人ID</td>
+</tr>
+<tr>
+<td align="center">delegation_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">委托人ID</td>
+</tr>
+<tr>
+<td align="center">priority_</td>
+<td align="center">int4</td>
+<td align="center">32</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">优先权</td>
+</tr>
+<tr>
+<td align="center">create_time_</td>
+<td align="center">timestamp</td>
+<td align="center">6</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">创建时间</td>
+</tr>
+<tr>
+<td align="center">due_date_</td>
+<td align="center">timestamp</td>
+<td align="center">6</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">到期时间</td>
+</tr>
+<tr>
+<td align="center">follow_up_date_</td>
+<td align="center">timestamp</td>
+<td align="center">6</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">跟催时间</td>
+</tr>
+<tr>
+<td align="center">suspension_state_</td>
+<td align="center">int4</td>
+<td align="center">32</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">流程状态（激活：1;挂起：2）</td>
+</tr>
+<tr>
+<td align="center">tenant_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">租户ID</td>
+</tr>
+</tbody></table>
+<h3 id="act-ru-variable-运行时流程参数-变量-表-执行流"><a href="#act-ru-variable-运行时流程参数-变量-表-执行流" class="headerlink" title="act_ru_variable 运行时流程参数(变量)表(执行流)"></a>act_ru_variable 运行时流程参数(变量)表(执行流)</h3><p>还有与其相对的 <code>act_hi_varinst</code> 历史变量表。</p>
+<table>
+<thead>
+<tr>
+<th align="center">名</th>
+<th align="center">类型</th>
+<th align="center">长度</th>
+<th align="center">小数点</th>
+<th align="center">不是null</th>
+<th align="center">键</th>
+<th align="center">注释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">TRUE</td>
+<td align="center">运行变量ID</td>
+</tr>
+<tr>
+<td align="center">rev_</td>
+<td align="center">int4</td>
+<td align="center">32</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">版本</td>
+</tr>
+<tr>
+<td align="center">type_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center"></td>
+<td align="center">变量类型</td>
+</tr>
+<tr>
+<td align="center">name_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center"></td>
+<td align="center">变量名称</td>
+</tr>
+<tr>
+<td align="center">execution_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">执行流ID</td>
+</tr>
+<tr>
+<td align="center">proc_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">流程实例ID</td>
+</tr>
+<tr>
+<td align="center">case_execution_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">case_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">task_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">任务ID</td>
+</tr>
+<tr>
+<td align="center">bytearray_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">double_</td>
+<td align="center">float8</td>
+<td align="center">53</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">long_</td>
+<td align="center">int8</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">text_</td>
+<td align="center">varchar</td>
+<td align="center">4000</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">text2_</td>
+<td align="center">varchar</td>
+<td align="center">4000</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">var_scope_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">sequence_counter_</td>
+<td align="center">int8</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">顺序计数器</td>
+</tr>
+<tr>
+<td align="center">is_concurrent_local_</td>
+<td align="center">bool</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">tenant_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">租户ID</td>
+</tr>
+</tbody></table>
+<h3 id="act-hi-procinst-流程实例（历史）表"><a href="#act-hi-procinst-流程实例（历史）表" class="headerlink" title="act_hi_procinst 流程实例（历史）表"></a>act_hi_procinst 流程实例（历史）表</h3><table>
+<thead>
+<tr>
+<th align="center">名</th>
+<th align="center">类型</th>
+<th align="center">长度</th>
+<th align="center">小数点</th>
+<th align="center">不是null</th>
+<th align="center">键</th>
+<th align="center">注释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">TRUE</td>
+<td align="center">历史流程实例ID</td>
+</tr>
+<tr>
+<td align="center">proc_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center"></td>
+<td align="center">流程实例ID</td>
+</tr>
+<tr>
+<td align="center">business_key_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">业务KEY</td>
+</tr>
+<tr>
+<td align="center">proc_def_key_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">流程定义KEY</td>
+</tr>
+<tr>
+<td align="center">proc_def_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center"></td>
+<td align="center">流程定义ID</td>
+</tr>
+<tr>
+<td align="center">start_time_</td>
+<td align="center">timestamp</td>
+<td align="center">6</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center"></td>
+<td align="center">开始时间</td>
+</tr>
+<tr>
+<td align="center">end_time_</td>
+<td align="center">timestamp</td>
+<td align="center">6</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">结束时间</td>
+</tr>
+<tr>
+<td align="center">removal_time_</td>
+<td align="center">timestamp</td>
+<td align="center">6</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">移除时间</td>
+</tr>
+<tr>
+<td align="center">duration_</td>
+<td align="center">int8</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">持续时间</td>
+</tr>
+<tr>
+<td align="center">start_user_id_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">发起人</td>
+</tr>
+<tr>
+<td align="center">start_act_id_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">发起节点ID</td>
+</tr>
+<tr>
+<td align="center">end_act_id_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">结束节点ID</td>
+</tr>
+<tr>
+<td align="center">super_process_instance_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">顶级流程实例ID</td>
+</tr>
+<tr>
+<td align="center">root_proc_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">根流程实例ID</td>
+</tr>
+<tr>
+<td align="center">super_case_instance_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">case_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">delete_reason_</td>
+<td align="center">varchar</td>
+<td align="center">4000</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">删除原因</td>
+</tr>
+<tr>
+<td align="center">tenant_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">租户ID</td>
+</tr>
+<tr>
+<td align="center">state_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">状态</td>
+</tr>
+</tbody></table>
+<h3 id="act-hi-detail-流程明细（历史）表"><a href="#act-hi-detail-流程明细（历史）表" class="headerlink" title="act_hi_detail 流程明细（历史）表"></a>act_hi_detail 流程明细（历史）表</h3><table>
+<thead>
+<tr>
+<th align="center">名</th>
+<th align="center">类型</th>
+<th align="center">长度</th>
+<th align="center">小数点</th>
+<th align="center">不是null</th>
+<th align="center">键</th>
+<th align="center">注释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">TRUE</td>
+<td align="center">历史流程明细ID</td>
+</tr>
+<tr>
+<td align="center">type_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center"></td>
+<td align="center">类型</td>
+</tr>
+<tr>
+<td align="center">proc_def_key_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">流程定义KEY</td>
+</tr>
+<tr>
+<td align="center">proc_def_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">流程定义ID</td>
+</tr>
+<tr>
+<td align="center">root_proc_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">根流程实例ID</td>
+</tr>
+<tr>
+<td align="center">proc_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">流程实例ID</td>
+</tr>
+<tr>
+<td align="center">execution_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">执行流ID</td>
+</tr>
+<tr>
+<td align="center">case_def_key_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">case_def_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">case_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">case_execution_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">task_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">任务ID</td>
+</tr>
+<tr>
+<td align="center">act_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">节点实例ID</td>
+</tr>
+<tr>
+<td align="center">var_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">参数实例ID</td>
+</tr>
+<tr>
+<td align="center">name_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center"></td>
+<td align="center">参数名称</td>
+</tr>
+<tr>
+<td align="center">var_type_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">参数类型</td>
+</tr>
+<tr>
+<td align="center">rev_</td>
+<td align="center">int4</td>
+<td align="center">32</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">版本</td>
+</tr>
+<tr>
+<td align="center">time_</td>
+<td align="center">timestamp</td>
+<td align="center">6</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center"></td>
+<td align="center">时间</td>
+</tr>
+<tr>
+<td align="center">bytearray_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">流数组ID</td>
+</tr>
+<tr>
+<td align="center">double_</td>
+<td align="center">float8</td>
+<td align="center">53</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">long_</td>
+<td align="center">int8</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">text_</td>
+<td align="center">varchar</td>
+<td align="center">4000</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">text2_</td>
+<td align="center">varchar</td>
+<td align="center">4000</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">sequence_counter_</td>
+<td align="center">int8</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">顺序计数器</td>
+</tr>
+<tr>
+<td align="center">tenant_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">租户ID</td>
+</tr>
+<tr>
+<td align="center">operation_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">操作ID</td>
+</tr>
+<tr>
+<td align="center">removal_time_</td>
+<td align="center">timestamp</td>
+<td align="center">6</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">移除时间</td>
+</tr>
+</tbody></table>
+<h3 id="act-hi-taskinst-历史任务实例表"><a href="#act-hi-taskinst-历史任务实例表" class="headerlink" title="act_hi_taskinst 历史任务实例表"></a>act_hi_taskinst 历史任务实例表</h3><table>
+<thead>
+<tr>
+<th align="center">名</th>
+<th align="center">类型</th>
+<th align="center">长度</th>
+<th align="center">小数点</th>
+<th align="center">不是null</th>
+<th align="center">键</th>
+<th align="center">注释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">TRUE</td>
+<td align="center">历史任务实例表ID</td>
+</tr>
+<tr>
+<td align="center">task_def_key_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">任务定义KEY</td>
+</tr>
+<tr>
+<td align="center">proc_def_key_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">流程定义KEY</td>
+</tr>
+<tr>
+<td align="center">proc_def_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">流程定义ID</td>
+</tr>
+<tr>
+<td align="center">root_proc_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">根流程实例ID</td>
+</tr>
+<tr>
+<td align="center">proc_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">流程实例ID</td>
+</tr>
+<tr>
+<td align="center">execution_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">执行流ID</td>
+</tr>
+<tr>
+<td align="center">case_def_key_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">case_def_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">case_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">case_execution_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">act_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">节点实例ID</td>
+</tr>
+<tr>
+<td align="center">name_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">任务名称</td>
+</tr>
+<tr>
+<td align="center">parent_task_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">父任务ID</td>
+</tr>
+<tr>
+<td align="center">description_</td>
+<td align="center">varchar</td>
+<td align="center">4000</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">描述</td>
+</tr>
+<tr>
+<td align="center">owner_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">assignee_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">代理人</td>
+</tr>
+<tr>
+<td align="center">start_time_</td>
+<td align="center">timestamp</td>
+<td align="center">6</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center"></td>
+<td align="center">开始时间</td>
+</tr>
+<tr>
+<td align="center">end_time_</td>
+<td align="center">timestamp</td>
+<td align="center">6</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">结束时间</td>
+</tr>
+<tr>
+<td align="center">duration_</td>
+<td align="center">int8</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">持续时间</td>
+</tr>
+<tr>
+<td align="center">delete_reason_</td>
+<td align="center">varchar</td>
+<td align="center">4000</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">删除原因</td>
+</tr>
+<tr>
+<td align="center">priority_</td>
+<td align="center">int4</td>
+<td align="center">32</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">优先权</td>
+</tr>
+<tr>
+<td align="center">due_date_</td>
+<td align="center">timestamp</td>
+<td align="center">6</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">到期时间</td>
+</tr>
+<tr>
+<td align="center">follow_up_date_</td>
+<td align="center">timestamp</td>
+<td align="center">6</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">跟催日期</td>
+</tr>
+<tr>
+<td align="center">tenant_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">租户ID</td>
+</tr>
+<tr>
+<td align="center">removal_time_</td>
+<td align="center">timestamp</td>
+<td align="center">6</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">移除时间</td>
+</tr>
+</tbody></table>
+<h3 id="act-hi-actinst-历史节点（行为）表"><a href="#act-hi-actinst-历史节点（行为）表" class="headerlink" title="act_hi_actinst 历史节点（行为）表"></a>act_hi_actinst 历史节点（行为）表</h3><table>
+<thead>
+<tr>
+<th align="center">名</th>
+<th align="center">类型</th>
+<th align="center">长度</th>
+<th align="center">小数点</th>
+<th align="center">不是null</th>
+<th align="center">键</th>
+<th align="center">注释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">TRUE</td>
+<td align="center">历史流程节点实例ID</td>
+</tr>
+<tr>
+<td align="center">parent_act_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">父流程节点实例ID</td>
+</tr>
+<tr>
+<td align="center">proc_def_key_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">流程定义KEY</td>
+</tr>
+<tr>
+<td align="center">proc_def_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center"></td>
+<td align="center">流程定义ID</td>
+</tr>
+<tr>
+<td align="center">root_proc_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">根流程实例ID</td>
+</tr>
+<tr>
+<td align="center">proc_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center"></td>
+<td align="center">流程实例ID</td>
+</tr>
+<tr>
+<td align="center">execution_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center"></td>
+<td align="center">执行流ID</td>
+</tr>
+<tr>
+<td align="center">act_id_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center"></td>
+<td align="center">节点ID</td>
+</tr>
+<tr>
+<td align="center">task_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">任务ID</td>
+</tr>
+<tr>
+<td align="center">call_proc_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">call_case_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">act_name_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">节点名称</td>
+</tr>
+<tr>
+<td align="center">act_type_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">节点类型</td>
+</tr>
+<tr>
+<td align="center">assignee_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">代理人ID</td>
+</tr>
+<tr>
+<td align="center">start_time_</td>
+<td align="center">timestamp</td>
+<td align="center">6</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center"></td>
+<td align="center">开始时间</td>
+</tr>
+<tr>
+<td align="center">end_time_</td>
+<td align="center">timestamp</td>
+<td align="center">6</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">结束时间</td>
+</tr>
+<tr>
+<td align="center">duration_</td>
+<td align="center">int8</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">持续时间</td>
+</tr>
+<tr>
+<td align="center">act_inst_state_</td>
+<td align="center">int4</td>
+<td align="center">32</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">节点实例状态</td>
+</tr>
+<tr>
+<td align="center">sequence_counter_</td>
+<td align="center">int8</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">顺序计数器</td>
+</tr>
+<tr>
+<td align="center">tenant_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">租户ID</td>
+</tr>
+<tr>
+<td align="center">removal_time_</td>
+<td align="center">timestamp</td>
+<td align="center">6</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">去除时间</td>
+</tr>
+</tbody></table>
+<h3 id="act-hi-attachment-历史附件表"><a href="#act-hi-attachment-历史附件表" class="headerlink" title="act_hi_attachment 历史附件表"></a>act_hi_attachment 历史附件表</h3><table>
+<thead>
+<tr>
+<th align="center">名</th>
+<th align="center">类型</th>
+<th align="center">长度</th>
+<th align="center">小数点</th>
+<th align="center">不是null</th>
+<th align="center">键</th>
+<th align="center">注释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">TRUE</td>
+<td align="center">附件ID</td>
+</tr>
+<tr>
+<td align="center">rev_</td>
+<td align="center">int4</td>
+<td align="center">32</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">版本</td>
+</tr>
+<tr>
+<td align="center">user_id_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">用户ID</td>
+</tr>
+<tr>
+<td align="center">name_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">附件名称</td>
+</tr>
+<tr>
+<td align="center">description_</td>
+<td align="center">varchar</td>
+<td align="center">4000</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">附件描述</td>
+</tr>
+<tr>
+<td align="center">type_</td>
+<td align="center">varchar</td>
+<td align="center">255</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">附件类型</td>
+</tr>
+<tr>
+<td align="center">task_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">任务ID</td>
+</tr>
+<tr>
+<td align="center">root_proc_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">根流程实例ID</td>
+</tr>
+<tr>
+<td align="center">proc_inst_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">流程实例ID</td>
+</tr>
+<tr>
+<td align="center">url_</td>
+<td align="center">varchar</td>
+<td align="center">4000</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">附件路径</td>
+</tr>
+<tr>
+<td align="center">content_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">附件内容ID</td>
+</tr>
+<tr>
+<td align="center">tenant_id_</td>
+<td align="center">varchar</td>
+<td align="center">64</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">租户ID</td>
+</tr>
+<tr>
+<td align="center">create_time_</td>
+<td align="center">timestamp</td>
+<td align="center">6</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">创建时间</td>
+</tr>
+<tr>
+<td align="center">removal_time_</td>
+<td align="center">timestamp</td>
+<td align="center">6</td>
+<td align="center">0</td>
+<td align="center">-1</td>
+<td align="center"></td>
+<td align="center">移除时间</td>
+</tr>
+</tbody></table>
+<h3 id="act-hi-comment-历史意见表"><a href="#act-hi-comment-历史意见表" class="headerlink" title="act_hi_comment 历史意见表"></a>act_hi_comment 历史意见表</h3><table>
+<thead>
+<tr>
+<th>名</th>
+<th>类型</th>
+<th>长度</th>
+<th>小数点</th>
+<th>不是null</th>
+<th>键</th>
+<th>注释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id_</td>
+<td>varchar</td>
+<td>64</td>
+<td>0</td>
+<td>0</td>
+<td>TRUE</td>
+<td>评论表ID</td>
+</tr>
+<tr>
+<td>type_</td>
+<td>varchar</td>
+<td>255</td>
+<td>0</td>
+<td>-1</td>
+<td></td>
+<td>数据类型（任务事件记录：event;任务评论：comment)</td>
+</tr>
+<tr>
+<td>time_</td>
+<td>timestamp</td>
+<td>6</td>
+<td>0</td>
+<td>0</td>
+<td></td>
+<td>数据产生时间</td>
+</tr>
+<tr>
+<td>user_id_</td>
+<td>varchar</td>
+<td>255</td>
+<td>0</td>
+<td>-1</td>
+<td></td>
+<td>产生此数据用户ID</td>
+</tr>
+<tr>
+<td>task_id_</td>
+<td>varchar</td>
+<td>64</td>
+<td>0</td>
+<td>-1</td>
+<td></td>
+<td>任务ID</td>
+</tr>
+<tr>
+<td>root_proc_inst_id_</td>
+<td>varchar</td>
+<td>64</td>
+<td>0</td>
+<td>-1</td>
+<td></td>
+<td>根流程实例ID</td>
+</tr>
+<tr>
+<td>proc_inst_id_</td>
+<td>varchar</td>
+<td>64</td>
+<td>0</td>
+<td>-1</td>
+<td></td>
+<td>流程实例ID</td>
+</tr>
+<tr>
+<td>action_</td>
+<td>varchar</td>
+<td>255</td>
+<td>0</td>
+<td>-1</td>
+<td></td>
+<td>该数据的操作标识</td>
+</tr>
+<tr>
+<td>message_</td>
+<td>varchar</td>
+<td>4000</td>
+<td>0</td>
+<td>-1</td>
+<td></td>
+<td>该评论（或者事件记录）数据的信息（文本）</td>
+</tr>
+<tr>
+<td>full_msg_</td>
+<td>bytea</td>
+<td>0</td>
+<td>0</td>
+<td>-1</td>
+<td></td>
+<td>该评论（或者事件记录）数据的信息（流）</td>
+</tr>
+<tr>
+<td>tenant_id_</td>
+<td>varchar</td>
+<td>64</td>
+<td>0</td>
+<td>-1</td>
+<td></td>
+<td>租户ID</td>
+</tr>
+<tr>
+<td>removal_time_</td>
+<td>timestamp</td>
+<td>6</td>
+<td>0</td>
+<td>-1</td>
+<td></td>
+<td>移除时间</td>
+</tr>
+</tbody></table>
+<p>除此了上述重要的表结构以外，还有很多表 <code>act_ge_property</code> 属性数据表存储整个流程引擎级别的数据、 <code>act_hi_detail</code> 历史详情表提供历史变量查询、 <code>act_id_group</code> 用户组信息表、 <code>act_id_user</code> 用户信息表、 <code>act_id_membership</code> 用户与用户组对应信息表、 <code>act_ru_job</code> 运行时定时任务数据表 等等。。。碍于篇幅就先只赘述这些开发中较为常用的表，其他的数据表用到时再去看表定义即可。</p>
+<h2 id="总"><a href="#总" class="headerlink" title="总"></a>总</h2><p>本篇重要的是成功启动应用，并对 Camunda 相关表有一个初步的印象，之后用到时不至于无从下手。</p>
+<p>下一篇会学习到，在本应用的基础上开发一个最基本的 ”启动流程Demo“  的过程！</p>
+<hr>
+<p>菜鸟本菜，不吝赐教，感激不尽！</p>
+<p>更多题解源码和学习笔记：<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> 、<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">CSDN</a> 、<a href="http://www.m1ng.top/">M1ng</a> </p>
+]]></content>
+      <categories>
+        <category>工作流引擎</category>
+      </categories>
+      <tags>
+        <tag>Camunda</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>自定义类集合去重</title>
     <url>/2020/07/05/%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E9%9B%86%E5%90%88%E5%8E%BB%E9%87%8D/</url>
     <content><![CDATA[<p>分别利用 TreeSet 和 HashSet 进行去重操作。<a id="more"></a></p>
@@ -45,7 +2205,8 @@
 
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//模拟数据</span></span><br><span class="line">    BasicInfo info1 = <span class="keyword">new</span> BasicInfo(<span class="number">111L</span>, <span class="string">"Key001"</span>, <span class="string">"张三"</span>, <span class="number">1</span>, <span class="string">"阿狸"</span>);</span><br><span class="line">    BasicInfo info2 = <span class="keyword">new</span> BasicInfo(<span class="number">112L</span>, <span class="string">"Key002"</span>, <span class="string">"李四"</span>, <span class="number">0</span>, <span class="string">"百毒"</span>);</span><br><span class="line">    BasicInfo info3 = <span class="keyword">new</span> BasicInfo(<span class="number">111L</span>, <span class="string">"Key001"</span>, <span class="string">"张三"</span>, <span class="number">1</span>, <span class="string">"阿狸"</span>);</span><br><span class="line">    BasicInfo info4 = <span class="keyword">new</span> BasicInfo(<span class="number">111L</span>, <span class="string">"Key001"</span>, <span class="string">"张三"</span>, <span class="number">1</span>, <span class="string">"阿狸"</span>);</span><br><span class="line">    BasicInfo info5 = <span class="keyword">new</span> BasicInfo(<span class="number">113L</span>, <span class="string">"Key003"</span>, <span class="string">"王五"</span>, <span class="number">1</span>, <span class="string">"疼讯"</span>);</span><br><span class="line">    BasicInfo info6 = <span class="keyword">new</span> BasicInfo(<span class="number">112L</span>, <span class="string">"Key002"</span>, <span class="string">"李四"</span>, <span class="number">0</span>, <span class="string">"百毒"</span>);</span><br><span class="line">    List&lt;BasicInfo&gt; list = <span class="keyword">new</span> ArrayList&lt;BasicInfo&gt;(Arrays.asList(info1,info2,info3,info4,info5,info6));</span><br><span class="line">    <span class="comment">//去重</span></span><br><span class="line">    Set&lt;BasicInfo&gt; set = <span class="keyword">new</span> HashSet&lt;BasicInfo&gt;(list);</span><br><span class="line">    <span class="keyword">for</span> (BasicInfo info : set) &#123;</span><br><span class="line">        System.out.println(info);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//输出：</span></span><br><span class="line"><span class="comment">//BasicInfo&#123;basicInfoId=112, empId='Key002', name='李四', gender=0, company='百毒'&#125;</span></span><br><span class="line"><span class="comment">//BasicInfo&#123;basicInfoId=113, empId='Key003', name='王五', gender=1, company='疼讯'&#125;</span></span><br><span class="line"><span class="comment">//BasicInfo&#123;basicInfoId=111, empId='Key001', name='张三', gender=1, company='阿狸'&#125;</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="完"><a href="#完" class="headerlink" title="完"></a>完</h2><p><font color=red><strong>注意：用 Lombok 的 @Data 注解会自动生成 get、set、equals、canEqual、hashCode、toString。</strong></font></p>
+<h2 id="总"><a href="#总" class="headerlink" title="总"></a>总</h2><p><font color=red><strong>注意：用 Lombok 的 @Data 注解会自动生成 <code>get、set、equals、canEqual、hashCode、toString</code>。</strong></font></p>
+<p><strong><font color=red>如果希望去重后仍然保持原集合中元素的顺序，可以使用 <code>LinkedHashMap</code>。</font></strong></p>
 <p>虽然不难，但是这是日常编码中比较常用到的点，面试时也会偶尔被提起，还是很有必要去学习并应用的。</p>
 <hr>
 <p>菜鸟本菜，不吝赐教，感激不尽！</p>
