@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>JsonMappingException解决方法</title>
+    <url>/2020/07/28/JsonMappingException%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<p>异常信息:<strong><font color=red>com.fasterxml.jackson.databind.JsonMappingException: Conflicting setter definitions for property “is_head”: com.luttica.ess.model.user.UserInfo#setHead(1 params) vs com.luttica.ess.model.user.UserInfo#setHead(1 params)</font></strong> <a id="more"></a></p>
+<p>反序列化注入失败的类：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserInfo</span></span>&#123;  </span><br><span class="line">    <span class="meta">@JsonProperty</span>(<span class="string">"is_head"</span>)</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> head;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isHead</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> head;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setHead</span><span class="params">(<span class="keyword">int</span> head)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.head = head == <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为属性名是“is_head”，但是没有 <code>setIsHead()</code> 方法，所以出现异常。</p>
+<p>解决方法：</p>
+<ol>
+<li><p><code>setHead()</code> 方法名修改为 <code>setIsHead()</code>。问题解决，但是这样的 set 方法命名过于别扭。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setIsHead</span><span class="params">(<span class="keyword">int</span> head)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.head = head == <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>@JsonProperty(&quot;basic_pay_id&quot;)</code> 注解添加到 <code>setHead()</code> 方法上即可。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@JsonProperty</span>(<span class="string">"is_head"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setHead</span><span class="params">(<span class="keyword">int</span> head)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.head = head == <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>成功反序列化，问题解决！</p>
+<hr>
+<p>菜鸟本菜，不吝赐教，感激不尽！</p>
+<p>更多题解源码和学习笔记：<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> 、<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">CSDN</a> 、<a href="http://www.m1ng.top/">M1ng</a> </p>
+]]></content>
+      <categories>
+        <category>Java学习笔记</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Camunda工作流引擎一</title>
     <url>/2020/07/07/Camunda%E5%B7%A5%E4%BD%9C%E6%B5%81%E5%BC%95%E6%93%8E%E4%B8%80/</url>
     <content><![CDATA[<p>实习工作中需要用到工作流引擎，去实现业务审批流的功能模块，由于 Flowable 不支持 MariaDB (重要原因之一)，所以项目中选择了 Camunda 工作流引擎。</p>
@@ -2148,7 +2175,7 @@
 </tbody></table>
 <p>除此了上述重要的表结构以外，还有很多表 <code>act_ge_property</code> 属性数据表存储整个流程引擎级别的数据、 <code>act_hi_detail</code> 历史详情表提供历史变量查询、 <code>act_id_group</code> 用户组信息表、 <code>act_id_user</code> 用户信息表、 <code>act_id_membership</code> 用户与用户组对应信息表、 <code>act_ru_job</code> 运行时定时任务数据表 等等。。。碍于篇幅就先只赘述这些开发中较为常用的表，其他的数据表用到时再去看表定义即可。</p>
 <h2 id="总"><a href="#总" class="headerlink" title="总"></a>总</h2><p>本篇重要的是成功启动应用，并对 Camunda 相关表有一个初步的印象，之后用到时不至于无从下手。</p>
-<p>下一篇会学习到，在本应用的基础上开发一个最基本的 ”启动流程Demo“  的过程！</p>
+<p>下一篇会学习到，在本应用的基础上开发一个最基本的 ”流程Demo“  的过程！</p>
 <hr>
 <p>菜鸟本菜，不吝赐教，感激不尽！</p>
 <p>更多题解源码和学习笔记：<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> 、<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">CSDN</a> 、<a href="http://www.m1ng.top/">M1ng</a> </p>
