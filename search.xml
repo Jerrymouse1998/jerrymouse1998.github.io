@@ -1,6 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>工厂模式</title>
+    <url>/2020/09/01/%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[<p>工厂模式属于创建型模式，它提供了一种更加优雅的创建对象的方式，也是最常见的设计模式之一！<a id="more"></a></p>
+<h2 id="引"><a href="#引" class="headerlink" title="引"></a>引</h2><p><strong>用户</strong>需要到 ”<strong>交通工具生产车间</strong>“ 去获取一种<strong>交通工具</strong>，用户可能要 “<strong>汽车</strong>“ 或  ”<strong>自行车</strong>“ 甚至是 “<strong>飞机</strong>”等。。。作为生产车间，只需要告诉用户一个<strong>获取其想要的交通工具的方法</strong>即可，至于交通工具是如何生产出来，用户并不需要去关心。</p>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><h3 id="简单工厂模式-静态工厂方法模式"><a href="#简单工厂模式-静态工厂方法模式" class="headerlink" title="简单工厂模式(静态工厂方法模式)"></a>简单工厂模式(静态工厂方法模式)</h3><p>用户可以使用工厂类提供的 get 静态方法并传入的不同参数，从而获取不同的实例，这些被创建的实例通常都具有共同的父类：</p>
+<p><img src="https://s1.ax1x.com/2020/09/01/dzEFA0.png" alt="dzEFA0.png"></p>
+<p>实现起来也很比较容易，共同父类：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Transportation</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">identity</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>汽车、自行车、飞机等等实现类：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Car</span> <span class="keyword">extends</span> <span class="title">Transportation</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">identity</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"i'm car!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Bicycle</span> <span class="keyword">extends</span> <span class="title">Transportation</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">identity</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"i'm Bicycle!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Plane</span> <span class="keyword">extends</span> <span class="title">Transportation</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">identity</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"i'm Plane!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>工厂类：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TransportationFactory</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Transportation <span class="title">getTransprotation</span><span class="params">(String type)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="string">"car"</span>.equalsIgnoreCase(type)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Car();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"bicycle"</span>.equalsIgnoreCase(type)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Bicycle();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"plane"</span>.equalsIgnoreCase(type)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Plane();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Transportation car = TransportationFactory.getTransprotation(<span class="string">"car"</span>);</span><br><span class="line">    <span class="keyword">if</span> (car != <span class="keyword">null</span>) &#123;</span><br><span class="line">        car.identity();<span class="comment">//i'm car!</span></span><br><span class="line">    &#125;</span><br><span class="line">    Transportation plane = TransportationFactory.getTransprotation(<span class="string">"plane"</span>);</span><br><span class="line">    <span class="keyword">if</span> (plane != <span class="keyword">null</span>) &#123;</span><br><span class="line">        plane.identity();<span class="comment">//i'm Plane!</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种方式简单方便，JDK 中也有很多应用，例如：<code>DateFormat</code> 提供了 <code>get(LocaleProviderAdapter adapter, int timeStyle, int dateStyle, Locale loc)</code> 去根据参数去创建不同的实例。。</p>
+<p>但是这种方式有一个致命的缺点就是不够灵活！每<strong>新增一种交通工具，都需要修改工厂类的方法</strong>，这就违背了程序设计中的<strong>开闭原则</strong>！</p>
+<h3 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h3><p>可以看作是一种简单工厂模式的再抽象，在简单工厂模式中每个交通工具都有一个共同父类，但是都通过一个统一的大工厂去创建；</p>
+<p>而工厂模式中，在之前简单工厂模式的基础上，工厂类本身也需要分成不同的子工厂类，每种子工厂类去创建其具体的交通工具，且都共同继承自的同一个大工厂父类：</p>
+<p><img src="https://s1.ax1x.com/2020/09/01/dzAx1g.png" alt="dzAx1g.png"></p>
+<p>按照惯例，找一个 JDK 中的例子：<strong>Collection</strong> 接口看作是一个工厂抽象类，其中有抽象方法 <code>iterator()</code> 用于创建迭代器，很多类都实现了这个接口，例如 ArrayList 实现了接口作为子工厂，会 new 一个 Itr 类对象，这个 Itr 类作为具体的”产品”也同样有一个迭代器父类 Iterator；除此之外 LinkedList 也可以 new 一个具体产品 ListItr 类对象，这个类的父类也同样是 Iterator。等等。。。</p>
+<p><img src="https://s1.ax1x.com/2020/09/01/dzkgJS.png" alt="dzkgJS.png"></p>
+<p>概括来说，就是定义一个用于创建对象的接口，让其子类决定实例化哪个类。工厂模式优点是将一个类的实例化延迟到其子类。</p>
+<p>将简单工厂的例子改造为工厂模式后，类图：</p>
+<p><img src="https://s1.ax1x.com/2020/09/01/dzkyIf.png" alt="dzkyIf.png"></p>
+<h3 id="抽象工厂模式"><a href="#抽象工厂模式" class="headerlink" title="抽象工厂模式"></a>抽象工厂模式</h3><p>抽象工厂模式可以看作是工厂模式的又一次扩展，直接看将工厂模式改造成抽象工厂模式后的类图：</p>
+<p><img src="https://s1.ax1x.com/2020/09/01/dzkRzQ.png" alt="dzkRzQ.png"></p>
+<p>在之前的工厂模式，一个工厂父类(或工厂接口)的所有子工厂都是生产同一大类的子类，那么我们只要给这个工厂父类(或接口)增加可以生产其大类抽象方法，并让其所有的子工厂都各自实现这个抽象方法，就可以做到让一个工厂大类可以生产多个不同大类的产品。(可能比较拗口，多想几遍，很好理解)：</p>
+<p><img src="https://s1.ax1x.com/2020/09/01/dzAMY8.png" alt="dzAMY8.png"></p>
+<p>虽然进一步扩展了工厂模式，但是每次增加新的产品大类的时候，都要给工厂父类(或接口)增加新抽象方法，并让所有的子工厂都去各自实现，就又像文章开头提到的简单工厂模式一样：违反了程序设计中的<strong>开闭原则</strong>！</p>
+<h2 id="总"><a href="#总" class="headerlink" title="总"></a>总</h2><p>设计模式，只是前辈们在生产实践中，不断摸索总结出的一系列的指导思想，我们重要的是吸收这种优秀、简练的思想，在实际生产中灵活选择、灵活编码！</p>
+<hr>
+<p>菜鸟本菜，不吝赐教，感激不尽！</p>
+<p>更多题解源码和学习笔记：<a href="https://github.com/Jerrymouse1998/learning-record-of-leetcode" target="_blank" rel="noopener">github</a> 、<a href="https://blog.csdn.net/qq_42758551" target="_blank" rel="noopener">CSDN</a> 、<a href="http://www.m1ng.top/">M1ng</a> </p>
+]]></content>
+      <categories>
+        <category>设计模式</category>
+      </categories>
+      <tags>
+        <tag>设计模式</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>深入浅出单例模式</title>
     <url>/2020/08/27/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</url>
     <content><![CDATA[<p> 单例模式是设计模式中最基础、最常用的，但是简单的实现下也隐藏着每一位 Coder <strong><font color=red>必须深入了解的知识</font></strong>。<a id="more"></a></p>
